@@ -291,7 +291,7 @@
       async function getStorageInfo() {
         try {
           // Go function via Glaze
-          const storage = await app_get_storage_info();
+          const storage = await app.GetStorageInfo();
 
           if (!Array.isArray(storage)) {
             throw new Error("Invalid storage data");
