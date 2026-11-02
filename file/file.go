@@ -55,6 +55,25 @@ func MakeDataFolder() error {
 	return os.MkdirAll(dataDir, 0755)
 }
 
+func OAuthFolderPath() (string, error) {
+	appDir, err := ConfigFolderPath()
+	if err != nil {
+		return "", err
+	}
+
+	oauthDir := filepath.Join(appDir, "oauth")
+	return oauthDir, nil
+}
+
+func MakeOAuthFolder() error {
+	oauthDir, err := OAuthFolderPath()
+	if err != nil {
+		return err
+	}
+
+	return os.MkdirAll(oauthDir, 0755)
+}
+
 // LatestCommitHash returns the latest commit SHA affecting the setup directory on GitHub.
 func LatestCommitHash() (string, error) {
 	url := "https://api.github.com/repos/LingXuan-Li/InquiryExplorer/commits?sha=main&path=setup&per_page=1"

@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"InquiryExplorer/account"
 	"InquiryExplorer/file"
 	"InquiryExplorer/function"
 
@@ -24,6 +25,10 @@ func main() {
 
 	// Download the template directory.
 	if err := file.DownloadSetupFolder(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := file.MakeOAuthFolder(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -167,7 +172,16 @@ func main() {
 	w.SetSize(900, 650, glaze.HintNone)
 
 	// Bind Go methods to JavaScript.
-	app := &function.App{}
+	// Initialize account manager.
+	accountManager, err := account.NewManager()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Bind Go methods to JavaScript.
+	app := &function.App{
+		AccountManager: accountManager,
+	}
 
 	bound, err := glaze.BindMethods(w, "app", app)
 	if err != nil {
