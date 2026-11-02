@@ -135,3 +135,12 @@ func DownloadSetupFolder() error {
 
 	return download("setup", filepath.Join(appDir, "data"))
 }
+
+func TemplateFolderPath() (string, error) {
+	appDir, err := ConfigFolderPath()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(appDir, "data", "templates"), nil
+}

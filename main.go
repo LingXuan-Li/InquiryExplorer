@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"log"
+	"path/filepath"
 
 	"InquiryExplorer/file"
 
@@ -31,6 +32,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	err = file.DownloadSetupFolder()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	w, err := glaze.New(true)
 
 	if err != nil {
@@ -51,7 +57,11 @@ func main() {
 	}
 
 	// HTMLテンプレート読み込み
-	tmpl, err := template.ParseFiles("templates/index.html")
+	templ, err := file.TemplateFolderPath()
+	if err != nil {
+		log.Fatal(err)
+	}
+	tmpl, err := template.ParseFiles(filepath.Join(templ, "index.html"))
 	if err != nil {
 		log.Fatal(err)
 	}
