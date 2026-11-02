@@ -245,6 +245,8 @@
 
     <script>
       (() => {
+        "use strict";
+
         // ========================================
         // Configuration
         // ========================================
@@ -276,14 +278,8 @@
         }
 
         function getColor(percent) {
-          if (percent >= 90) {
-            return "#ef4444";
-          }
-
-          if (percent >= 75) {
-            return "#f59e0b";
-          }
-
+          if (percent >= 90) return "#ef4444";
+          if (percent >= 75) return "#f59e0b";
           return "#22c55e";
         }
 
@@ -310,13 +306,10 @@
         }
 
         // ========================================
-        // Get Storage Information
+        // Get Storage Information (Go API)
         // ========================================
 
-        async function app_get_storage_info() {
-          console.log("window.app:", window.app);
-          console.log("typeof app:", typeof window.app);
-
+        async function getStorageInfo() {
           if (!isActive || isLoading) return;
 
           isLoading = true;
@@ -324,15 +317,27 @@
           const currentRequest = ++requestId;
 
           try {
-            // Glaze Go API
-            if (
-              !window.app ||
-              typeof window.app.app_get_storage_info !== "function"
-            ) {
-              throw new Error("Go API app_get_storage_info が見つかりません");
+            console.log("========== Glaze API ==========");
+
+            console.log(
+              "app_get_storage_info:",
+              typeof window.app_get_storage_info,
+            );
+
+            if (typeof window.app_get_storage_info !== "function") {
+              throw new Error(
+                "Glaze API app_get_storage_info が見つかりません",
+              );
             }
 
-            const storage = await window.app.app_get_storage_info();
+            console.log("Go API 呼び出し開始");
+
+            // Go側の GetStorageInfo を呼び出す
+            const storage = await window.app_get_storage_info();
+
+            console.log("Go API 戻り値:", storage);
+
+            console.log("===============================");
 
             // ページ切り替え後の応答は無視
             if (!isActive || currentRequest !== requestId) {
@@ -340,7 +345,7 @@
             }
 
             if (!Array.isArray(storage)) {
-              throw new Error("Invalid storage data");
+              throw new Error("Go API の戻り値が配列ではありません");
             }
 
             hideError();
@@ -407,17 +412,15 @@
 
           if (!canvas) return;
 
-          const labels = storage.map((item) => item.mountpoint);
+          const labels = storage.map((item) => item.mountpoint || "");
 
-          const values = storage.map((item) => Number(item.used_percent));
+          const values = storage.map((item) => Number(item.used_percent) || 0);
 
           const colors = values.map(getColor);
 
           if (storageChart) {
             storageChart.data.labels = labels;
-
             storageChart.data.datasets[0].data = values;
-
             storageChart.data.datasets[0].backgroundColor = colors;
 
             storageChart.update();
@@ -444,9 +447,7 @@
 
             options: {
               indexAxis: "y",
-
               responsive: true,
-
               maintainAspectRatio: false,
 
               animation: {
@@ -460,7 +461,6 @@
 
                   ticks: {
                     color: "#94a3b8",
-
                     callback: (value) => value + "%",
                   },
 
@@ -490,7 +490,7 @@
                 tooltip: {
                   callbacks: {
                     label: (context) => {
-                      return "使用率: " + context.raw.toFixed(1) + "%";
+                      return "使用率: " + Number(context.raw).toFixed(1) + "%";
                     },
                   },
                 },
@@ -514,7 +514,6 @@
             const empty = document.createElement("div");
 
             empty.className = "empty";
-
             empty.textContent = "ストレージ情報がありません。";
 
             container.appendChild(empty);
@@ -531,33 +530,25 @@
 
             // Main wrapper
             const wrapper = document.createElement("div");
-
             wrapper.className = "storage-item";
 
             // Header
             const header = document.createElement("div");
-
             header.className = "storage-header";
 
             const device = document.createElement("div");
-
             device.className = "device";
-
             device.textContent = item.mountpoint || "";
 
             const percentage = document.createElement("div");
-
             percentage.className = "percentage";
-
             percentage.style.color = color;
-
             percentage.textContent = percent.toFixed(1) + "%";
 
             header.append(device, percentage);
 
             // Filesystem
             const filesystem = document.createElement("div");
-
             filesystem.className = "filesystem";
 
             filesystem.textContent =
@@ -565,34 +556,27 @@
 
             // Progress bar
             const progress = document.createElement("div");
-
             progress.className = "progress";
 
             const bar = document.createElement("div");
-
             bar.className = "bar";
 
             bar.style.width = safePercent + "%";
-
             bar.style.backgroundColor = color;
 
             progress.appendChild(bar);
 
             // Storage details
             const details = document.createElement("div");
-
             details.className = "storage-details";
 
             const used = document.createElement("span");
-
             used.textContent = "使用: " + formatBytes(item.used);
 
             const free = document.createElement("span");
-
             free.textContent = "空き: " + formatBytes(item.free);
 
             const total = document.createElement("span");
-
             total.textContent = "合計: " + formatBytes(item.total);
 
             details.append(used, free, total);
@@ -614,9 +598,11 @@
 
           console.log("Storage Monitor initialized");
 
-          app_get_storage_info();
+          console.log("Glaze API:", typeof window.app_get_storage_info);
 
-          refreshTimer = setInterval(app_get_storage_info, REFRESH_INTERVAL);
+          getStorageInfo();
+
+          refreshTimer = setInterval(getStorageInfo, REFRESH_INTERVAL);
         };
 
         // ========================================
@@ -630,13 +616,11 @@
 
           if (refreshTimer !== null) {
             clearInterval(refreshTimer);
-
             refreshTimer = null;
           }
 
           if (storageChart) {
             storageChart.destroy();
-
             storageChart = null;
           }
 
