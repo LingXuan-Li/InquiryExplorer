@@ -17,12 +17,12 @@ import (
 )
 
 func main() {
-	// 設定フォルダ作成
+	// Create the configuration directory.
 	if err := file.MakeConfigFolder(); err != nil {
 		log.Fatal(err)
 	}
 
-	// テンプレートフォルダ取得・ダウンロード
+	// Download the template directory.
 	if err := file.DownloadSetupFolder(); err != nil {
 		log.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// テンプレートの絶対パス
+	// Resolve the template directory to an absolute path.
 	root, err := filepath.Abs(templ)
 	if err != nil {
 		log.Fatal(err)
@@ -40,7 +40,7 @@ func main() {
 
 	log.Println("Template root:", root)
 
-	// index.htmlをGoテンプレートとして読み込む
+	// Parse index.html as a Go template.
 	tmpl, err := template.ParseFiles(
 		filepath.Join(root, "index.html"),
 	)
@@ -48,7 +48,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// HTMLテンプレートを実行
+	// Render the HTML template.
 	var buf bytes.Buffer
 
 	if err := tmpl.Execute(&buf, nil); err != nil {
@@ -57,27 +57,27 @@ func main() {
 
 	indexHTML := append([]byte(nil), buf.Bytes()...)
 
-	// GlazeのカスタムURLスキーム
+	// Register a custom URL scheme with Glaze.
 	w, err := glaze.NewWithOptions(glaze.Options{
 		Debug: true,
 
 		SchemeHandlers: map[string]glaze.SchemeHandler{
 			"app": func(req *glaze.SchemeRequest) *glaze.SchemeResponse {
 
-				// URL解析
+				// Parse the URL.
 				parsedURL, err := url.Parse(req.URL)
 				if err != nil {
 					log.Println("URL parse error:", err)
 					return nil
 				}
 
-				// appスキームとホストを確認
+				// Validate the app scheme and host.
 				if parsedURL.Scheme != "app" ||
 					parsedURL.Host != "templates" {
 					return nil
 				}
 
-				// URLのパスからファイル名を取得
+				// Get the file path from the URL.
 				relativePath := filepath.Clean(
 					filepath.FromSlash(
 						strings.TrimPrefix(parsedURL.Path, "/"),
@@ -87,7 +87,7 @@ func main() {
 				log.Println("Requested URL:", req.URL)
 				log.Println("Relative path:", relativePath)
 
-				// パストラバーサル対策
+				// Prevent path traversal.
 				if filepath.IsAbs(relativePath) ||
 					relativePath == ".." ||
 					strings.HasPrefix(
@@ -105,10 +105,10 @@ func main() {
 					}
 				}
 
-				// 実際のファイルパス
+				// Resolve the full file path.
 				fullPath := filepath.Join(root, relativePath)
 
-				// ルートフォルダ外へのアクセスを禁止
+				// Prevent access outside the root directory.
 				rel, err := filepath.Rel(root, fullPath)
 				if err != nil ||
 					rel == ".." ||
@@ -121,14 +121,14 @@ func main() {
 
 				log.Println("Full path:", fullPath)
 
-				// ファイル読み込み
+				// Read the file.
 				data, err := os.ReadFile(fullPath)
 				if err != nil {
 					log.Printf("File not found: %s", fullPath)
 					return nil
 				}
 
-				// MIMEタイプ
+				// Determine the MIME type.
 				contentType := mime.TypeByExtension(
 					filepath.Ext(fullPath),
 				)
@@ -166,7 +166,7 @@ func main() {
 	w.SetTitle("Inquiry Explorer")
 	w.SetSize(900, 650, glaze.HintNone)
 
-	// GoメソッドをJavaScriptに登録
+	// Bind Go methods to JavaScript.
 	app := &function.App{}
 
 	bound, err := glaze.BindMethods(w, "app", app)
@@ -179,7 +179,7 @@ func main() {
 
 	log.Println("Registered methods:", bound)
 
-	// index.htmlを開く
+	// Open index.html.
 	w.Navigate("app://templates/index.html")
 
 	w.Run()

@@ -8,11 +8,11 @@ func TestGetStorageInfo(t *testing.T) {
 	storage, err := GetStorageInfo()
 
 	if err != nil {
-		t.Fatalf("ストレージ情報の取得に失敗しました: %v", err)
+		t.Fatalf("Failed to get storage information: %v", err)
 	}
 
 	if len(storage) == 0 {
-		t.Fatal("ストレージ情報が取得できませんでした")
+		t.Fatal("No storage information was returned")
 	}
 
 	for _, s := range storage {
@@ -25,23 +25,23 @@ func TestGetStorageInfo(t *testing.T) {
 		t.Logf("UsedPercent: %.2f%%", s.UsedPercent)
 
 		if s.Mountpoint == "" {
-			t.Error("Mountpointが空です")
+			t.Error("Mountpoint is empty")
 		}
 
 		if s.Total == 0 {
-			t.Errorf("Totalが0です: %s", s.Device)
+			t.Errorf("Total is zero: %s", s.Device)
 		}
 
 		if s.Used > s.Total {
-			t.Errorf("UsedがTotalを超えています: %s", s.Device)
+			t.Errorf("Used exceeds Total: %s", s.Device)
 		}
 
 		if s.Free > s.Total {
-			t.Errorf("FreeがTotalを超えています: %s", s.Device)
+			t.Errorf("Free exceeds Total: %s", s.Device)
 		}
 
 		if s.UsedPercent < 0 || s.UsedPercent > 100 {
-			t.Errorf("UsedPercentが不正です: %.2f", s.UsedPercent)
+			t.Errorf("UsedPercent is out of range: %.2f", s.UsedPercent)
 		}
 	}
 }

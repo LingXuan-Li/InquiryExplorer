@@ -186,22 +186,22 @@
       <nav class="nav">
         <a href="#" class="active" data-page="home">
           <span class="icon">⌂</span>
-          ダッシュボード
+          Dashboard
         </a>
 
         <a href="#" data-page="reports">
           <span class="icon">▤</span>
-          レポート
+          Reports
         </a>
 
         <a href="#" data-page="projects">
           <span class="icon">▣</span>
-          プロジェクト
+          Projects
         </a>
 
         <a href="#" data-page="users">
           <span class="icon">♙</span>
-          ユーザー管理
+          User Management
         </a>
       </nav>
 
@@ -210,12 +210,12 @@
       <nav class="nav">
         <a href="#" data-page="settings">
           <span class="icon">⚙</span>
-          設定
+          Settings
         </a>
 
         <a href="#" data-page="help">
           <span class="icon">?</span>
-          ヘルプ
+          Help
         </a>
       </nav>
 
@@ -224,12 +224,12 @@
       <nav class="nav">
         <a href="#">
           <span class="icon">⚙</span>
-          設定
+          Settings
         </a>
 
         <a href="#">
           <span class="icon">?</span>
-          ヘルプ
+          Help
         </a>
       </nav>
     </aside>
@@ -243,12 +243,12 @@
           <button
             class="toggle"
             onclick="toggleMenu()"
-            aria-label="メニューを開く"
+            aria-label="Open menu"
           >
             ☰
           </button>
 
-          <h2>ダッシュボード</h2>
+          <h2>Dashboard</h2>
         </div>
       </header>
 
@@ -263,12 +263,12 @@
       const overlay = document.getElementById("overlay");
       const content = document.getElementById("content");
 
-      // ページ切り替えの連続実行を管理
+      // Track consecutive page navigation requests.
       let currentPageController = null;
       let navigationId = 0;
 
       // ========================================
-      // メニュー開閉
+      // Toggle the menu.
       // ========================================
 
       function toggleMenu() {
@@ -282,7 +282,7 @@
       }
 
       // ========================================
-      // HTML内のJavaScriptを実行
+      // Execute JavaScript embedded in the HTML.
       // ========================================
 
       async function executeScripts(container, pageUrl) {
@@ -291,18 +291,18 @@
         for (const oldScript of scripts) {
           const newScript = document.createElement("script");
 
-          // 属性を引き継ぐ
+          // Copy the attributes.
           for (const attr of oldScript.attributes) {
             newScript.setAttribute(attr.name, attr.value);
           }
 
-          // 外部JavaScript
+          // External JavaScript.
           if (oldScript.hasAttribute("src")) {
             const src = oldScript.getAttribute("src");
 
             newScript.src = new URL(src, pageUrl).href;
 
-            // async指定がなければ順番を維持
+            // Preserve execution order unless async is specified.
             if (!oldScript.hasAttribute("async")) {
               newScript.async = false;
             }
@@ -311,13 +311,13 @@
               newScript.onload = resolve;
 
               newScript.onerror = () => {
-                reject(new Error("JavaScript読み込みエラー: " + newScript.src));
+                reject(new Error("Failed to load JavaScript: " + newScript.src));
               };
 
               oldScript.replaceWith(newScript);
             });
           } else {
-            // HTML内に直接記述されたJavaScript
+            // JavaScript embedded directly in the HTML.
             const isModule = oldScript.getAttribute("type") === "module";
 
             if (isModule) {
@@ -325,7 +325,7 @@
                 newScript.onload = resolve;
 
                 newScript.onerror = () => {
-                  reject(new Error("Module JavaScript実行エラー"));
+                  reject(new Error("Failed to execute JavaScript module"));
                 };
 
                 newScript.textContent = oldScript.textContent;
@@ -340,13 +340,13 @@
       }
 
       // ========================================
-      // ページ切り替え
+      // Navigate between pages.
       // ========================================
 
       async function navigate(page, link) {
         if (!page) return;
 
-        // 古いページの読み込みをキャンセル
+        // Cancel the previous page load.
         if (currentPageController) {
           currentPageController.abort();
         }
@@ -357,44 +357,44 @@
         const thisNavigation = ++navigationId;
 
         try {
-          // ページURL
+          // Build the page URL.
           const pageUrl = new URL(`pages/${page}.html`, document.baseURI);
 
-          // HTML取得
+          // Fetch the HTML.
           const response = await fetch(pageUrl, {
             signal: controller.signal,
           });
 
           if (!response.ok) {
-            throw new Error("ページを読み込めませんでした: " + response.status);
+            throw new Error("Failed to load page: " + response.status);
           }
 
           const html = await response.text();
 
-          // 古いリクエストなら処理を終了
+          // Ignore stale requests.
           if (thisNavigation !== navigationId) return;
 
-          // HTML解析
+          // Parse the HTML.
           const parser = new DOMParser();
 
           const doc = parser.parseFromString(html, "text/html");
 
-          // ページタイトル更新
+          // Update the page title.
           const pageTitle =
             doc.querySelector("title")?.textContent || "Inquiry Explorer";
 
           document.querySelector(".topbar h2").textContent = pageTitle;
 
-          // コンテンツ挿入
+          // Insert the page content.
           content.innerHTML = doc.body.innerHTML;
 
-          // JavaScript実行
+          // Execute the page scripts.
           await executeScripts(content, pageUrl);
 
-          // 古いページの処理を防止
+          // Stop if a newer navigation has started.
           if (thisNavigation !== navigationId) return;
 
-          // ページ読み込み完了イベント
+          // Dispatch the page-loaded event.
           content.dispatchEvent(
             new CustomEvent("page:loaded", {
               bubbles: true,
@@ -405,7 +405,7 @@
             }),
           );
 
-          // アクティブメニュー更新
+          // Update the active menu item.
           document.querySelectorAll(".nav a").forEach((item) => {
             item.classList.remove("active");
           });
@@ -414,29 +414,29 @@
             link.classList.add("active");
           }
 
-          // スマートフォンならメニューを閉じる
+          // Close the menu on small screens.
           if (window.innerWidth <= 700) {
             closeMenu();
           }
 
-          console.log("ページ読み込み完了:", page);
-          console.log("ページURL:", pageUrl.href);
+          console.log("Page loaded:", page);
+          console.log("Page URL:", pageUrl.href);
         } catch (error) {
           if (error.name === "AbortError") {
             return;
           }
 
-          console.error("ページ切り替えエラー:", error);
+          console.error("Page navigation error:", error);
 
           content.innerHTML = `
-      <h2>ページの読み込みに失敗しました</h2>
+      <h2>Failed to load the page</h2>
       <p>${error.message}</p>
     `;
         }
       }
 
       // ========================================
-      // サイドバーのクリックイベント
+      // Handle sidebar clicks.
       // ========================================
 
       document.querySelectorAll(".nav a").forEach((link) => {
@@ -446,7 +446,7 @@
           const page = link.dataset.page;
 
           if (!page) {
-            console.warn("data-pageが設定されていません:", link);
+            console.warn("Missing data-page attribute:", link);
             return;
           }
 
@@ -455,21 +455,21 @@
       });
 
       // ========================================
-      // ページ切り替え完了イベント
+      // Handle the page-loaded event.
       // ========================================
 
       document.addEventListener("page:loaded", (event) => {
-        console.log("ページ初期化完了:", event.detail.page);
+        console.log("Page initialized:", event.detail.page);
       });
 
       // ========================================
-      // 初期ページ読み込み
+      // Load the initial page.
       // ========================================
 
       navigate("home", document.querySelector('[data-page="home"]'));
 
       // ========================================
-      // デバッグ情報
+      // Debug information.
       // ========================================
 
       console.log("href:", window.location.href);

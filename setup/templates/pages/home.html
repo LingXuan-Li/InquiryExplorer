@@ -192,7 +192,7 @@
       <header>
         <div>
           <h1>Storage Monitor</h1>
-          <p style="color: #94a3b8; margin-bottom: 0">システムストレージ監視</p>
+          <p style="color: #94a3b8; margin-bottom: 0">System Storage Monitor</p>
         </div>
 
         <div class="status">● Monitoring</div>
@@ -304,7 +304,7 @@
 
         // ========================================
         // Get Storage Information (Go API)
-        // 初回起動時に1回だけ実行
+        // Run once when the page is first initialized.
         // ========================================
 
         async function getStorageInfo() {
@@ -324,25 +324,25 @@
 
             if (typeof window.app_get_storage_info !== "function") {
               throw new Error(
-                "Glaze API app_get_storage_info が見つかりません",
+                "Glaze API app_get_storage_info was not found",
               );
             }
 
-            console.log("Go API 呼び出し開始");
+            console.log("Calling the Go API");
 
             const storage = await window.app_get_storage_info();
 
-            console.log("Go API 戻り値:", storage);
+            console.log("Go API response:", storage);
 
             console.log("===============================");
 
-            // ページ切り替え後の応答は無視
+            // Ignore the response if the user has navigated away.
             if (!isActive || currentRequest !== requestId) {
               return;
             }
 
             if (!Array.isArray(storage)) {
-              throw new Error("Go API の戻り値が配列ではありません");
+              throw new Error("The Go API response is not an array");
             }
 
             hideError();
@@ -360,7 +360,7 @@
             console.error("Storage Error:", error);
 
             if (isActive && currentRequest === requestId) {
-              showError("ストレージ情報の取得に失敗しました: " + error.message);
+              showError("Failed to get storage information: " + error.message);
             }
           } finally {
             if (currentRequest === requestId) {
@@ -482,7 +482,7 @@
             const empty = document.createElement("div");
 
             empty.className = "empty";
-            empty.textContent = "ストレージ情報がありません。";
+            empty.textContent = "No storage information available.";
 
             container.appendChild(empty);
 
@@ -539,13 +539,13 @@
             details.className = "storage-details";
 
             const used = document.createElement("span");
-            used.textContent = "使用: " + formatBytes(item.used);
+            used.textContent = "Used: " + formatBytes(item.used);
 
             const free = document.createElement("span");
-            free.textContent = "空き: " + formatBytes(item.free);
+            free.textContent = "Free: " + formatBytes(item.free);
 
             const total = document.createElement("span");
-            total.textContent = "合計: " + formatBytes(item.total);
+            total.textContent = "Total: " + formatBytes(item.total);
 
             details.append(used, free, total);
 
@@ -557,7 +557,7 @@
 
         // ========================================
         // Initialize
-        // 初回起動時のみ実行
+        // Run only on the first initialization.
         // ========================================
 
         window.initStorageMonitor = function () {
@@ -569,7 +569,7 @@
 
           console.log("Glaze API:", typeof window.app_get_storage_info);
 
-          // APIを1回だけ呼び出す
+          // Call the API once.
           getStorageInfo();
         };
 

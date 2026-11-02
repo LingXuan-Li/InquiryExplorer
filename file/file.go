@@ -55,7 +55,7 @@ func MakeDataFolder() error {
 	return os.MkdirAll(dataDir, 0755)
 }
 
-// GitHubのsetupフォルダに関係する最新コミットSHAを取得
+// LatestCommitHash returns the latest commit SHA affecting the setup directory on GitHub.
 func LatestCommitHash() (string, error) {
 	url := "https://api.github.com/repos/LingXuan-Li/InquiryExplorer/commits?sha=main&path=setup&per_page=1"
 
@@ -88,7 +88,7 @@ func LatestCommitHash() (string, error) {
 	return commits[0].SHA, nil
 }
 
-// ローカルに保存されているコミットSHAを取得
+// LocalCommitHash returns the commit SHA saved locally.
 func LocalCommitHash() (string, error) {
 	appDir, err := ConfigFolderPath()
 	if err != nil {
@@ -114,7 +114,7 @@ func LocalCommitHash() (string, error) {
 	return hash, nil
 }
 
-// ローカルにコミットSHAを保存
+// SaveCommitHash saves a commit SHA locally.
 func SaveCommitHash(hash string) error {
 	if len(hash) != 40 {
 		return fmt.Errorf("invalid commit SHA")
@@ -144,7 +144,7 @@ func DownloadSetupFolder() error {
 		return err
 	}
 
-	// 前回の入れ替えが中断されていた場合の復旧
+	// Recover if the previous directory swap was interrupted.
 	if _, err := os.Stat(dataDir); os.IsNotExist(err) {
 		if _, backupErr := os.Stat(backupDir); backupErr == nil {
 			if err := os.Rename(backupDir, dataDir); err != nil {
@@ -153,24 +153,24 @@ func DownloadSetupFolder() error {
 		}
 	}
 
-	// 不要な一時フォルダを削除
+	// Remove any leftover temporary directory.
 	if err := os.RemoveAll(tempDir); err != nil {
 		return err
 	}
 
-	// 最新コミットSHAを取得
+	// Get the latest commit SHA.
 	latestHash, err := LatestCommitHash()
 	if err != nil {
 		return err
 	}
 
-	// ローカルコミットSHAを取得
+	// Get the locally saved commit SHA.
 	localHash, err := LocalCommitHash()
 	if err != nil {
 		return err
 	}
 
-	// 最新版ならダウンロードしない
+	// Skip the download if the local setup is already up to date.
 	if latestHash == localHash {
 		fmt.Println("Setup is already up to date:", latestHash)
 		return nil
@@ -180,7 +180,7 @@ func DownloadSetupFolder() error {
 	fmt.Println("Local :", localHash)
 	fmt.Println("Remote:", latestHash)
 
-	// 再帰的ダウンロード
+	// Download the directory recursively.
 	download := func(src, dst string) error {
 		return nil
 	}
@@ -283,19 +283,19 @@ func DownloadSetupFolder() error {
 
 	_ = download
 
-	// 一時フォルダに最新版をダウンロード
+	// Download the latest version to a temporary directory.
 	if err := recursiveDownload("setup", tempDir); err != nil {
 		os.RemoveAll(tempDir)
 		return err
 	}
 
-	// 古いバックアップを削除
+	// Remove the previous backup.
 	if err := os.RemoveAll(backupDir); err != nil {
 		os.RemoveAll(tempDir)
 		return err
 	}
 
-	// 既存のsetupをバックアップ
+	// Back up the existing setup directory.
 	if _, err := os.Stat(dataDir); err == nil {
 		if err := os.Rename(dataDir, backupDir); err != nil {
 			os.RemoveAll(tempDir)
@@ -306,9 +306,9 @@ func DownloadSetupFolder() error {
 		return err
 	}
 
-	// 一時フォルダを正式なsetupに変更
+	// Move the temporary directory into place as the active setup.
 	if err := os.Rename(tempDir, dataDir); err != nil {
-		// 失敗した場合は元に戻す
+		// Restore the previous directory if the replacement fails.
 		if _, backupErr := os.Stat(backupDir); backupErr == nil {
 			if restoreErr := os.Rename(backupDir, dataDir); restoreErr != nil {
 				return fmt.Errorf(
@@ -323,12 +323,12 @@ func DownloadSetupFolder() error {
 		return err
 	}
 
-	// 新しいコミットSHAを保存
+	// Save the new commit SHA.
 	if err := SaveCommitHash(latestHash); err != nil {
 		return fmt.Errorf("setup installed but version save failed: %w", err)
 	}
 
-	// バックアップを削除
+	// Remove the backup.
 	if err := os.RemoveAll(backupDir); err != nil {
 		return err
 	}

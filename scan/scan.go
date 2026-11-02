@@ -14,7 +14,7 @@ type StorageInfo struct {
 	UsedPercent float64 `json:"used_percent"`
 }
 
-// GetStorageInfo はストレージ情報を取得する
+// GetStorageInfo returns storage information.
 func GetStorageInfo() ([]StorageInfo, error) {
 	partitions, err := disk.Partitions(false)
 	if err != nil {

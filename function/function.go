@@ -8,12 +8,12 @@ import (
 
 type App struct{}
 
-// JavaScriptから呼び出す関数
+// Functions exposed to JavaScript.
 func (a *App) Greet(name string) string {
 	if name == "" {
-		name = "ゲスト"
+		name = "Guest"
 	}
-	return "こんにちは、" + name + "さん！"
+	return "Hello, " + name + "!"
 }
 
 func (a *App) GetStorageInfo() ([]scan.StorageInfo, error) {
