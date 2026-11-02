@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ja">
+    <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>アカウント登録 | Inquiry Explorer</title>
+    <title>Connect an Account | Inquiry Explorer</title>
 
     <style>
       :root {
@@ -187,6 +187,24 @@
         gap: 10px;
       }
 
+      .account-item {
+        padding: 18px 20px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+
+      .account-item strong {
+        display: block;
+        font-size: 14px;
+      }
+
+      .account-item p {
+        margin: 6px 0 0;
+        color: var(--secondary);
+        font-size: 12px;
+      }
+
       .empty {
         padding: 24px;
         border: 1px dashed var(--border);
@@ -201,8 +219,8 @@
   <body>
     <main class="container">
       <header class="header">
-        <h1>アカウント登録</h1>
-        <p>クラウドストレージをInquiry Explorerに接続します。</p>
+        <h1>Connect an Account</h1>
+        <p>Connect cloud storage to Inquiry Explorer.</p>
       </header>
 
       <section class="card">
@@ -214,12 +232,12 @@
             <p>Google Cloud Storage</p>
           </div>
 
-          <span class="status">対応</span>
+          <span class="status">Available</span>
         </div>
 
         <p class="description">
-          Googleアカウントを認証して、 Google Drive内のファイル情報や
-          ストレージ使用量を取得します。
+          Authorize your Google account to access file information and storage
+          usage from Google Drive.
         </p>
 
         <button
@@ -229,7 +247,7 @@
           onclick="registerGoogle()"
         >
           <span>＋</span>
-          Googleアカウントを追加
+          Add Google Account
         </button>
 
         <div
@@ -240,21 +258,21 @@
         ></div>
 
         <div class="permissions">
-          <h3>アクセス権限</h3>
+          <h3>Permissions</h3>
 
           <ul>
-            <li>Google Driveのファイル情報の読み取り</li>
-            <li>ストレージ使用量の取得</li>
-            <li>ファイルの変更・削除は行いません</li>
+            <li>Read file information from Google Drive</li>
+            <li>View storage usage</li>
+            <li>Files will not be modified or deleted</li>
           </ul>
         </div>
       </section>
 
       <section class="account-section">
-        <h2>登録済みアカウント</h2>
+        <h2>Connected Accounts</h2>
 
         <div id="account-list" class="account-list">
-          <div class="empty">登録済みアカウントはありません。</div>
+          <div class="empty">Loading account information...</div>
         </div>
       </section>
     </main>
@@ -270,58 +288,68 @@
 
       async function registerGoogle() {
         button.disabled = true;
-        button.textContent = "認証処理を開始しています...";
+        button.textContent = "Starting authorization...";
 
         message.className = "message";
 
         try {
-          // Glaze側のGoメソッドと接続する予定
           await window.app_register_google_account();
 
-          showMessage("Googleアカウントの登録が完了しました。", "success");
+          showMessage("Google account connected successfully.", "success");
 
           await loadAccounts();
         } catch (error) {
-          showMessage("認証に失敗しました: " + error, "error");
+          showMessage("Authorization failed: " + error, "error");
         } finally {
           button.disabled = false;
-          button.innerHTML = "<span>＋</span> Googleアカウントを追加";
+          button.innerHTML = "<span>＋</span> Add Google Account";
         }
       }
 
       async function loadAccounts() {
-        const accounts = await window.app_get_accounts();
-
         const list = document.getElementById("account-list");
-        list.replaceChildren();
 
-        if (!accounts || accounts.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty";
-          empty.textContent = "登録済みアカウントはありません。";
-          list.appendChild(empty);
-          return;
-        }
+        try {
+          const accounts = await window.app_get_accounts();
 
-        for (const account of accounts) {
-          const item = document.createElement("div");
-          item.className = "card";
+          list.replaceChildren();
 
-          const name = document.createElement("strong");
-          name.textContent = account.display_name || account.email;
+          if (!accounts || accounts.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "No connected accounts.";
+            list.appendChild(empty);
+            return;
+          }
 
-          const email = document.createElement("p");
-          email.textContent = account.email;
+          for (const account of accounts) {
+            const item = document.createElement("div");
+            item.className = "account-item";
 
-          item.append(name, email);
-          list.appendChild(item);
+            const name = document.createElement("strong");
+            name.textContent = account.display_name || account.email;
+
+            const email = document.createElement("p");
+            email.textContent = account.email;
+
+            item.append(name, email);
+            list.appendChild(item);
+          }
+        } catch (error) {
+          list.replaceChildren();
+
+          const errorElement = document.createElement("div");
+          errorElement.className = "empty";
+          errorElement.textContent = "Could not load the account list.";
+
+          list.appendChild(errorElement);
+
+          console.error("Failed to load accounts:", error);
         }
       }
 
       window.addEventListener("DOMContentLoaded", () => {
-        loadAccounts().catch((error) => {
-          showMessage("アカウント一覧の取得に失敗しました: " + error, "error");
-        });
+        loadAccounts();
       });
     </script>
   </body>
