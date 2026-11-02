@@ -1,7 +1,9 @@
 package function
 
 import (
+	"InquiryExplorer/file"
 	"InquiryExplorer/scan"
+	"path/filepath"
 )
 
 type App struct{}
@@ -20,4 +22,15 @@ func (a *App) GetStorageInfo() ([]scan.StorageInfo, error) {
 		return nil, err
 	}
 	return storage, nil
+}
+
+func (a *App) GetTemplatePage(page string) string {
+	appDir, err := file.ConfigFolderPath()
+	if err != nil {
+		return ""
+	}
+
+	templatePath := filepath.Join(appDir, "data", "templates", "pages", page+".html")
+
+	return templatePath
 }
