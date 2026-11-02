@@ -276,7 +276,7 @@
 
         try {
           // Glaze側のGoメソッドと接続する予定
-          await app.RegisterGoogleAccount();
+          await window.app_register_google_account();
 
           showMessage("Googleアカウントの登録が完了しました。", "success");
 
@@ -290,7 +290,7 @@
       }
 
       async function loadAccounts() {
-        const accounts = await app.GetAccounts();
+        const accounts = await window.app_get_accounts();
 
         const list = document.getElementById("account-list");
         list.replaceChildren();
