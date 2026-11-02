@@ -3,20 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Storage Monitor</title>
+    <title>Storage Monitor - Inquiry Explorer Theme</title>
 
     <style>
+      :root {
+        --primary: #1c85ba;
+        --primary-dark: #176d99;
+        --bg: #f5f7fa;
+        --text: #1c1c1c;
+        --muted: #64748b;
+        --white: #ffffff;
+        --border: #e2e8f0;
+      }
+
       * {
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
       }
 
       body {
-        margin: 0;
-        padding: 30px;
-        background: #0f172a;
-        color: #e2e8f0;
-        font-family: "Segoe UI", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 28px 35px;
       }
 
       .container {
@@ -24,21 +34,17 @@
         margin: 0 auto;
       }
 
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-      }
-
       h1 {
-        font-size: 26px;
-        margin: 0;
+        font-size: 23px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: var(--text);
       }
 
-      .status {
-        color: #22c55e;
-        font-size: 13px;
+      .subtitle {
+        color: var(--muted);
+        font-size: 14px;
+        margin-bottom: 24px;
       }
 
       .summary {
@@ -49,10 +55,12 @@
       }
 
       .card {
-        background: #1e293b;
-        border-radius: 14px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
         padding: 24px;
         margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       }
 
       .summary .card {
@@ -60,30 +68,42 @@
       }
 
       .card-title {
-        color: #94a3b8;
-        font-size: 14px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .value {
-        font-size: 30px;
-        font-weight: bold;
-        margin-top: 12px;
+        font-size: 28px;
+        font-weight: 700;
+        margin-top: 8px;
+        color: var(--text);
       }
 
       h2 {
-        font-size: 18px;
+        font-size: 17px;
+        font-weight: 700;
         margin-top: 0;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
+        color: var(--text);
       }
 
       .chart-container {
         position: relative;
-        height: 280px;
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
       }
 
       .storage-item {
-        padding: 18px 0;
-        border-bottom: 1px solid #334155;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--border);
       }
 
       .storage-item:last-child {
@@ -98,22 +118,23 @@
       }
 
       .device {
-        font-weight: bold;
+        font-weight: 600;
         font-size: 15px;
+        color: var(--text);
         word-break: break-all;
       }
 
       .percentage {
-        font-weight: bold;
-        font-size: 17px;
+        font-weight: 700;
+        font-size: 16px;
       }
 
       .progress {
-        height: 12px;
-        background: #334155;
+        height: 10px;
+        background: #e2e8f0;
         border-radius: 20px;
         overflow: hidden;
-        margin: 12px 0;
+        margin: 10px 0;
       }
 
       .bar {
@@ -127,35 +148,37 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 8px;
-        color: #94a3b8;
+        color: var(--muted);
         font-size: 12px;
       }
 
       .filesystem {
-        color: #64748b;
+        color: #94a3b8;
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 4px;
       }
 
       .refresh-info {
         text-align: right;
-        color: #64748b;
+        color: var(--muted);
         font-size: 12px;
         margin-top: 15px;
       }
 
       .error {
         color: #ef4444;
-        padding: 15px;
-        background: #451a1a;
+        background: #fee2e2;
+        padding: 14px;
+        border: 1px solid #fca5a5;
         border-radius: 8px;
         display: none;
         margin-bottom: 20px;
+        font-size: 14px;
         overflow-wrap: anywhere;
       }
 
       .empty {
-        color: #94a3b8;
+        color: var(--muted);
         text-align: center;
         padding: 30px;
       }
@@ -168,35 +191,14 @@
         .summary {
           grid-template-columns: 1fr;
         }
-
-        header {
-          align-items: flex-start;
-          gap: 10px;
-          flex-direction: column;
-        }
-
-        .chart-container {
-          height: 230px;
-        }
-
-        .value {
-          font-size: 26px;
-        }
       }
     </style>
   </head>
 
   <body>
     <div class="container">
-      <!-- Header -->
-      <header>
-        <div>
-          <h1>Storage Monitor</h1>
-          <p style="color: #94a3b8; margin-bottom: 0">System Storage Monitor</p>
-        </div>
-
-        <div class="status">● Monitoring</div>
-      </header>
+      <h1>Storage Monitor</h1>
+      <p class="subtitle">Your storage information will be displayed here.</p>
 
       <!-- Error -->
       <div id="error" class="error"></div>
@@ -247,22 +249,12 @@
       (() => {
         "use strict";
 
-        // ========================================
-        // Configuration
-        // ========================================
-
-        let storageChart = null;
         let isLoading = false;
         let isActive = false;
         let requestId = 0;
 
-        // ========================================
-        // Utility
-        // ========================================
-
         function formatBytes(bytes) {
           const units = ["B", "KB", "MB", "GB", "TB", "PB"];
-
           let value = Number(bytes) || 0;
           let index = 0;
 
@@ -277,69 +269,37 @@
         function getColor(percent) {
           if (percent >= 90) return "#ef4444";
           if (percent >= 75) return "#f59e0b";
-          return "#22c55e";
+          return "#1c85ba"; // プライマリカラーと統一
         }
-
-        // ========================================
-        // Error Display
-        // ========================================
 
         function showError(message) {
           const element = document.getElementById("error");
-
           if (!element) return;
-
           element.style.display = "block";
           element.textContent = message;
         }
 
         function hideError() {
           const element = document.getElementById("error");
-
           if (!element) return;
-
           element.style.display = "none";
           element.textContent = "";
         }
-
-        // ========================================
-        // Get Storage Information (Go API)
-        // Run once when the page is first initialized.
-        // ========================================
 
         async function getStorageInfo() {
           if (!isActive || isLoading) return;
 
           isLoading = true;
-
           const currentRequest = ++requestId;
 
           try {
-            console.log("========== Glaze API ==========");
-
-            console.log(
-              "app_get_storage_info:",
-              typeof window.app_get_storage_info,
-            );
-
             if (typeof window.app_get_storage_info !== "function") {
-              throw new Error(
-                "Glaze API app_get_storage_info was not found",
-              );
+              throw new Error("Glaze API app_get_storage_info was not found");
             }
-
-            console.log("Calling the Go API");
 
             const storage = await window.app_get_storage_info();
 
-            console.log("Go API response:", storage);
-
-            console.log("===============================");
-
-            // Ignore the response if the user has navigated away.
-            if (!isActive || currentRequest !== requestId) {
-              return;
-            }
+            if (!isActive || currentRequest !== requestId) return;
 
             if (!Array.isArray(storage)) {
               throw new Error("The Go API response is not an array");
@@ -352,13 +312,11 @@
             updateStorageList(storage);
 
             const lastUpdate = document.getElementById("lastUpdate");
-
             if (lastUpdate) {
               lastUpdate.textContent = new Date().toLocaleTimeString("ja-JP");
             }
           } catch (error) {
             console.error("Storage Error:", error);
-
             if (isActive && currentRequest === requestId) {
               showError("Failed to get storage information: " + error.message);
             }
@@ -369,96 +327,81 @@
           }
         }
 
-        // ========================================
-        // Update Summary
-        // ========================================
-
         function updateSummary(storage) {
           const total = storage.reduce(
             (sum, item) => sum + Number(item.total || 0),
             0,
           );
-
           const used = storage.reduce(
             (sum, item) => sum + Number(item.used || 0),
             0,
           );
-
           const free = storage.reduce(
             (sum, item) => sum + Number(item.free || 0),
             0,
           );
 
           document.getElementById("total").textContent = formatBytes(total);
-
           document.getElementById("used").textContent = formatBytes(used);
-
           document.getElementById("free").textContent = formatBytes(free);
         }
 
-        // ========================================
-        // Update Chart
-        // ========================================
-
         function updateChart(storage) {
           const canvas = document.getElementById("storageChart");
-
           if (!canvas) return;
 
           const ctx = canvas.getContext("2d");
+          const barHeight = 22;
+          const gap = 16;
 
-          const width = canvas.clientWidth;
-          const height = canvas.clientHeight;
+          const totalHeight = Math.max(
+            100,
+            storage.length * (barHeight + gap) + 20,
+          );
+          const width = canvas.parentElement.clientWidth;
 
           const dpr = window.devicePixelRatio || 1;
-
           canvas.width = width * dpr;
-          canvas.height = height * dpr;
+          canvas.height = totalHeight * dpr;
+          canvas.style.height = totalHeight + "px";
 
           ctx.scale(dpr, dpr);
+          ctx.clearRect(0, 0, width, totalHeight);
 
-          ctx.clearRect(0, 0, width, height);
+          const left = 130;
+          const right = 55;
+          const chartWidth = Math.max(50, width - left - right);
 
-          const barHeight = 24;
-          const gap = 18;
-          const left = 110;
-          const right = 45;
-
-          const chartWidth = width - left - right;
-
-          ctx.font = "12px sans-serif";
+          ctx.font =
+            "500 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
           ctx.textBaseline = "middle";
 
           storage.forEach((item, index) => {
-            const y = index * (barHeight + gap) + 15;
-
+            const y = index * (barHeight + gap) + 10;
             const percent = Math.max(
               0,
               Math.min(100, Number(item.used_percent) || 0),
             );
-
             const color = getColor(percent);
 
             // Mount point
-            ctx.fillStyle = "#e2e8f0";
+            ctx.fillStyle = "#64748b";
             ctx.textAlign = "right";
+            let label = item.mountpoint || "";
+            if (label.length > 15) label = label.substring(0, 12) + "...";
+            ctx.fillText(label, left - 12, y + barHeight / 2);
 
-            ctx.fillText(item.mountpoint || "", left - 12, y + barHeight / 2);
-
-            // Background
-            ctx.fillStyle = "#334155";
-
+            // Background bar (ライトグレー)
+            ctx.fillStyle = "#e2e8f0";
             ctx.fillRect(left, y, chartWidth, barHeight);
 
-            // Usage bar
+            // Usage bar (プライマリ/警告カラー)
             ctx.fillStyle = color;
-
             ctx.fillRect(left, y, (chartWidth * percent) / 100, barHeight);
 
-            // Percentage
-            ctx.fillStyle = "#e2e8f0";
+            // Percentage text
+            ctx.fillStyle = "#1c1c1c";
             ctx.textAlign = "left";
-
             ctx.fillText(
               percent.toFixed(1) + "%",
               left + chartWidth + 8,
@@ -467,40 +410,28 @@
           });
         }
 
-        // ========================================
-        // Update Storage List
-        // ========================================
-
         function updateStorageList(storage) {
           const container = document.getElementById("storageList");
-
           if (!container) return;
 
           container.replaceChildren();
 
           if (storage.length === 0) {
             const empty = document.createElement("div");
-
             empty.className = "empty";
             empty.textContent = "No storage information available.";
-
             container.appendChild(empty);
-
             return;
           }
 
           storage.forEach((item) => {
             const percent = Number(item.used_percent) || 0;
-
             const safePercent = Math.max(0, Math.min(100, percent));
-
             const color = getColor(percent);
 
-            // Main wrapper
             const wrapper = document.createElement("div");
             wrapper.className = "storage-item";
 
-            // Header
             const header = document.createElement("div");
             header.className = "storage-header";
 
@@ -515,26 +446,21 @@
 
             header.append(device, percentage);
 
-            // Filesystem
             const filesystem = document.createElement("div");
             filesystem.className = "filesystem";
-
             filesystem.textContent =
               (item.device || "") + " | " + (item.filesystem || "");
 
-            // Progress bar
             const progress = document.createElement("div");
             progress.className = "progress";
 
             const bar = document.createElement("div");
             bar.className = "bar";
-
             bar.style.width = safePercent + "%";
             bar.style.backgroundColor = color;
 
             progress.appendChild(bar);
 
-            // Storage details
             const details = document.createElement("div");
             details.className = "storage-details";
 
@@ -548,57 +474,24 @@
             total.textContent = "Total: " + formatBytes(item.total);
 
             details.append(used, free, total);
-
             wrapper.append(header, filesystem, progress, details);
-
             container.appendChild(wrapper);
           });
         }
 
-        // ========================================
-        // Initialize
-        // Run only on the first initialization.
-        // ========================================
-
         window.initStorageMonitor = function () {
           if (isActive) return;
-
           isActive = true;
-
-          console.log("Storage Monitor initialized");
-
-          console.log("Glaze API:", typeof window.app_get_storage_info);
-
-          // Call the API once.
           getStorageInfo();
         };
 
-        // ========================================
-        // Destroy
-        // ========================================
-
         window.destroyStorageMonitor = function () {
           isActive = false;
-
           requestId++;
-
-          if (storageChart) {
-            storageChart.destroy();
-            storageChart = null;
-          }
-
           isLoading = false;
-
-          console.log("Storage Monitor destroyed");
         };
 
-        // ========================================
-        // Page Initialization
-        // ========================================
-
         window.initStorageMonitor();
-
-        console.log("Storage Monitor script loaded");
       })();
     </script>
   </body>
