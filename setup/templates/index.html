@@ -276,7 +276,9 @@
       // ページ切り替え
       async function navigate(page, link) {
         try {
-          const response = await fetch(`pages/${page}.html`);
+          const pageUrl = new URL(`pages/${page}.html`, window.location.href);
+
+          const response = await fetch(pageUrl);
 
           if (!response.ok) {
             throw new Error("ページを読み込めませんでした");
