@@ -240,11 +240,7 @@
     <main class="main">
       <header class="topbar">
         <div style="display: flex; align-items: center; gap: 15px">
-          <button
-            class="toggle"
-            onclick="toggleMenu()"
-            aria-label="Open menu"
-          >
+          <button class="toggle" onclick="toggleMenu()" aria-label="Open menu">
             ☰
           </button>
 
@@ -263,6 +259,57 @@
       const overlay = document.getElementById("overlay");
       const content = document.getElementById("content");
 
+      // ========================================
+      // Load CSS embedded in the target HTML.
+      // ========================================
+
+      async function executeStyles(doc, pageUrl) {
+        // Remove previous page styles.
+        document.querySelectorAll("[data-page-style]").forEach((style) => {
+          style.remove();
+        });
+
+        const styles = doc.querySelectorAll('link[rel="stylesheet"], style');
+
+        for (const oldStyle of styles) {
+          if (oldStyle.tagName === "LINK") {
+            // External CSS.
+            const cssUrl = new URL(oldStyle.getAttribute("href"), pageUrl).href;
+
+            const newStyle = document.createElement("style");
+
+            newStyle.dataset.pageStyle = "true";
+
+            if (oldStyle.media) {
+              newStyle.media = oldStyle.media;
+            }
+
+            newStyle.textContent = `@import url("${cssUrl.replace(/"/g, '\\"')}") layer(page);`;
+
+            await new Promise((resolve, reject) => {
+              newStyle.onload = resolve;
+              newStyle.onerror = () => {
+                reject(new Error("Failed to load CSS: " + cssUrl));
+              };
+
+              document.head.appendChild(newStyle);
+            });
+          } else {
+            // Inline CSS.
+            const newStyle = document.createElement("style");
+
+            newStyle.dataset.pageStyle = "true";
+
+            newStyle.textContent = `
+        @layer page {
+          ${oldStyle.textContent}
+        }
+      `;
+
+            document.head.appendChild(newStyle);
+          }
+        }
+      }
       // Track consecutive page navigation requests.
       let currentPageController = null;
       let navigationId = 0;
@@ -311,7 +358,9 @@
               newScript.onload = resolve;
 
               newScript.onerror = () => {
-                reject(new Error("Failed to load JavaScript: " + newScript.src));
+                reject(
+                  new Error("Failed to load JavaScript: " + newScript.src),
+                );
               };
 
               oldScript.replaceWith(newScript);
@@ -384,6 +433,8 @@
             doc.querySelector("title")?.textContent || "Inquiry Explorer";
 
           document.querySelector(".topbar h2").textContent = pageTitle;
+
+          await executeStyles(doc, pageUrl);
 
           // Insert the page content.
           content.innerHTML = doc.body.innerHTML;

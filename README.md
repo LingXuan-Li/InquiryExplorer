@@ -4,7 +4,7 @@ Copyright (c) 2026 LingXuan-Li
 
 [![Go](https://img.shields.io/badge/Go-1.27.1-00ADD8?style=flat-square&logo=go&logoColor=white)](https://go.dev/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-6C5CE7?style=flat-square)](#)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](#license)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://github.com/LingXuan-Li/InquiryExplorer/tree/main?tab=MIT-1-ov-file)
 
 Inquiry Explorer is a desktop application built around a **non-destructive file organization system based on tags and virtual folders**. It is intended to help people organize and explore files without changing the underlying folder structure. Tags and virtual folders provide an organizational layer while the original files stay where they are.
 
