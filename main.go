@@ -1,0 +1,154 @@
+﻿package main
+
+import (
+	"log"
+
+	"github.com/crgimenes/glaze"
+)
+
+type App struct{}
+
+// JavaScriptから呼び出す関数
+func (a *App) Greet(name string) string {
+	if name == "" {
+		name = "ゲスト"
+	}
+	return "こんにちは、" + name + "さん！"
+}
+
+func main() {
+	w, err := glaze.New(true)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer w.Destroy()
+
+	w.SetTitle("Glaze Desktop App")
+	w.SetSize(900, 650, glaze.HintNone)
+
+	app := &App{}
+
+	// 構造体の公開メソッドをJavaScriptに登録
+	// Greet → app_greet
+	_, err = glaze.BindMethods(w, "app", app)
+	if err != nil {
+		log.Printf("BindMethods error: %v", err)
+		return
+	}
+
+	html := `
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Glaze Desktop App</title>
+
+<style>
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: sans-serif;
+	background: #101827;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+}
+
+.container {
+	width: 400px;
+	padding: 40px;
+	background: #1e293b;
+	border-radius: 20px;
+	text-align: center;
+	box-shadow: 0 20px 50px #0005;
+}
+
+h1 {
+	font-size: 28px;
+}
+
+p {
+	color: #94a3b8;
+}
+
+input {
+	width: 100%;
+	padding: 14px;
+	margin: 20px 0;
+	border: 1px solid #475569;
+	border-radius: 8px;
+	background: #0f172a;
+	color: white;
+	font-size: 16px;
+}
+
+button {
+	width: 100%;
+	padding: 14px;
+	border: none;
+	border-radius: 8px;
+	background: #6366f1;
+	color: white;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+button:hover {
+	background: #4f46e5;
+}
+
+#result {
+	margin-top: 25px;
+	color: #a5b4fc;
+	font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+	<h1>Glaze App</h1>
+	<p>Go × HTML × JavaScript</p>
+
+	<input
+		id="name"
+		placeholder="名前を入力してください"
+	>
+
+	<button onclick="greet()">
+		実行
+	</button>
+
+	<div id="result"></div>
+</div>
+
+<script>
+async function greet() {
+	const name = document.getElementById("name").value;
+	const result = document.getElementById("result");
+
+	try {
+		// Go側のGreet関数を呼び出す
+		const message = await window.app_greet(name);
+
+		result.textContent = message;
+	} catch (err) {
+		result.textContent = "エラー: " + err;
+		console.error(err);
+	}
+}
+</script>
+</body>
+</html>
+`
+
+	w.SetHtml(html)
+	w.Run()
+}
