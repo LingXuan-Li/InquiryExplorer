@@ -2,104 +2,330 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <title>Glaze Desktop App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inquiry Explorer</title>
 
     <style>
+      :root {
+        --primary: #1c85ba;
+        --primary-dark: #176d99;
+        --bg: #f5f7fa;
+        --text: #1c1c1c;
+        --muted: #64748b;
+        --white: #ffffff;
+        --border: #e2e8f0;
+      }
+
       * {
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
       }
 
       body {
-        margin: 0;
-        font-family: sans-serif;
-        background: #101827;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100vh;
+        background: var(--primary);
         color: white;
+        padding: 28px 18px;
+        z-index: 1000;
+        transition: 0.3s ease;
+      }
+
+      .logo {
+        font-size: 23px;
+        font-weight: 700;
+        padding: 5px 12px 40px;
+        letter-spacing: 0.3px;
+      }
+
+      .menu-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #ffffff;
+        opacity: 0.85;
+        padding: 15px 12px 12px;
+        letter-spacing: 1px;
+      }
+
+      .nav a {
         display: flex;
         align-items: center;
-        justify-content: center;
-        height: 100vh;
+        gap: 14px;
+        padding: 14px;
+        margin-bottom: 7px;
+        border-radius: 9px;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: 0.2s;
       }
 
-      .container {
-        width: 400px;
-        padding: 40px;
-        background: #1e293b;
-        border-radius: 20px;
+      .nav a:hover,
+      .nav a.active {
+        background: rgba(0, 0, 0, 0.22);
+        color: #ffffff;
+      }
+
+      .nav .icon {
+        font-size: 20px;
+        width: 23px;
         text-align: center;
-        box-shadow: 0 20px 50px #0005;
       }
 
-      h1 {
-        font-size: 28px;
+      .nav a:focus-visible,
+      .toggle:focus-visible {
+        outline: 3px solid white;
+        outline-offset: 3px;
       }
 
-      p {
-        color: #94a3b8;
+      /* Main */
+      .main {
+        margin-left: 250px;
+        min-height: 100vh;
+        padding: 28px 35px;
+        transition: 0.3s;
       }
 
-      input {
-        width: 100%;
-        padding: 14px;
-        margin: 20px 0;
-        border: 1px solid #475569;
-        border-radius: 8px;
-        background: #0f172a;
-        color: white;
-        font-size: 16px;
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 65px;
+        padding: 0 25px;
       }
 
-      button {
-        width: 100%;
-        padding: 14px;
+      .topbar h2 {
+        font-size: 21px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .toggle {
+        display: none;
         border: none;
-        border-radius: 8px;
-        background: #6366f1;
-        color: white;
-        font-size: 16px;
+        background: none;
+        color: var(--primary);
+        font-size: 26px;
         cursor: pointer;
       }
 
-      button:hover {
-        background: #4f46e5;
+      /* Empty workspace */
+      .workspace {
+        min-height: calc(100vh - 140px);
+        margin-top: 25px;
       }
 
-      #result {
-        margin-top: 25px;
-        color: #a5b4fc;
-        font-size: 18px;
+      /* Overlay */
+      .overlay {
+        display: none;
+      }
+
+      /* Responsive */
+      @media (max-width: 700px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .main {
+          margin-left: 0;
+          padding: 15px;
+        }
+
+        .toggle {
+          display: block;
+        }
+
+        .topbar {
+          gap: 15px;
+          padding: 0 18px;
+        }
+
+        .topbar h2 {
+          font-size: 18px;
+        }
+
+        .overlay.show {
+          display: block;
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.45);
+          z-index: 900;
+        }
+
+        .workspace {
+          min-height: calc(100vh - 120px);
+        }
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <h1>Glaze App</h1>
-      <p>Go × HTML × JavaScript</p>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo">Inquiry Explorer</div>
 
-      <input id="name" placeholder="名前を入力してください" />
+      <div class="menu-title">MAIN MENU</div>
 
-      <button onclick="greet()">実行</button>
+      <nav class="nav">
+        <a href="#" class="active" data-page="home">
+          <span class="icon">⌂</span>
+          ダッシュボード
+        </a>
 
-      <div id="result"></div>
-    </div>
+        <a href="#" data-page="reports">
+          <span class="icon">▤</span>
+          レポート
+        </a>
+
+        <a href="#" data-page="projects">
+          <span class="icon">▣</span>
+          プロジェクト
+        </a>
+
+        <a href="#" data-page="users">
+          <span class="icon">♙</span>
+          ユーザー管理
+        </a>
+      </nav>
+
+      <div class="menu-title">SETTING</div>
+
+      <nav class="nav">
+        <a href="#" data-page="settings">
+          <span class="icon">⚙</span>
+          設定
+        </a>
+
+        <a href="#" data-page="help">
+          <span class="icon">?</span>
+          ヘルプ
+        </a>
+      </nav>
+
+      <div class="menu-title">SETTING</div>
+
+      <nav class="nav">
+        <a href="#">
+          <span class="icon">⚙</span>
+          設定
+        </a>
+
+        <a href="#">
+          <span class="icon">?</span>
+          ヘルプ
+        </a>
+      </nav>
+    </aside>
+
+    <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 15px">
+          <button
+            class="toggle"
+            onclick="toggleMenu()"
+            aria-label="メニューを開く"
+          >
+            ☰
+          </button>
+
+          <h2>ダッシュボード</h2>
+        </div>
+      </header>
+
+      <!-- Empty content area -->
+      <section class="workspace">
+        <div id="content" class="page">Loading...</div>
+      </section>
+    </main>
 
     <script>
-      async function greet() {
-        const name = document.getElementById("name").value;
-        const result = document.getElementById("result");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const content = document.getElementById("content");
 
+      // メニュー開閉
+      function toggleMenu() {
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("show");
+      }
+
+      function closeMenu() {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      }
+
+      // ページ切り替え
+      async function navigate(page, link) {
         try {
-          // Go側のGreet関数を呼び出す
-          const message = await window.app_greet(name);
+          const response = await fetch(`pages/${page}.html`);
 
-          result.textContent = message;
-        } catch (err) {
-          result.textContent = "エラー: " + err;
-          console.error(err);
+          if (!response.ok) {
+            throw new Error("ページを読み込めませんでした");
+          }
+
+          const html = await response.text();
+
+          content.innerHTML = html;
+
+          // アクティブ状態の更新
+          document.querySelectorAll(".nav a").forEach((item) => {
+            item.classList.remove("active");
+          });
+
+          if (link) {
+            link.classList.add("active");
+          }
+
+          // ページタイトルの更新
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, "text/html");
+
+          const pageTitle =
+            doc.querySelector("title")?.textContent || "Inquiry Explorer";
+
+          document.querySelector(".topbar h2").textContent = pageTitle;
+
+          content.innerHTML = doc.body.innerHTML;
+
+          // スマホの場合メニューを閉じる
+          if (window.innerWidth <= 700) {
+            closeMenu();
+          }
+        } catch (error) {
+          content.innerHTML = `<h2>${error.message}</h2>`;
         }
       }
+
+      // サイドバーのクリックイベント
+      document.querySelectorAll(".nav a").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+
+          navigate(link.dataset.page, link);
+        });
+      });
+
+      // 初期ページ
+      navigate("home", document.querySelector('[data-page="home"]'));
     </script>
   </body>
 </html>
