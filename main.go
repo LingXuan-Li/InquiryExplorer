@@ -18,11 +18,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = file.MakeDataFolder()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	err = file.DownloadSetupFolder()
 	if err != nil {
 		log.Fatal(err)
