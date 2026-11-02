@@ -357,7 +357,7 @@
 
         try {
           // ページURL
-          const pageUrl = new URL(`pages/${page}.html`, window.location.href);
+          const pageUrl = new URL(`pages/${page}.html`, document.baseURI);
 
           // HTML取得
           const response = await fetch(pageUrl, {
