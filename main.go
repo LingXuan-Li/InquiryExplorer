@@ -38,6 +38,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Println("Template root:", root)
+
 	// index.htmlをGoテンプレートとして読み込む
 	tmpl, err := template.ParseFiles(
 		filepath.Join(root, "index.html"),
@@ -53,28 +55,37 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// index.htmlの内容を保存
 	indexHTML := append([]byte(nil), buf.Bytes()...)
 
-	// GlazeのカスタムURLスキームを登録
+	// GlazeのカスタムURLスキーム
 	w, err := glaze.NewWithOptions(glaze.Options{
 		Debug: true,
 
 		SchemeHandlers: map[string]glaze.SchemeHandler{
 			"app": func(req *glaze.SchemeRequest) *glaze.SchemeResponse {
 
-				// URLからファイルパスを取得
+				// URL解析
 				parsedURL, err := url.Parse(req.URL)
 				if err != nil {
+					log.Println("URL parse error:", err)
 					return nil
 				}
 
-				relativePath := filepath.Join(
-					parsedURL.Host,
-					strings.TrimPrefix(parsedURL.Path, "/"),
+				// appスキームとホストを確認
+				if parsedURL.Scheme != "app" ||
+					parsedURL.Host != "templates" {
+					return nil
+				}
+
+				// URLのパスからファイル名を取得
+				relativePath := filepath.Clean(
+					filepath.FromSlash(
+						strings.TrimPrefix(parsedURL.Path, "/"),
+					),
 				)
 
-				relativePath = filepath.Clean(relativePath)
+				log.Println("Requested URL:", req.URL)
+				log.Println("Relative path:", relativePath)
 
 				// パストラバーサル対策
 				if filepath.IsAbs(relativePath) ||
@@ -86,8 +97,8 @@ func main() {
 					return nil
 				}
 
-				// index.htmlはGoテンプレートの実行結果を返す
-				if relativePath == "templates/index.html" {
+				// index.html
+				if relativePath == "index.html" {
 					return &glaze.SchemeResponse{
 						Body:     indexHTML,
 						MIMEType: "text/html; charset=utf-8",
@@ -108,6 +119,8 @@ func main() {
 					return nil
 				}
 
+				log.Println("Full path:", fullPath)
+
 				// ファイル読み込み
 				data, err := os.ReadFile(fullPath)
 				if err != nil {
@@ -115,7 +128,7 @@ func main() {
 					return nil
 				}
 
-				// MIMEタイプ取得
+				// MIMEタイプ
 				contentType := mime.TypeByExtension(
 					filepath.Ext(fullPath),
 				)
@@ -124,9 +137,16 @@ func main() {
 					contentType = "application/octet-stream"
 				}
 
-				// JavaScriptのMIMEタイプ補正
 				if filepath.Ext(fullPath) == ".js" {
 					contentType = "text/javascript; charset=utf-8"
+				}
+
+				if filepath.Ext(fullPath) == ".css" {
+					contentType = "text/css; charset=utf-8"
+				}
+
+				if filepath.Ext(fullPath) == ".html" {
+					contentType = "text/html; charset=utf-8"
 				}
 
 				return &glaze.SchemeResponse{
@@ -143,7 +163,7 @@ func main() {
 
 	defer w.Destroy()
 
-	w.SetTitle("Glaze Desktop App")
+	w.SetTitle("Inquiry Explorer")
 	w.SetSize(900, 650, glaze.HintNone)
 
 	// GoメソッドをJavaScriptに登録
@@ -156,9 +176,8 @@ func main() {
 
 	log.Println("Registered methods:", bound)
 
-	// index.htmlをapp://から開く
+	// index.htmlを開く
 	w.Navigate("app://templates/index.html")
 
-	// アプリ起動
 	w.Run()
 }

@@ -6,9 +6,6 @@
 
     <title>Storage Monitor</title>
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
       * {
         box-sizing: border-box;
@@ -71,11 +68,6 @@
         font-size: 30px;
         font-weight: bold;
         margin-top: 12px;
-      }
-
-      .unit {
-        font-size: 14px;
-        color: #94a3b8;
       }
 
       h2 {
@@ -159,6 +151,7 @@
         border-radius: 8px;
         display: none;
         margin-bottom: 20px;
+        overflow-wrap: anywhere;
       }
 
       .empty {
@@ -184,6 +177,10 @@
 
         .chart-container {
           height: 230px;
+        }
+
+        .value {
+          font-size: 26px;
         }
       }
     </style>
@@ -240,301 +237,419 @@
         </div>
 
         <div class="refresh-info">
-          Last Update: <span id="lastUpdate">--</span>
+          Last Update:
+          <span id="lastUpdate">--</span>
         </div>
       </div>
     </div>
 
     <script>
-      // ========================================
-      // Configuration
-      // ========================================
+      (() => {
+        // ========================================
+        // Configuration
+        // ========================================
 
-      const REFRESH_INTERVAL = 5000;
+        const REFRESH_INTERVAL = 5000;
 
-      let storageChart = null;
+        let refreshTimer = null;
+        let storageChart = null;
+        let isLoading = false;
+        let isActive = false;
+        let requestId = 0;
 
-      // ========================================
-      // Utility
-      // ========================================
+        // ========================================
+        // Utility
+        // ========================================
 
-      function formatBytes(bytes) {
-        const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+        function formatBytes(bytes) {
+          const units = ["B", "KB", "MB", "GB", "TB", "PB"];
 
-        let value = Number(bytes);
-        let index = 0;
+          let value = Number(bytes) || 0;
+          let index = 0;
 
-        while (value >= 1024 && index < units.length - 1) {
-          value /= 1024;
-          index++;
-        }
-
-        return value.toFixed(2) + " " + units[index];
-      }
-
-      function getColor(percent) {
-        if (percent >= 90) {
-          return "#ef4444";
-        }
-
-        if (percent >= 75) {
-          return "#f59e0b";
-        }
-
-        return "#22c55e";
-      }
-
-      // ========================================
-      // Get Storage Information
-      // ========================================
-
-      async function getStorageInfo() {
-        try {
-          // Go function via Glaze
-          const storage = await app.GetStorageInfo();
-
-          if (!Array.isArray(storage)) {
-            throw new Error("Invalid storage data");
+          while (value >= 1024 && index < units.length - 1) {
+            value /= 1024;
+            index++;
           }
 
-          document.getElementById("error").style.display = "none";
-
-          updateSummary(storage);
-          updateChart(storage);
-          updateStorageList(storage);
-
-          document.getElementById("lastUpdate").textContent =
-            new Date().toLocaleTimeString("ja-JP");
-        } catch (error) {
-          console.error("Storage Error:", error);
-
-          const errorElement = document.getElementById("error");
-
-          errorElement.style.display = "block";
-          errorElement.textContent =
-            "ストレージ情報の取得に失敗しました: " + error.message;
-        }
-      }
-
-      // ========================================
-      // Update Summary
-      // ========================================
-
-      function updateSummary(storage) {
-        const total = storage.reduce(
-          (sum, item) => sum + Number(item.total),
-          0,
-        );
-
-        const used = storage.reduce((sum, item) => sum + Number(item.used), 0);
-
-        const free = storage.reduce((sum, item) => sum + Number(item.free), 0);
-
-        document.getElementById("total").textContent = formatBytes(total);
-
-        document.getElementById("used").textContent = formatBytes(used);
-
-        document.getElementById("free").textContent = formatBytes(free);
-      }
-
-      // ========================================
-      // Update Chart
-      // ========================================
-
-      function updateChart(storage) {
-        const labels = storage.map((item) => item.mountpoint);
-
-        const values = storage.map((item) => Number(item.used_percent));
-
-        const colors = values.map((value) => getColor(value));
-
-        const canvas = document.getElementById("storageChart");
-
-        if (storageChart) {
-          storageChart.data.labels = labels;
-
-          storageChart.data.datasets[0].data = values;
-
-          storageChart.data.datasets[0].backgroundColor = colors;
-
-          storageChart.update();
-
-          return;
+          return value.toFixed(2) + " " + units[index];
         }
 
-        storageChart = new Chart(canvas, {
-          type: "bar",
+        function getColor(percent) {
+          if (percent >= 90) {
+            return "#ef4444";
+          }
 
-          data: {
-            labels: labels,
+          if (percent >= 75) {
+            return "#f59e0b";
+          }
 
-            datasets: [
-              {
-                label: "使用率",
+          return "#22c55e";
+        }
 
-                data: values,
+        // ========================================
+        // Error Display
+        // ========================================
 
-                backgroundColor: colors,
+        function showError(message) {
+          const element = document.getElementById("error");
 
-                borderRadius: 8,
+          if (!element) return;
 
-                barThickness: 25,
-              },
-            ],
-          },
+          element.style.display = "block";
+          element.textContent = message;
+        }
 
-          options: {
-            indexAxis: "y",
+        function hideError() {
+          const element = document.getElementById("error");
 
-            responsive: true,
+          if (!element) return;
 
-            maintainAspectRatio: false,
+          element.style.display = "none";
+          element.textContent = "";
+        }
 
-            animation: {
-              duration: 400,
+        // ========================================
+        // Get Storage Information
+        // ========================================
+
+        async function getStorageInfo() {
+          if (!isActive || isLoading) return;
+
+          isLoading = true;
+
+          const currentRequest = ++requestId;
+
+          try {
+            // Glaze Go API
+            if (
+              !window.app ||
+              typeof window.app.GetStorageInfo !== "function"
+            ) {
+              throw new Error("Go API GetStorageInfo が見つかりません");
+            }
+
+            const storage = await window.app.GetStorageInfo();
+
+            // ページ切り替え後の応答は無視
+            if (!isActive || currentRequest !== requestId) {
+              return;
+            }
+
+            if (!Array.isArray(storage)) {
+              throw new Error("Invalid storage data");
+            }
+
+            hideError();
+
+            updateSummary(storage);
+            updateChart(storage);
+            updateStorageList(storage);
+
+            const lastUpdate = document.getElementById("lastUpdate");
+
+            if (lastUpdate) {
+              lastUpdate.textContent = new Date().toLocaleTimeString("ja-JP");
+            }
+          } catch (error) {
+            console.error("Storage Error:", error);
+
+            if (isActive && currentRequest === requestId) {
+              showError("ストレージ情報の取得に失敗しました: " + error.message);
+            }
+          } finally {
+            if (currentRequest === requestId) {
+              isLoading = false;
+            }
+          }
+        }
+
+        // ========================================
+        // Update Summary
+        // ========================================
+
+        function updateSummary(storage) {
+          const total = storage.reduce(
+            (sum, item) => sum + Number(item.total || 0),
+            0,
+          );
+
+          const used = storage.reduce(
+            (sum, item) => sum + Number(item.used || 0),
+            0,
+          );
+
+          const free = storage.reduce(
+            (sum, item) => sum + Number(item.free || 0),
+            0,
+          );
+
+          document.getElementById("total").textContent = formatBytes(total);
+
+          document.getElementById("used").textContent = formatBytes(used);
+
+          document.getElementById("free").textContent = formatBytes(free);
+        }
+
+        // ========================================
+        // Update Chart
+        // ========================================
+
+        function updateChart(storage) {
+          if (typeof Chart === "undefined") {
+            throw new Error("Chart.js が読み込まれていません");
+          }
+
+          const canvas = document.getElementById("storageChart");
+
+          if (!canvas) return;
+
+          const labels = storage.map((item) => item.mountpoint);
+
+          const values = storage.map((item) => Number(item.used_percent));
+
+          const colors = values.map(getColor);
+
+          if (storageChart) {
+            storageChart.data.labels = labels;
+
+            storageChart.data.datasets[0].data = values;
+
+            storageChart.data.datasets[0].backgroundColor = colors;
+
+            storageChart.update();
+
+            return;
+          }
+
+          storageChart = new Chart(canvas, {
+            type: "bar",
+
+            data: {
+              labels: labels,
+
+              datasets: [
+                {
+                  label: "使用率",
+                  data: values,
+                  backgroundColor: colors,
+                  borderRadius: 8,
+                  barThickness: 25,
+                },
+              ],
             },
 
-            scales: {
-              x: {
-                min: 0,
+            options: {
+              indexAxis: "y",
 
-                max: 100,
+              responsive: true,
 
-                ticks: {
-                  color: "#94a3b8",
+              maintainAspectRatio: false,
 
-                  callback: function (value) {
-                    return value + "%";
+              animation: {
+                duration: 400,
+              },
+
+              scales: {
+                x: {
+                  min: 0,
+                  max: 100,
+
+                  ticks: {
+                    color: "#94a3b8",
+
+                    callback: (value) => value + "%",
+                  },
+
+                  grid: {
+                    color: "#334155",
                   },
                 },
 
-                grid: {
-                  color: "#334155",
+                y: {
+                  ticks: {
+                    color: "#e2e8f0",
+                  },
+
+                  grid: {
+                    display: false,
+                  },
                 },
               },
 
-              y: {
-                ticks: {
-                  color: "#e2e8f0",
+              plugins: {
+                legend: {
+                  labels: {
+                    color: "#e2e8f0",
+                  },
                 },
 
-                grid: {
-                  display: false,
-                },
-              },
-            },
-
-            plugins: {
-              legend: {
-                labels: {
-                  color: "#e2e8f0",
-                },
-              },
-
-              tooltip: {
-                callbacks: {
-                  label: function (context) {
-                    return "使用率: " + context.raw.toFixed(1) + "%";
+                tooltip: {
+                  callbacks: {
+                    label: (context) => {
+                      return "使用率: " + context.raw.toFixed(1) + "%";
+                    },
                   },
                 },
               },
             },
-          },
-        });
-      }
-
-      // ========================================
-      // Update Storage List
-      // ========================================
-
-      function updateStorageList(storage) {
-        const container = document.getElementById("storageList");
-
-        container.replaceChildren();
-
-        if (storage.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty";
-          empty.textContent = "ストレージ情報がありません。";
-
-          container.appendChild(empty);
-
-          return;
+          });
         }
 
-        storage.forEach((item) => {
-          const percent = Number(item.used_percent);
+        // ========================================
+        // Update Storage List
+        // ========================================
 
-          const safePercent = Math.max(0, Math.min(100, percent));
+        function updateStorageList(storage) {
+          const container = document.getElementById("storageList");
 
-          const color = getColor(percent);
+          if (!container) return;
 
-          // Main wrapper
-          const wrapper = document.createElement("div");
-          wrapper.className = "storage-item";
+          container.replaceChildren();
 
-          // Header
-          const header = document.createElement("div");
-          header.className = "storage-header";
+          if (storage.length === 0) {
+            const empty = document.createElement("div");
 
-          const device = document.createElement("div");
-          device.className = "device";
-          device.textContent = item.mountpoint;
+            empty.className = "empty";
 
-          const percentage = document.createElement("div");
-          percentage.className = "percentage";
-          percentage.style.color = color;
-          percentage.textContent = percent.toFixed(1) + "%";
+            empty.textContent = "ストレージ情報がありません。";
 
-          header.append(device, percentage);
+            container.appendChild(empty);
 
-          // Filesystem
-          const filesystem = document.createElement("div");
-          filesystem.className = "filesystem";
+            return;
+          }
 
-          filesystem.textContent = item.device + " | " + item.filesystem;
+          storage.forEach((item) => {
+            const percent = Number(item.used_percent) || 0;
 
-          // Progress bar
-          const progress = document.createElement("div");
-          progress.className = "progress";
+            const safePercent = Math.max(0, Math.min(100, percent));
 
-          const bar = document.createElement("div");
-          bar.className = "bar";
+            const color = getColor(percent);
 
-          bar.style.width = safePercent + "%";
-          bar.style.backgroundColor = color;
+            // Main wrapper
+            const wrapper = document.createElement("div");
 
-          progress.appendChild(bar);
+            wrapper.className = "storage-item";
 
-          // Storage details
-          const details = document.createElement("div");
-          details.className = "storage-details";
+            // Header
+            const header = document.createElement("div");
 
-          const used = document.createElement("span");
-          used.textContent = "使用: " + formatBytes(item.used);
+            header.className = "storage-header";
 
-          const free = document.createElement("span");
-          free.textContent = "空き: " + formatBytes(item.free);
+            const device = document.createElement("div");
 
-          const total = document.createElement("span");
-          total.textContent = "合計: " + formatBytes(item.total);
+            device.className = "device";
 
-          details.append(used, free, total);
+            device.textContent = item.mountpoint || "";
 
-          wrapper.append(header, filesystem, progress, details);
+            const percentage = document.createElement("div");
 
-          container.appendChild(wrapper);
-        });
-      }
+            percentage.className = "percentage";
 
-      // ========================================
-      // Initialize
-      // ========================================
+            percentage.style.color = color;
 
-      getStorageInfo();
+            percentage.textContent = percent.toFixed(1) + "%";
 
-      // Auto Refresh
-      setInterval(getStorageInfo, REFRESH_INTERVAL);
+            header.append(device, percentage);
+
+            // Filesystem
+            const filesystem = document.createElement("div");
+
+            filesystem.className = "filesystem";
+
+            filesystem.textContent =
+              (item.device || "") + " | " + (item.filesystem || "");
+
+            // Progress bar
+            const progress = document.createElement("div");
+
+            progress.className = "progress";
+
+            const bar = document.createElement("div");
+
+            bar.className = "bar";
+
+            bar.style.width = safePercent + "%";
+
+            bar.style.backgroundColor = color;
+
+            progress.appendChild(bar);
+
+            // Storage details
+            const details = document.createElement("div");
+
+            details.className = "storage-details";
+
+            const used = document.createElement("span");
+
+            used.textContent = "使用: " + formatBytes(item.used);
+
+            const free = document.createElement("span");
+
+            free.textContent = "空き: " + formatBytes(item.free);
+
+            const total = document.createElement("span");
+
+            total.textContent = "合計: " + formatBytes(item.total);
+
+            details.append(used, free, total);
+
+            wrapper.append(header, filesystem, progress, details);
+
+            container.appendChild(wrapper);
+          });
+        }
+
+        // ========================================
+        // Initialize
+        // ========================================
+
+        window.initStorageMonitor = function () {
+          window.destroyStorageMonitor();
+
+          isActive = true;
+
+          console.log("Storage Monitor initialized");
+
+          getStorageInfo();
+
+          refreshTimer = setInterval(getStorageInfo, REFRESH_INTERVAL);
+        };
+
+        // ========================================
+        // Destroy
+        // ========================================
+
+        window.destroyStorageMonitor = function () {
+          isActive = false;
+
+          requestId++;
+
+          if (refreshTimer !== null) {
+            clearInterval(refreshTimer);
+
+            refreshTimer = null;
+          }
+
+          if (storageChart) {
+            storageChart.destroy();
+
+            storageChart = null;
+          }
+
+          isLoading = false;
+
+          console.log("Storage Monitor destroyed");
+        };
+
+        // ========================================
+        // Page Initialization
+        // ========================================
+
+        window.initStorageMonitor();
+
+        console.log("Storage Monitor script loaded");
+      })();
     </script>
   </body>
 </html>
