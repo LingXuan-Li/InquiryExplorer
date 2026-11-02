@@ -404,101 +404,71 @@
         // ========================================
 
         function updateChart(storage) {
-          if (typeof Chart === "undefined") {
-            throw new Error("Chart.js が読み込まれていません");
-          }
-
           const canvas = document.getElementById("storageChart");
 
           if (!canvas) return;
 
-          const labels = storage.map((item) => item.mountpoint || "");
+          const ctx = canvas.getContext("2d");
 
-          const values = storage.map((item) => Number(item.used_percent) || 0);
+          const width = canvas.clientWidth;
+          const height = canvas.clientHeight;
 
-          const colors = values.map(getColor);
+          const dpr = window.devicePixelRatio || 1;
 
-          if (storageChart) {
-            storageChart.data.labels = labels;
-            storageChart.data.datasets[0].data = values;
-            storageChart.data.datasets[0].backgroundColor = colors;
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
 
-            storageChart.update();
+          ctx.scale(dpr, dpr);
 
-            return;
-          }
+          ctx.clearRect(0, 0, width, height);
 
-          storageChart = new Chart(canvas, {
-            type: "bar",
+          const barHeight = 24;
+          const gap = 18;
+          const left = 110;
+          const right = 45;
 
-            data: {
-              labels: labels,
+          const chartWidth = width - left - right;
 
-              datasets: [
-                {
-                  label: "使用率",
-                  data: values,
-                  backgroundColor: colors,
-                  borderRadius: 8,
-                  barThickness: 25,
-                },
-              ],
-            },
+          ctx.font = "12px sans-serif";
+          ctx.textBaseline = "middle";
 
-            options: {
-              indexAxis: "y",
-              responsive: true,
-              maintainAspectRatio: false,
+          storage.forEach((item, index) => {
+            const y = index * (barHeight + gap) + 15;
 
-              animation: {
-                duration: 400,
-              },
+            const percent = Math.max(
+              0,
+              Math.min(100, Number(item.used_percent) || 0),
+            );
 
-              scales: {
-                x: {
-                  min: 0,
-                  max: 100,
+            const color = getColor(percent);
 
-                  ticks: {
-                    color: "#94a3b8",
-                    callback: (value) => value + "%",
-                  },
+            // Mount point
+            ctx.fillStyle = "#e2e8f0";
+            ctx.textAlign = "right";
 
-                  grid: {
-                    color: "#334155",
-                  },
-                },
+            ctx.fillText(item.mountpoint, left - 12, y + barHeight / 2);
 
-                y: {
-                  ticks: {
-                    color: "#e2e8f0",
-                  },
+            // Background
+            ctx.fillStyle = "#334155";
 
-                  grid: {
-                    display: false,
-                  },
-                },
-              },
+            ctx.fillRect(left, y, chartWidth, barHeight);
 
-              plugins: {
-                legend: {
-                  labels: {
-                    color: "#e2e8f0",
-                  },
-                },
+            // Usage bar
+            ctx.fillStyle = color;
 
-                tooltip: {
-                  callbacks: {
-                    label: (context) => {
-                      return "使用率: " + Number(context.raw).toFixed(1) + "%";
-                    },
-                  },
-                },
-              },
-            },
+            ctx.fillRect(left, y, (chartWidth * percent) / 100, barHeight);
+
+            // Percentage
+            ctx.fillStyle = "#e2e8f0";
+            ctx.textAlign = "left";
+
+            ctx.fillText(
+              percent.toFixed(1) + "%",
+              left + chartWidth + 8,
+              y + barHeight / 2,
+            );
           });
         }
-
         // ========================================
         // Update Storage List
         // ========================================
