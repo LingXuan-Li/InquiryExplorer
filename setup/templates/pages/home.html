@@ -1,10 +1,540 @@
 <!doctype html>
 <html lang="ja">
   <head>
-    <title>ダッシュボード</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Storage Monitor</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 30px;
+        background: #0f172a;
+        color: #e2e8f0;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        font-size: 26px;
+        margin: 0;
+      }
+
+      .status {
+        color: #22c55e;
+        font-size: 13px;
+      }
+
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: #1e293b;
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+
+      .summary .card {
+        margin-bottom: 0;
+      }
+
+      .card-title {
+        color: #94a3b8;
+        font-size: 14px;
+      }
+
+      .value {
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 12px;
+      }
+
+      .unit {
+        font-size: 14px;
+        color: #94a3b8;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin-top: 0;
+        margin-bottom: 24px;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 280px;
+      }
+
+      .storage-item {
+        padding: 18px 0;
+        border-bottom: 1px solid #334155;
+      }
+
+      .storage-item:last-child {
+        border-bottom: none;
+      }
+
+      .storage-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .device {
+        font-weight: bold;
+        font-size: 15px;
+        word-break: break-all;
+      }
+
+      .percentage {
+        font-weight: bold;
+        font-size: 17px;
+      }
+
+      .progress {
+        height: 12px;
+        background: #334155;
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 12px 0;
+      }
+
+      .bar {
+        height: 100%;
+        border-radius: 20px;
+        transition: width 0.4s ease;
+      }
+
+      .storage-details {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: #94a3b8;
+        font-size: 12px;
+      }
+
+      .filesystem {
+        color: #64748b;
+        font-size: 12px;
+        margin-top: 5px;
+      }
+
+      .refresh-info {
+        text-align: right;
+        color: #64748b;
+        font-size: 12px;
+        margin-top: 15px;
+      }
+
+      .error {
+        color: #ef4444;
+        padding: 15px;
+        background: #451a1a;
+        border-radius: 8px;
+        display: none;
+        margin-bottom: 20px;
+      }
+
+      .empty {
+        color: #94a3b8;
+        text-align: center;
+        padding: 30px;
+      }
+
+      @media (max-width: 700px) {
+        body {
+          padding: 15px;
+        }
+
+        .summary {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          align-items: flex-start;
+          gap: 10px;
+          flex-direction: column;
+        }
+
+        .chart-container {
+          height: 230px;
+        }
+      }
+    </style>
   </head>
+
   <body>
-    <h1>ダッシュボード</h1>
-    <p>Inquiry Explorerへようこそ。</p>
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <div>
+          <h1>Storage Monitor</h1>
+          <p style="color: #94a3b8; margin-bottom: 0">システムストレージ監視</p>
+        </div>
+
+        <div class="status">● Monitoring</div>
+      </header>
+
+      <!-- Error -->
+      <div id="error" class="error"></div>
+
+      <!-- Summary -->
+      <div class="summary">
+        <div class="card">
+          <div class="card-title">Total Storage</div>
+          <div class="value" id="total">--</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Used Storage</div>
+          <div class="value" id="used">--</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Free Storage</div>
+          <div class="value" id="free">--</div>
+        </div>
+      </div>
+
+      <!-- Usage Chart -->
+      <div class="card">
+        <h2>Storage Usage (%)</h2>
+
+        <div class="chart-container">
+          <canvas id="storageChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Storage Details -->
+      <div class="card">
+        <h2>Mount Points</h2>
+
+        <div id="storageList">
+          <div class="empty">Loading storage information...</div>
+        </div>
+
+        <div class="refresh-info">
+          Last Update: <span id="lastUpdate">--</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ========================================
+      // Configuration
+      // ========================================
+
+      const REFRESH_INTERVAL = 5000;
+
+      let storageChart = null;
+
+      // ========================================
+      // Utility
+      // ========================================
+
+      function formatBytes(bytes) {
+        const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+
+        let value = Number(bytes);
+        let index = 0;
+
+        while (value >= 1024 && index < units.length - 1) {
+          value /= 1024;
+          index++;
+        }
+
+        return value.toFixed(2) + " " + units[index];
+      }
+
+      function getColor(percent) {
+        if (percent >= 90) {
+          return "#ef4444";
+        }
+
+        if (percent >= 75) {
+          return "#f59e0b";
+        }
+
+        return "#22c55e";
+      }
+
+      // ========================================
+      // Get Storage Information
+      // ========================================
+
+      async function getStorageInfo() {
+        try {
+          // Go function via Glaze
+          const storage = await app_get_storage_info();
+
+          if (!Array.isArray(storage)) {
+            throw new Error("Invalid storage data");
+          }
+
+          document.getElementById("error").style.display = "none";
+
+          updateSummary(storage);
+          updateChart(storage);
+          updateStorageList(storage);
+
+          document.getElementById("lastUpdate").textContent =
+            new Date().toLocaleTimeString("ja-JP");
+        } catch (error) {
+          console.error("Storage Error:", error);
+
+          const errorElement = document.getElementById("error");
+
+          errorElement.style.display = "block";
+          errorElement.textContent =
+            "ストレージ情報の取得に失敗しました: " + error.message;
+        }
+      }
+
+      // ========================================
+      // Update Summary
+      // ========================================
+
+      function updateSummary(storage) {
+        const total = storage.reduce(
+          (sum, item) => sum + Number(item.total),
+          0,
+        );
+
+        const used = storage.reduce((sum, item) => sum + Number(item.used), 0);
+
+        const free = storage.reduce((sum, item) => sum + Number(item.free), 0);
+
+        document.getElementById("total").textContent = formatBytes(total);
+
+        document.getElementById("used").textContent = formatBytes(used);
+
+        document.getElementById("free").textContent = formatBytes(free);
+      }
+
+      // ========================================
+      // Update Chart
+      // ========================================
+
+      function updateChart(storage) {
+        const labels = storage.map((item) => item.mountpoint);
+
+        const values = storage.map((item) => Number(item.used_percent));
+
+        const colors = values.map((value) => getColor(value));
+
+        const canvas = document.getElementById("storageChart");
+
+        if (storageChart) {
+          storageChart.data.labels = labels;
+
+          storageChart.data.datasets[0].data = values;
+
+          storageChart.data.datasets[0].backgroundColor = colors;
+
+          storageChart.update();
+
+          return;
+        }
+
+        storageChart = new Chart(canvas, {
+          type: "bar",
+
+          data: {
+            labels: labels,
+
+            datasets: [
+              {
+                label: "使用率",
+
+                data: values,
+
+                backgroundColor: colors,
+
+                borderRadius: 8,
+
+                barThickness: 25,
+              },
+            ],
+          },
+
+          options: {
+            indexAxis: "y",
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            animation: {
+              duration: 400,
+            },
+
+            scales: {
+              x: {
+                min: 0,
+
+                max: 100,
+
+                ticks: {
+                  color: "#94a3b8",
+
+                  callback: function (value) {
+                    return value + "%";
+                  },
+                },
+
+                grid: {
+                  color: "#334155",
+                },
+              },
+
+              y: {
+                ticks: {
+                  color: "#e2e8f0",
+                },
+
+                grid: {
+                  display: false,
+                },
+              },
+            },
+
+            plugins: {
+              legend: {
+                labels: {
+                  color: "#e2e8f0",
+                },
+              },
+
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return "使用率: " + context.raw.toFixed(1) + "%";
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // ========================================
+      // Update Storage List
+      // ========================================
+
+      function updateStorageList(storage) {
+        const container = document.getElementById("storageList");
+
+        container.replaceChildren();
+
+        if (storage.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = "ストレージ情報がありません。";
+
+          container.appendChild(empty);
+
+          return;
+        }
+
+        storage.forEach((item) => {
+          const percent = Number(item.used_percent);
+
+          const safePercent = Math.max(0, Math.min(100, percent));
+
+          const color = getColor(percent);
+
+          // Main wrapper
+          const wrapper = document.createElement("div");
+          wrapper.className = "storage-item";
+
+          // Header
+          const header = document.createElement("div");
+          header.className = "storage-header";
+
+          const device = document.createElement("div");
+          device.className = "device";
+          device.textContent = item.mountpoint;
+
+          const percentage = document.createElement("div");
+          percentage.className = "percentage";
+          percentage.style.color = color;
+          percentage.textContent = percent.toFixed(1) + "%";
+
+          header.append(device, percentage);
+
+          // Filesystem
+          const filesystem = document.createElement("div");
+          filesystem.className = "filesystem";
+
+          filesystem.textContent = item.device + " | " + item.filesystem;
+
+          // Progress bar
+          const progress = document.createElement("div");
+          progress.className = "progress";
+
+          const bar = document.createElement("div");
+          bar.className = "bar";
+
+          bar.style.width = safePercent + "%";
+          bar.style.backgroundColor = color;
+
+          progress.appendChild(bar);
+
+          // Storage details
+          const details = document.createElement("div");
+          details.className = "storage-details";
+
+          const used = document.createElement("span");
+          used.textContent = "使用: " + formatBytes(item.used);
+
+          const free = document.createElement("span");
+          free.textContent = "空き: " + formatBytes(item.free);
+
+          const total = document.createElement("span");
+          total.textContent = "合計: " + formatBytes(item.total);
+
+          details.append(used, free, total);
+
+          wrapper.append(header, filesystem, progress, details);
+
+          container.appendChild(wrapper);
+        });
+      }
+
+      // ========================================
+      // Initialize
+      // ========================================
+
+      getStorageInfo();
+
+      // Auto Refresh
+      setInterval(getStorageInfo, REFRESH_INTERVAL);
+    </script>
   </body>
 </html>

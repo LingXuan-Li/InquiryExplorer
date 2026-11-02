@@ -7,19 +7,10 @@ import (
 	"path/filepath"
 
 	"InquiryExplorer/file"
+	"InquiryExplorer/function"
 
 	"github.com/crgimenes/glaze"
 )
-
-type App struct{}
-
-// JavaScriptから呼び出す関数
-func (a *App) Greet(name string) string {
-	if name == "" {
-		name = "ゲスト"
-	}
-	return "こんにちは、" + name + "さん！"
-}
 
 func main() {
 	err := file.MakeConfigFolder()
@@ -47,7 +38,7 @@ func main() {
 	w.SetTitle("Glaze Desktop App")
 	w.SetSize(900, 650, glaze.HintNone)
 
-	app := &App{}
+	app := &function.App{}
 
 	// GoのメソッドをJavaScriptに登録
 	_, err = glaze.BindMethods(w, "app", app)
