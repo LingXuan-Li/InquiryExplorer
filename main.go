@@ -15,9 +15,19 @@ import (
 	"InquiryExplorer/function"
 
 	"github.com/crgimenes/glaze"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Failed to load .env:", err)
+	}
+
+	// Create the configuration directory.
+	if err := file.MakeConfigFolder(); err != nil {
+		log.Fatal(err)
+	}
+
 	// Create the configuration directory.
 	if err := file.MakeConfigFolder(); err != nil {
 		log.Fatal(err)

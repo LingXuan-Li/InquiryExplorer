@@ -5,6 +5,7 @@ go 1.27.1
 require (
 	github.com/crgimenes/glaze v0.0.81
 	github.com/google/uuid v1.6.0
+	github.com/joho/godotenv v1.5.1
 	github.com/shirou/gopsutil/v4 v4.26.10
 	golang.org/x/oauth2 v0.37.0
 	google.golang.org/api v0.310.0
