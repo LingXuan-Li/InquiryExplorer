@@ -251,9 +251,6 @@
         // Configuration
         // ========================================
 
-        const REFRESH_INTERVAL = 5000;
-
-        let refreshTimer = null;
         let storageChart = null;
         let isLoading = false;
         let isActive = false;
@@ -307,6 +304,7 @@
 
         // ========================================
         // Get Storage Information (Go API)
+        // 初回起動時に1回だけ実行
         // ========================================
 
         async function getStorageInfo() {
@@ -332,7 +330,6 @@
 
             console.log("Go API 呼び出し開始");
 
-            // Go側の GetStorageInfo を呼び出す
             const storage = await window.app_get_storage_info();
 
             console.log("Go API 戻り値:", storage);
@@ -446,7 +443,7 @@
             ctx.fillStyle = "#e2e8f0";
             ctx.textAlign = "right";
 
-            ctx.fillText(item.mountpoint, left - 12, y + barHeight / 2);
+            ctx.fillText(item.mountpoint || "", left - 12, y + barHeight / 2);
 
             // Background
             ctx.fillStyle = "#334155";
@@ -469,6 +466,7 @@
             );
           });
         }
+
         // ========================================
         // Update Storage List
         // ========================================
@@ -559,10 +557,11 @@
 
         // ========================================
         // Initialize
+        // 初回起動時のみ実行
         // ========================================
 
         window.initStorageMonitor = function () {
-          window.destroyStorageMonitor();
+          if (isActive) return;
 
           isActive = true;
 
@@ -570,9 +569,8 @@
 
           console.log("Glaze API:", typeof window.app_get_storage_info);
 
+          // APIを1回だけ呼び出す
           getStorageInfo();
-
-          refreshTimer = setInterval(getStorageInfo, REFRESH_INTERVAL);
         };
 
         // ========================================
@@ -583,11 +581,6 @@
           isActive = false;
 
           requestId++;
-
-          if (refreshTimer !== null) {
-            clearInterval(refreshTimer);
-            refreshTimer = null;
-          }
 
           if (storageChart) {
             storageChart.destroy();
