@@ -262,7 +262,14 @@
       const overlay = document.getElementById("overlay");
       const content = document.getElementById("content");
 
+      // ページ切り替えの連続実行を管理
+      let currentPageController = null;
+      let navigationId = 0;
+
+      // ========================================
       // メニュー開閉
+      // ========================================
+
       function toggleMenu() {
         sidebar.classList.toggle("open");
         overlay.classList.toggle("show");
@@ -273,22 +280,131 @@
         overlay.classList.remove("show");
       }
 
+      // ========================================
+      // HTML内のJavaScriptを実行
+      // ========================================
+
+      async function executeScripts(container, pageUrl) {
+        const scripts = Array.from(container.querySelectorAll("script"));
+
+        for (const oldScript of scripts) {
+          const newScript = document.createElement("script");
+
+          // 属性を引き継ぐ
+          for (const attr of oldScript.attributes) {
+            newScript.setAttribute(attr.name, attr.value);
+          }
+
+          // 外部JavaScript
+          if (oldScript.hasAttribute("src")) {
+            const src = oldScript.getAttribute("src");
+
+            newScript.src = new URL(src, pageUrl).href;
+
+            // async指定がなければ順番を維持
+            if (!oldScript.hasAttribute("async")) {
+              newScript.async = false;
+            }
+
+            await new Promise((resolve, reject) => {
+              newScript.onload = resolve;
+
+              newScript.onerror = () => {
+                reject(new Error("JavaScript読み込みエラー: " + newScript.src));
+              };
+
+              oldScript.replaceWith(newScript);
+            });
+          } else {
+            // HTML内に直接記述されたJavaScript
+            const isModule = oldScript.getAttribute("type") === "module";
+
+            if (isModule) {
+              await new Promise((resolve, reject) => {
+                newScript.onload = resolve;
+
+                newScript.onerror = () => {
+                  reject(new Error("Module JavaScript実行エラー"));
+                };
+
+                newScript.textContent = oldScript.textContent;
+                oldScript.replaceWith(newScript);
+              });
+            } else {
+              newScript.textContent = oldScript.textContent;
+              oldScript.replaceWith(newScript);
+            }
+          }
+        }
+      }
+
+      // ========================================
       // ページ切り替え
+      // ========================================
+
       async function navigate(page, link) {
+        if (!page) return;
+
+        // 古いページの読み込みをキャンセル
+        if (currentPageController) {
+          currentPageController.abort();
+        }
+
+        currentPageController = new AbortController();
+
+        const controller = currentPageController;
+        const thisNavigation = ++navigationId;
+
         try {
+          // ページURL
           const pageUrl = new URL(`pages/${page}.html`, window.location.href);
 
-          const response = await fetch(pageUrl);
+          // HTML取得
+          const response = await fetch(pageUrl, {
+            signal: controller.signal,
+          });
 
           if (!response.ok) {
-            throw new Error("ページを読み込めませんでした");
+            throw new Error("ページを読み込めませんでした: " + response.status);
           }
 
           const html = await response.text();
 
-          content.innerHTML = html;
+          // 古いリクエストなら処理を終了
+          if (thisNavigation !== navigationId) return;
 
-          // アクティブ状態の更新
+          // HTML解析
+          const parser = new DOMParser();
+
+          const doc = parser.parseFromString(html, "text/html");
+
+          // ページタイトル更新
+          const pageTitle =
+            doc.querySelector("title")?.textContent || "Inquiry Explorer";
+
+          document.querySelector(".topbar h2").textContent = pageTitle;
+
+          // コンテンツ挿入
+          content.innerHTML = doc.body.innerHTML;
+
+          // JavaScript実行
+          await executeScripts(content, pageUrl);
+
+          // 古いページの処理を防止
+          if (thisNavigation !== navigationId) return;
+
+          // ページ読み込み完了イベント
+          content.dispatchEvent(
+            new CustomEvent("page:loaded", {
+              bubbles: true,
+              detail: {
+                page: page,
+                title: pageTitle,
+              },
+            }),
+          );
+
+          // アクティブメニュー更新
           document.querySelectorAll(".nav a").forEach((item) => {
             item.classList.remove("active");
           });
@@ -297,37 +413,64 @@
             link.classList.add("active");
           }
 
-          // ページタイトルの更新
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, "text/html");
-
-          const pageTitle =
-            doc.querySelector("title")?.textContent || "Inquiry Explorer";
-
-          document.querySelector(".topbar h2").textContent = pageTitle;
-
-          content.innerHTML = doc.body.innerHTML;
-
-          // スマホの場合メニューを閉じる
+          // スマートフォンならメニューを閉じる
           if (window.innerWidth <= 700) {
             closeMenu();
           }
+
+          console.log("ページ読み込み完了:", page);
+          console.log("ページURL:", pageUrl.href);
         } catch (error) {
-          content.innerHTML = `<h2>${error.message}</h2>`;
+          if (error.name === "AbortError") {
+            return;
+          }
+
+          console.error("ページ切り替えエラー:", error);
+
+          content.innerHTML = `
+      <h2>ページの読み込みに失敗しました</h2>
+      <p>${error.message}</p>
+    `;
         }
       }
 
+      // ========================================
       // サイドバーのクリックイベント
+      // ========================================
+
       document.querySelectorAll(".nav a").forEach((link) => {
         link.addEventListener("click", (event) => {
           event.preventDefault();
 
-          navigate(link.dataset.page, link);
+          const page = link.dataset.page;
+
+          if (!page) {
+            console.warn("data-pageが設定されていません:", link);
+            return;
+          }
+
+          navigate(page, link);
         });
       });
 
-      // 初期ページ
+      // ========================================
+      // ページ切り替え完了イベント
+      // ========================================
+
+      document.addEventListener("page:loaded", (event) => {
+        console.log("ページ初期化完了:", event.detail.page);
+      });
+
+      // ========================================
+      // 初期ページ読み込み
+      // ========================================
+
       navigate("home", document.querySelector('[data-page="home"]'));
+
+      // ========================================
+      // デバッグ情報
+      // ========================================
+
       console.log("href:", window.location.href);
       console.log("origin:", window.location.origin);
       console.log("protocol:", window.location.protocol);
