@@ -38,7 +38,6 @@
         font-size: 23px;
         font-weight: 700;
         margin-bottom: 6px;
-        color: var(--text);
       }
 
       .subtitle {
@@ -79,28 +78,70 @@
         font-size: 28px;
         font-weight: 700;
         margin-top: 8px;
-        color: var(--text);
       }
 
       h2 {
         font-size: 17px;
         font-weight: 700;
-        margin-top: 0;
         margin-bottom: 20px;
-        color: var(--text);
       }
 
-      .chart-container {
-        position: relative;
-        width: 100%;
-        overflow-x: auto;
+      /* ===== Usage bars (DOM + CSS, no canvas) ===== */
+      .usage-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
       }
 
-      canvas {
-        display: block;
-        width: 100%;
+      .usage-row {
+        display: grid;
+        grid-template-columns: 130px minmax(0, 1fr) 56px;
+        align-items: center;
+        gap: 12px;
       }
 
+      .usage-label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 500;
+        text-align: right;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .usage-track {
+        height: 18px;
+        background: var(--border);
+        border-radius: 9px;
+        overflow: hidden;
+      }
+
+      .usage-fill {
+        width: 0%;
+        height: 100%;
+        background-color: var(--primary);
+        border-radius: 9px;
+        transition:
+          width 1s ease-in-out,
+          background-color 0.5s ease;
+      }
+
+      .usage-fill.warn {
+        background-color: #f59e0b;
+      }
+
+      .usage-fill.danger {
+        background-color: #ef4444;
+      }
+
+      .usage-percent {
+        font-size: 12px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ===== Mount point list ===== */
       .storage-item {
         padding: 16px 0;
         border-bottom: 1px solid var(--border);
@@ -120,7 +161,6 @@
       .device {
         font-weight: 600;
         font-size: 15px;
-        color: var(--text);
         word-break: break-all;
       }
 
@@ -191,6 +231,18 @@
         .summary {
           grid-template-columns: 1fr;
         }
+
+        .usage-row {
+          grid-template-columns: 80px minmax(0, 1fr) 52px;
+          gap: 8px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .usage-fill,
+        .bar {
+          transition: none;
+        }
       }
     </style>
   </head>
@@ -200,44 +252,34 @@
       <h1>Storage Monitor</h1>
       <p class="subtitle">Your storage information will be displayed here.</p>
 
-      <!-- Error -->
       <div id="error" class="error"></div>
 
-      <!-- Summary -->
       <div class="summary">
         <div class="card">
           <div class="card-title">Total Storage</div>
           <div class="value" id="total">--</div>
         </div>
-
         <div class="card">
           <div class="card-title">Used Storage</div>
           <div class="value" id="used">--</div>
         </div>
-
         <div class="card">
           <div class="card-title">Free Storage</div>
           <div class="value" id="free">--</div>
         </div>
       </div>
 
-      <!-- Usage Chart -->
+      <!-- Usage bars -->
       <div class="card">
         <h2>Storage Usage (%)</h2>
-
-        <div class="chart-container">
-          <canvas id="storageChart"></canvas>
-        </div>
+        <div id="usageList" class="usage-list"></div>
       </div>
 
-      <!-- Storage Details -->
       <div class="card">
         <h2>Mount Points</h2>
-
         <div id="storageList">
           <div class="empty">Loading storage information...</div>
         </div>
-
         <div class="refresh-info">
           Last Update:
           <span id="lastUpdate">--</span>
@@ -252,6 +294,13 @@
         let isLoading = false;
         let isActive = false;
         let requestId = 0;
+
+        // mountpoint -> { row, fill, text, label, current, raf }
+        const usageRows = new Map();
+
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        );
 
         function formatBytes(bytes) {
           const units = ["B", "KB", "MB", "GB", "TB", "PB"];
@@ -269,7 +318,13 @@
         function getColor(percent) {
           if (percent >= 90) return "#ef4444";
           if (percent >= 75) return "#f59e0b";
-          return "#1c85ba"; // プライマリカラーと統一
+          return "#1c85ba";
+        }
+
+        function getLevel(percent) {
+          if (percent >= 90) return "danger";
+          if (percent >= 75) return "warn";
+          return "";
         }
 
         function showError(message) {
@@ -308,7 +363,7 @@
             hideError();
 
             updateSummary(storage);
-            updateChart(storage);
+            updateUsageBars(storage);
             updateStorageList(storage);
 
             const lastUpdate = document.getElementById("lastUpdate");
@@ -328,86 +383,128 @@
         }
 
         function updateSummary(storage) {
-          const total = storage.reduce(
-            (sum, item) => sum + Number(item.total || 0),
-            0,
-          );
-          const used = storage.reduce(
-            (sum, item) => sum + Number(item.used || 0),
-            0,
-          );
-          const free = storage.reduce(
-            (sum, item) => sum + Number(item.free || 0),
-            0,
-          );
+          const sum = (key) =>
+            storage.reduce((s, item) => s + Number(item[key] || 0), 0);
 
-          document.getElementById("total").textContent = formatBytes(total);
-          document.getElementById("used").textContent = formatBytes(used);
-          document.getElementById("free").textContent = formatBytes(free);
+          document.getElementById("total").textContent = formatBytes(
+            sum("total"),
+          );
+          document.getElementById("used").textContent = formatBytes(
+            sum("used"),
+          );
+          document.getElementById("free").textContent = formatBytes(
+            sum("free"),
+          );
         }
 
-        function updateChart(storage) {
-          const canvas = document.getElementById("storageChart");
-          if (!canvas) return;
+        // Count the number up/down while the bar animates.
+        function animateText(entry, end) {
+          cancelAnimationFrame(entry.raf);
 
-          const ctx = canvas.getContext("2d");
-          const barHeight = 22;
-          const gap = 16;
+          const start = entry.current;
+          entry.current = end;
 
-          const totalHeight = Math.max(
-            100,
-            storage.length * (barHeight + gap) + 20,
-          );
-          const width = canvas.parentElement.clientWidth;
+          if (reduceMotion.matches || start === end) {
+            entry.text.textContent = end.toFixed(1) + "%";
+            return;
+          }
 
-          const dpr = window.devicePixelRatio || 1;
-          canvas.width = width * dpr;
-          canvas.height = totalHeight * dpr;
-          canvas.style.height = totalHeight + "px";
+          const duration = 1000;
+          const startTime = performance.now();
 
-          ctx.scale(dpr, dpr);
-          ctx.clearRect(0, 0, width, totalHeight);
+          const step = (now) => {
+            const progress = Math.min((now - startTime) / duration, 1);
+            const value = start + (end - start) * progress;
+            entry.text.textContent = value.toFixed(1) + "%";
+            if (progress < 1) {
+              entry.raf = requestAnimationFrame(step);
+            }
+          };
 
-          const left = 130;
-          const right = 55;
-          const chartWidth = Math.max(50, width - left - right);
+          entry.raf = requestAnimationFrame(step);
+        }
 
-          ctx.font =
-            "500 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-          ctx.textBaseline = "middle";
+        function createUsageRow(key) {
+          const row = document.createElement("div");
+          row.className = "usage-row";
+
+          const label = document.createElement("div");
+          label.className = "usage-label";
+
+          const track = document.createElement("div");
+          track.className = "usage-track";
+
+          const fill = document.createElement("div");
+          fill.className = "usage-fill";
+          track.appendChild(fill);
+
+          const text = document.createElement("div");
+          text.className = "usage-percent";
+          text.textContent = "0.0%";
+
+          row.append(label, track, text);
+
+          return { key, row, label, fill, text, current: 0, raf: 0 };
+        }
+
+        function updateUsageBars(storage) {
+          const container = document.getElementById("usageList");
+          if (!container) return;
+
+          const seen = new Set();
+          const created = [];
 
           storage.forEach((item, index) => {
-            const y = index * (barHeight + gap) + 10;
+            const key = (item.mountpoint || "") + "#" + index;
+            seen.add(key);
+
+            let entry = usageRows.get(key);
+
+            if (!entry) {
+              entry = createUsageRow(key);
+              usageRows.set(key, entry);
+              container.appendChild(entry.row);
+              created.push(entry);
+            }
+
             const percent = Math.max(
               0,
               Math.min(100, Number(item.used_percent) || 0),
             );
-            const color = getColor(percent);
 
-            // Mount point
-            ctx.fillStyle = "#64748b";
-            ctx.textAlign = "right";
-            let label = item.mountpoint || "";
-            if (label.length > 15) label = label.substring(0, 12) + "...";
-            ctx.fillText(label, left - 12, y + barHeight / 2);
+            entry.label.textContent = item.mountpoint || "";
+            entry.label.title = item.mountpoint || "";
+            entry.text.style.color = getColor(percent);
 
-            // Background bar (ライトグレー)
-            ctx.fillStyle = "#e2e8f0";
-            ctx.fillRect(left, y, chartWidth, barHeight);
+            entry.fill.className = "usage-fill " + getLevel(percent);
+            entry.pendingWidth = percent;
 
-            // Usage bar (プライマリ/警告カラー)
-            ctx.fillStyle = color;
-            ctx.fillRect(left, y, (chartWidth * percent) / 100, barHeight);
-
-            // Percentage text
-            ctx.fillStyle = "#1c1c1c";
-            ctx.textAlign = "left";
-            ctx.fillText(
-              percent.toFixed(1) + "%",
-              left + chartWidth + 8,
-              y + barHeight / 2,
-            );
+            animateText(entry, percent);
           });
+
+          // Remove rows that no longer exist.
+          for (const [key, entry] of usageRows) {
+            if (!seen.has(key)) {
+              cancelAnimationFrame(entry.raf);
+              entry.row.remove();
+              usageRows.delete(key);
+            }
+          }
+
+          // Force a reflow so newly created rows animate from 0%.
+          void container.offsetWidth;
+
+          for (const entry of usageRows.values()) {
+            entry.fill.style.width = entry.pendingWidth + "%";
+          }
+
+          if (storage.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "No storage information available.";
+            container.replaceChildren(empty);
+            usageRows.clear();
+          }
         }
 
         function updateStorageList(storage) {
@@ -489,6 +586,10 @@
           isActive = false;
           requestId++;
           isLoading = false;
+          for (const entry of usageRows.values()) {
+            cancelAnimationFrame(entry.raf);
+          }
+          usageRows.clear();
         };
 
         window.initStorageMonitor();
