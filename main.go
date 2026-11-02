@@ -174,6 +174,9 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Printf("Registered methods: %#v", bound)
+	log.Println("Glaze BindMethods completed")
+
 	log.Println("Registered methods:", bound)
 
 	// index.htmlを開く

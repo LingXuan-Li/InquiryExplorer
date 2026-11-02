@@ -313,7 +313,10 @@
         // Get Storage Information
         // ========================================
 
-        async function getStorageInfo() {
+        async function app_get_storage_info() {
+          console.log("window.app:", window.app);
+          console.log("typeof app:", typeof window.app);
+
           if (!isActive || isLoading) return;
 
           isLoading = true;
@@ -324,12 +327,12 @@
             // Glaze Go API
             if (
               !window.app ||
-              typeof window.app.GetStorageInfo !== "function"
+              typeof window.app.app_get_storage_info !== "function"
             ) {
-              throw new Error("Go API GetStorageInfo が見つかりません");
+              throw new Error("Go API app_get_storage_info が見つかりません");
             }
 
-            const storage = await window.app.GetStorageInfo();
+            const storage = await window.app.app_get_storage_info();
 
             // ページ切り替え後の応答は無視
             if (!isActive || currentRequest !== requestId) {
@@ -611,9 +614,9 @@
 
           console.log("Storage Monitor initialized");
 
-          getStorageInfo();
+          app_get_storage_info();
 
-          refreshTimer = setInterval(getStorageInfo, REFRESH_INTERVAL);
+          refreshTimer = setInterval(app_get_storage_info, REFRESH_INTERVAL);
         };
 
         // ========================================
