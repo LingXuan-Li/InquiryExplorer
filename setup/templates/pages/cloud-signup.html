@@ -1,356 +1,361 @@
 <!doctype html>
-    <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Connect an Account | Inquiry Explorer</title>
+		<title>Connect an Account | Inquiry Explorer</title>
 
-    <style>
-      :root {
-        --background: #f5f6fa;
-        --surface: #ffffff;
-        --text: #25283a;
-        --secondary: #777b8c;
-        --border: #e3e5ec;
-        --primary: #6558d3;
-        --primary-hover: #5145b8;
-        --success: #269b69;
-      }
+		<style>
+			:root {
+				--background: #f5f6fa;
+				--surface: #ffffff;
+				--text: #25283a;
+				--secondary: #777b8c;
+				--border: #e3e5ec;
+				--primary: #6558d3;
+				--primary-hover: #5145b8;
+				--success: #269b69;
+			}
 
-      * {
-        box-sizing: border-box;
-      }
+			* {
+				box-sizing: border-box;
+			}
 
-      body {
-        margin: 0;
-        padding: 32px 20px;
-        min-height: 100vh;
-        background: var(--background);
-        color: var(--text);
-        font-family: "Noto Sans JP", "Segoe UI", sans-serif;
-      }
+			body {
+				margin: 0;
+				padding: 32px 20px;
+				min-height: 100vh;
+				background: var(--background);
+				color: var(--text);
+				font-family: "Noto Sans JP", "Segoe UI", sans-serif;
+			}
 
-      .container {
-        width: 100%;
-        max-width: 560px;
-        margin: 0 auto;
-      }
+			.container {
+				width: 100%;
+				max-width: 560px;
+				margin: 0 auto;
+			}
 
-      .header {
-        margin-bottom: 32px;
-        text-align: center;
-      }
+			.header {
+				margin-bottom: 32px;
+				text-align: center;
+			}
 
-      .header h1 {
-        margin: 0 0 10px;
-        font-size: 26px;
-      }
+			.header h1 {
+				margin: 0 0 10px;
+				font-size: 26px;
+			}
 
-      .header p {
-        margin: 0;
-        color: var(--secondary);
-        font-size: 14px;
-      }
+			.header p {
+				margin: 0;
+				color: var(--secondary);
+				font-size: 14px;
+			}
 
-      .card {
-        padding: 24px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-      }
+			.card {
+				padding: 24px;
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 14px;
+			}
 
-      .provider {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
+			.provider {
+				display: flex;
+				align-items: center;
+				gap: 14px;
+			}
 
-      .provider-icon {
-        display: grid;
-        width: 48px;
-        height: 48px;
-        place-items: center;
-        background: #f1f3f4;
-        border-radius: 12px;
-        font-size: 24px;
-      }
+			.provider-icon {
+				display: grid;
+				width: 48px;
+				height: 48px;
+				place-items: center;
+				background: #f1f3f4;
+				border-radius: 12px;
+				font-size: 24px;
+			}
 
-      .provider-info {
-        flex: 1;
-      }
+			.provider-info {
+				flex: 1;
+			}
 
-      .provider-info h2 {
-        margin: 0 0 5px;
-        font-size: 17px;
-      }
+			.provider-info h2 {
+				margin: 0 0 5px;
+				font-size: 17px;
+			}
 
-      .provider-info p {
-        margin: 0;
-        color: var(--secondary);
-        font-size: 12px;
-      }
+			.provider-info p {
+				margin: 0;
+				color: var(--secondary);
+				font-size: 12px;
+			}
 
-      .status {
-        color: var(--success);
-        font-size: 12px;
-        font-weight: 600;
-      }
+			.status {
+				color: var(--success);
+				font-size: 12px;
+				font-weight: 600;
+			}
 
-      .description {
-        margin: 22px 0;
-        color: var(--secondary);
-        font-size: 13px;
-        line-height: 1.8;
-      }
+			.description {
+				margin: 22px 0;
+				color: var(--secondary);
+				font-size: 13px;
+				line-height: 1.8;
+			}
 
-      .register-button {
-        display: flex;
-        width: 100%;
-        min-height: 48px;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        border: none;
-        border-radius: 8px;
-        background: var(--primary);
-        color: #ffffff;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
+			.register-button {
+				display: flex;
+				width: 100%;
+				min-height: 48px;
+				align-items: center;
+				justify-content: center;
+				gap: 10px;
+				border: none;
+				border-radius: 8px;
+				background: var(--primary);
+				color: #ffffff;
+				font-size: 14px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: background 0.2s;
+			}
 
-      .register-button:hover {
-        background: var(--primary-hover);
-      }
+			.register-button:hover {
+				background: var(--primary-hover);
+			}
 
-      .register-button:disabled {
-        opacity: 0.6;
-        cursor: wait;
-      }
+			.register-button:disabled {
+				opacity: 0.6;
+				cursor: wait;
+			}
 
-      .message {
-        display: none;
-        margin-top: 16px;
-        padding: 12px;
-        border-radius: 8px;
-        font-size: 13px;
-        line-height: 1.6;
-      }
+			.message {
+				display: none;
+				margin-top: 16px;
+				padding: 12px;
+				border-radius: 8px;
+				font-size: 13px;
+				line-height: 1.6;
+			}
 
-      .message.visible {
-        display: block;
-      }
+			.message.visible {
+				display: block;
+			}
 
-      .message.error {
-        background: #fff0f0;
-        color: #c03939;
-      }
+			.message.error {
+				background: #fff0f0;
+				color: #c03939;
+			}
 
-      .message.success {
-        background: #edfaf3;
-        color: #218653;
-      }
+			.message.success {
+				background: #edfaf3;
+				color: #218653;
+			}
 
-      .permissions {
-        margin-top: 22px;
-        padding-top: 18px;
-        border-top: 1px solid var(--border);
-      }
+			.permissions {
+				margin-top: 22px;
+				padding-top: 18px;
+				border-top: 1px solid var(--border);
+			}
 
-      .permissions h3 {
-        margin: 0 0 10px;
-        font-size: 13px;
-      }
+			.permissions h3 {
+				margin: 0 0 10px;
+				font-size: 13px;
+			}
 
-      .permissions ul {
-        margin: 0;
-        padding-left: 20px;
-        color: var(--secondary);
-        font-size: 12px;
-        line-height: 2;
-      }
+			.permissions ul {
+				margin: 0;
+				padding-left: 20px;
+				color: var(--secondary);
+				font-size: 12px;
+				line-height: 2;
+			}
 
-      .account-section {
-        margin-top: 28px;
-      }
+			.account-section {
+				margin-top: 28px;
+			}
 
-      .account-section h2 {
-        margin: 0 0 14px;
-        font-size: 17px;
-      }
+			.account-section h2 {
+				margin: 0 0 14px;
+				font-size: 17px;
+			}
 
-      .account-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
+			.account-list {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
 
-      .account-item {
-        padding: 18px 20px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-      }
+			.account-item {
+				padding: 18px 20px;
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 10px;
+			}
 
-      .account-item strong {
-        display: block;
-        font-size: 14px;
-      }
+			.account-item strong {
+				display: block;
+				font-size: 14px;
+			}
 
-      .account-item p {
-        margin: 6px 0 0;
-        color: var(--secondary);
-        font-size: 12px;
-      }
+			.account-item p {
+				margin: 6px 0 0;
+				color: var(--secondary);
+				font-size: 12px;
+			}
 
-      .empty {
-        padding: 24px;
-        border: 1px dashed var(--border);
-        border-radius: 10px;
-        color: var(--secondary);
-        font-size: 13px;
-        text-align: center;
-      }
-    </style>
-  </head>
+			.empty {
+				padding: 24px;
+				border: 1px dashed var(--border);
+				border-radius: 10px;
+				color: var(--secondary);
+				font-size: 13px;
+				text-align: center;
+			}
+		</style>
+	</head>
 
-  <body>
-    <main class="container">
-      <header class="header">
-        <h1>Connect an Account</h1>
-        <p>Connect cloud storage to Inquiry Explorer.</p>
-      </header>
+	<body>
+		<main class="container">
+			<header class="header">
+				<h1>Connect an Account</h1>
+				<p>Connect cloud storage to Inquiry Explorer.</p>
+			</header>
 
-      <section class="card">
-        <div class="provider">
-          <div class="provider-icon">G</div>
+			<section class="card">
+				<div class="provider">
+					<div class="provider-icon">G</div>
 
-          <div class="provider-info">
-            <h2>Google Drive</h2>
-            <p>Google Cloud Storage</p>
-          </div>
+					<div class="provider-info">
+						<h2>Google Drive</h2>
+						<p>Google Cloud Storage</p>
+					</div>
 
-          <span class="status">Available</span>
-        </div>
+					<span class="status">Available</span>
+				</div>
 
-        <p class="description">
-          Authorize your Google account to access file information and storage
-          usage from Google Drive.
-        </p>
+				<p class="description">
+					Authorize your Google account to access file information and
+					storage usage from Google Drive.
+				</p>
 
-        <button
-          type="button"
-          class="register-button"
-          id="google-register"
-          onclick="registerGoogle()"
-        >
-          <span>＋</span>
-          Add Google Account
-        </button>
+				<button
+					type="button"
+					class="register-button"
+					id="google-register"
+					onclick="registerGoogle()"
+				>
+					<span>＋</span>
+					Add Google Account
+				</button>
 
-        <div
-          id="message"
-          class="message"
-          role="status"
-          aria-live="polite"
-        ></div>
+				<div
+					id="message"
+					class="message"
+					role="status"
+					aria-live="polite"
+				></div>
 
-        <div class="permissions">
-          <h3>Permissions</h3>
+				<div class="permissions">
+					<h3>Permissions</h3>
 
-          <ul>
-            <li>Read file information from Google Drive</li>
-            <li>View storage usage</li>
-            <li>Files will not be modified or deleted</li>
-          </ul>
-        </div>
-      </section>
+					<ul>
+						<li>Read file information from Google Drive</li>
+						<li>View storage usage</li>
+						<li>Files will not be modified or deleted</li>
+					</ul>
+				</div>
+			</section>
 
-      <section class="account-section">
-        <h2>Connected Accounts</h2>
+			<section class="account-section">
+				<h2>Connected Accounts</h2>
 
-        <div id="account-list" class="account-list">
-          <div class="empty">Loading account information...</div>
-        </div>
-      </section>
-    </main>
+				<div id="account-list" class="account-list">
+					<div class="empty">Loading account information...</div>
+				</div>
+			</section>
+		</main>
 
-    <script>
-      const button = document.getElementById("google-register");
-      const message = document.getElementById("message");
+		<script>
+			const button = document.getElementById("google-register");
+			const message = document.getElementById("message");
 
-      function showMessage(text, type) {
-        message.textContent = text;
-        message.className = `message visible ${type}`;
-      }
+			function showMessage(text, type) {
+				message.textContent = text;
+				message.className = `message visible ${type}`;
+			}
 
-      async function registerGoogle() {
-        button.disabled = true;
-        button.textContent = "Starting authorization...";
+			async function registerGoogle() {
+				button.disabled = true;
+				button.textContent = "Starting authorization...";
 
-        message.className = "message";
+				message.className = "message";
 
-        try {
-          await window.app_register_google_account();
+				try {
+					await window.app_register_google_account();
 
-          showMessage("Google account connected successfully.", "success");
+					showMessage(
+						"Google account connected successfully.",
+						"success",
+					);
 
-          await loadAccounts();
-        } catch (error) {
-          showMessage("Authorization failed: " + error, "error");
-        } finally {
-          button.disabled = false;
-          button.innerHTML = "<span>＋</span> Add Google Account";
-        }
-      }
+					await loadAccounts();
+				} catch (error) {
+					showMessage("Authorization failed: " + error, "error");
+				} finally {
+					button.disabled = false;
+					button.innerHTML = "<span>＋</span> Add Google Account";
+				}
+			}
 
-      async function loadAccounts() {
-        const list = document.getElementById("account-list");
+			async function loadAccounts() {
+				const list = document.getElementById("account-list");
 
-        try {
-          const accounts = await window.app_get_accounts();
+				try {
+					const accounts = await window.app_get_accounts();
 
-          list.replaceChildren();
+					list.replaceChildren();
 
-          if (!accounts || accounts.length === 0) {
-            const empty = document.createElement("div");
-            empty.className = "empty";
-            empty.textContent = "No connected accounts.";
-            list.appendChild(empty);
-            return;
-          }
+					if (!accounts || accounts.length === 0) {
+						const empty = document.createElement("div");
+						empty.className = "empty";
+						empty.textContent = "No connected accounts.";
+						list.appendChild(empty);
+						return;
+					}
 
-          for (const account of accounts) {
-            const item = document.createElement("div");
-            item.className = "account-item";
+					for (const account of accounts) {
+						const item = document.createElement("div");
+						item.className = "account-item";
 
-            const name = document.createElement("strong");
-            name.textContent = account.display_name || account.email;
+						const name = document.createElement("strong");
+						name.textContent =
+							account.display_name || account.email;
 
-            const email = document.createElement("p");
-            email.textContent = account.email;
+						const email = document.createElement("p");
+						email.textContent = account.email;
 
-            item.append(name, email);
-            list.appendChild(item);
-          }
-        } catch (error) {
-          list.replaceChildren();
+						item.append(name, email);
+						list.appendChild(item);
+					}
+				} catch (error) {
+					list.replaceChildren();
 
-          const errorElement = document.createElement("div");
-          errorElement.className = "empty";
-          errorElement.textContent = "Could not load the account list.";
+					const errorElement = document.createElement("div");
+					errorElement.className = "empty";
+					errorElement.textContent =
+						"Could not load the account list.";
 
-          list.appendChild(errorElement);
+					list.appendChild(errorElement);
 
-          console.error("Failed to load accounts:", error);
-        }
-      }
+					console.error("Failed to load accounts:", error);
+				}
+			}
 
-      window.addEventListener("DOMContentLoaded", () => {
-        loadAccounts();
-      });
-    </script>
-  </body>
+			window.addEventListener("DOMContentLoaded", () => {
+				loadAccounts();
+			});
+		</script>
+	</body>
 </html>
