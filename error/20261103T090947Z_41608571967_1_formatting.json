@@ -1,0 +1,19 @@
+{
+  "timestamp": "20261103T090947Z",
+  "type": "formatting",
+  "status": "failure",
+  "exit_code": 1,
+  "commit": {
+    "sha": "ad8156e61af2581892556ea84b6988b8e0f509df",
+    "url": "https://github.com/LingXuan-Li/InquiryExplorer/commit/ad8156e61af2581892556ea84b6988b8e0f509df"
+  },
+  "github": {
+    "repository": "LingXuan-Li/InquiryExplorer",
+    "run_id": 41608571967,
+    "run_attempt": 1,
+    "run_url": "https://github.com/LingXuan-Li/InquiryExplorer/actions/runs/41608571967/attempts/1"
+  },
+  "details": {
+    "stdout": "EditorConfig Formatting\nChanged current directory to C:/Users/runneradmin/AppData/Roaming/Composer\nEditorConfigCLI v2.2.1 by Armin Vieweg\nSearching in directory D:\\a\\InquiryExplorer\\InquiryExplorer...\nGet files from git binary (command: git ls-files):\nFound 41 files to scan.\nStarting to fix issues...\n\nIn MimeTypes.php line 129:\n                                                                                                              \n  Unable to guess the MIME type as no guessers are available (have you enabled the php_fileinfo extension?).  \n                                                                                                              \n\nC:\\Users\\runneradmin\\AppData\\Roaming\\Composer\\vendor\\bin\\/ec [-s|--skip [SKIP]] [--strict] [-f|--fix] [-c|--compact] [-d|--dir [DIR]] [-g|--git-only] [--git-only-cmd [GIT-ONLY-CMD]] [--finder-config [FINDER-CONFIG]] [-a|--disable-auto-exclude] [-e|--exclude [EXCLUDE]] [-u|--uncovered] [--no-progress] [--no-error-on-exit] [--] [<names>...]\n\nScript ec handling the __exec_command event returned with error code 1\n\nEditorConfig exit code: 1\n\nGolang Formatting\nmain.go\naccount\\manager.go\naccount\\manager_test.go\naccount\\model.go\naccount\\model_test.go\nauth\\google.go\ncloud\\google.go\ncloud\\google_test.go\ndrive\\accounts.go\ndrive\\accounts_test.go\ndrive\\client.go\ndrive\\client_test.go\ndrive\\files.go\ndrive\\files_test.go\nfile\\file.go\nfunction\\function.go\nscan\\scan.go\nscan\\scan_test.go\nstorage\\dpapi_others.go\nstorage\\dpapi_windows.go\nstorage\\token.go\nstorage\\token_test.go\n\nGo fmt exit code: 0\n"
+  }
+}
