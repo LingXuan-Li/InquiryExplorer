@@ -21,7 +21,7 @@ defaults:
 jobs:
   build:
     name: Format and Test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 15
 
     # Values are passed through env instead of being pasted into scripts.
