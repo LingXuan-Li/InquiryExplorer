@@ -1,0 +1,19 @@
+{
+  "timestamp": "20261103T081732Z",
+  "type": "formatting",
+  "status": "success",
+  "exit_code": 0,
+  "commit": {
+    "sha": "e8595dc887dda49bda06f400da3bf86e773907a4",
+    "url": "https://github.com/LingXuan-Li/InquiryExplorer/commit/e8595dc887dda49bda06f400da3bf86e773907a4"
+  },
+  "github": {
+    "repository": "LingXuan-Li/InquiryExplorer",
+    "run_id": 41602072666,
+    "run_attempt": 1,
+    "run_url": "https://github.com/LingXuan-Li/InquiryExplorer/actions/runs/41602072666/attempts/1"
+  },
+  "details": {
+    "stdout": "main.go\naccount\\manager.go\naccount\\manager_test.go\naccount\\model.go\naccount\\model_test.go\nauth\\google.go\ncloud\\google.go\ncloud\\google_test.go\ndrive\\accounts.go\ndrive\\accounts_test.go\ndrive\\client.go\ndrive\\client_test.go\ndrive\\files.go\ndrive\\files_test.go\nfile\\file.go\nfunction\\function.go\nscan\\scan.go\nscan\\scan_test.go\nstorage\\dpapi_others.go\nstorage\\dpapi_windows.go\nstorage\\token.go\nstorage\\token_test.go\n"
+  }
+}
