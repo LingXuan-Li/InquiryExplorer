@@ -52,6 +52,19 @@ jobs:
         with:
           python-version: "3.x"
 
+      # Setup PHP (EditorConfig CLI)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          extensions: iconv
+          tools: composer:v2
+
+      # Install EditorConfig CLI
+      - name: Install EditorConfig CLI
+        run: |
+          composer global require armin/editorconfig-cli:2.2.1 --no-interaction
+
       # Versions are the first thing to check when a failure only
       # happens in CI.
       - name: Show Environment
@@ -70,7 +83,7 @@ jobs:
             git --no-pager diff --stat -- go.mod go.sum
           fi
 
-                # Commit Dependency Changes
+      # Commit Dependency Changes
       - name: Commit Dependency Changes
         run: |
           git config user.name "github-actions[bot]"
@@ -100,9 +113,38 @@ jobs:
           mkdir -p "$RUNNER_TEMP"
 
           set +e
-          go fmt ./... > "$RUNNER_TEMP/format-results.txt" 2>&1
-          FORMAT_STATUS=$?
+
+          {
+            echo "EditorConfig Formatting"
+
+            composer global exec ec -- --git-only --fix --no-interaction
+            EDITORCONFIG_STATUS=$?
+
+            echo ""
+            echo "EditorConfig exit code: $EDITORCONFIG_STATUS"
+            echo ""
+
+            echo "Golang Formatting"
+
+            go fmt ./...
+            GOFMT_STATUS=$?
+
+            echo ""
+            echo "Go fmt exit code: $GOFMT_STATUS"
+
+          } > "$RUNNER_TEMP/format-results.txt" 2>&1
+
           set -e
+
+          if [ "$EDITORCONFIG_STATUS" -ne 0 ]; then
+            FORMAT_STATUS=$EDITORCONFIG_STATUS
+          elif [ "$GOFMT_STATUS" -ne 0 ]; then
+            FORMAT_STATUS=$GOFMT_STATUS
+          else
+            FORMAT_STATUS=0
+          fi
+
+          cat "$RUNNER_TEMP/format-results.txt"
 
           python "$LOG_SCRIPT" \
             --source "$RUNNER_TEMP/format-results.txt" \
@@ -130,7 +172,7 @@ jobs:
             echo "Files included in this commit:"
             git --no-pager diff --cached --name-status
 
-            git commit -m "style[bot]: Automatic golang formatting"
+            git commit -m "style[bot]: Automatic formatting"
             git push origin "HEAD:refs/heads/$REF_NAME"
           fi
 
