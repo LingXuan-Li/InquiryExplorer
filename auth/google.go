@@ -49,6 +49,9 @@ func GoogleAuth(
 		return nil, err
 	}
 
+	// Generate a PKCE code verifier.
+	verifier := oauth2.GenerateVerifier()
+
 	// Create a local callback listener.
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
@@ -117,7 +120,10 @@ func GoogleAuth(
 		fmt.Fprintln(w, `
 			<!doctype html>
 			<html lang="en">
-			<head><meta charset="utf-8"><title>Authentication complete</title></head>
+			<head>
+				<meta charset="utf-8">
+				<title>Authentication complete</title>
+			</head>
 			<body>
 				<h2>Authentication complete</h2>
 				<p>You can close this window and return to the application.</p>
@@ -145,11 +151,12 @@ func GoogleAuth(
 		_ = server.Shutdown(shutdownCtx)
 	}()
 
-	// Generate the Google authorization URL.
+	// Generate the Google authorization URL with PKCE.
 	authURL := oauthConfig.AuthCodeURL(
 		state,
 		oauth2.AccessTypeOffline,
 		oauth2.SetAuthURLParam("prompt", "consent"),
+		oauth2.S256ChallengeOption(verifier),
 	)
 
 	// Open the authorization URL in the default browser.
@@ -176,10 +183,11 @@ func GoogleAuth(
 		return nil, result.Error
 	}
 
-	// Exchange the authorization code for a token.
+	// Exchange the authorization code for a token using PKCE.
 	token, err := oauthConfig.Exchange(
 		authCtx,
 		result.Code,
+		oauth2.VerifierOption(verifier),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to exchange token: %w", err)

@@ -1,8 +1,10 @@
 package storage
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -11,6 +13,8 @@ import (
 	"github.com/google/uuid"
 	"golang.org/x/oauth2"
 )
+
+var tokenMagic = []byte("INQUIRYEXPLORER-DPAPI-V1\n")
 
 func tokenPath(accountID uuid.UUID) (string, error) {
 	if accountID == uuid.Nil {
@@ -25,7 +29,7 @@ func tokenPath(accountID uuid.UUID) (string, error) {
 	return filepath.Join(dir, accountID.String()+".json"), nil
 }
 
-// SaveToken saves an OAuth token.
+// SaveToken encrypts and saves an OAuth token.
 func SaveToken(accountID uuid.UUID, token *oauth2.Token) error {
 	if token == nil {
 		return errors.New("token is nil")
@@ -40,15 +44,36 @@ func SaveToken(accountID uuid.UUID, token *oauth2.Token) error {
 		return err
 	}
 
-	data, err := json.MarshalIndent(token, "", "  ")
+	// Serialize the token.
+	data, err := json.Marshal(token)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to serialize token: %w", err)
 	}
 
-	return os.WriteFile(path, data, 0600)
+	// Encrypt the serialized token.
+	encrypted, err := protectData(data)
+	if err != nil {
+		return fmt.Errorf("failed to encrypt token: %w", err)
+	}
+
+	// Add the storage format header.
+	output := make([]byte, 0, len(tokenMagic)+len(encrypted))
+	output = append(output, tokenMagic...)
+	output = append(output, encrypted...)
+
+	// Save the encrypted token.
+	if err := os.WriteFile(path, output, 0600); err != nil {
+		return fmt.Errorf("failed to save token: %w", err)
+	}
+
+	if err := os.Chmod(path, 0600); err != nil {
+		return fmt.Errorf("failed to set token permissions: %w", err)
+	}
+
+	return nil
 }
 
-// LoadToken loads an OAuth token.
+// LoadToken loads and decrypts an OAuth token.
 func LoadToken(accountID uuid.UUID) (*oauth2.Token, error) {
 	path, err := tokenPath(accountID)
 	if err != nil {
@@ -60,10 +85,33 @@ func LoadToken(accountID uuid.UUID) (*oauth2.Token, error) {
 		return nil, err
 	}
 
+	var tokenData []byte
+
+	if bytes.HasPrefix(data, tokenMagic) {
+		// Encrypted token.
+		encrypted := data[len(tokenMagic):]
+
+		tokenData, err = unprotectData(encrypted)
+		if err != nil {
+			return nil, fmt.Errorf("failed to decrypt token: %w", err)
+		}
+	} else {
+		// Legacy plaintext JSON.
+		// This allows existing installations to migrate automatically.
+		tokenData = data
+	}
+
 	var token oauth2.Token
 
-	if err := json.Unmarshal(data, &token); err != nil {
-		return nil, err
+	if err := json.Unmarshal(tokenData, &token); err != nil {
+		return nil, fmt.Errorf("failed to deserialize token: %w", err)
+	}
+
+	// Migrate legacy plaintext tokens to encrypted storage.
+	if !bytes.HasPrefix(data, tokenMagic) {
+		if err := SaveToken(accountID, &token); err != nil {
+			return nil, fmt.Errorf("failed to migrate token to encrypted storage: %w", err)
+		}
 	}
 
 	return &token, nil
