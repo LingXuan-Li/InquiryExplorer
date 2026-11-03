@@ -183,6 +183,13 @@ func GoogleAuth(
 		return nil, result.Error
 	}
 
+	fmt.Printf(
+		"OAuth config: ClientID set=%t, ClientSecret set=%t, RedirectURL=%s\n",
+		oauthConfig.ClientID != "",
+		oauthConfig.ClientSecret != "",
+		oauthConfig.RedirectURL,
+	)
+
 	// Exchange the authorization code for a token using PKCE.
 	token, err := oauthConfig.Exchange(
 		authCtx,

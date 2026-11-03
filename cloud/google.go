@@ -20,16 +20,34 @@ var (
 )
 
 // GoogleConfig returns the Google OAuth2 configuration.
+// func GoogleConfig() (*oauth2.Config, error) {
+// 	clientID := os.Getenv("GOOGLE_CLIENT_ID")
+
+// 	if clientID == "" {
+// 		return nil, ErrGoogleClientIDMissing
+// 	}
+
+// 	return &oauth2.Config{
+// 		ClientID: clientID,
+// 		Endpoint: google.Endpoint,
+// 		Scopes: []string{
+// 			GoogleDriveReadOnlyScope,
+// 		},
+// 	}, nil
+// }
+
 func GoogleConfig() (*oauth2.Config, error) {
 	clientID := os.Getenv("GOOGLE_CLIENT_ID")
+	clientSecret := os.Getenv("GOOGLE_CLIENT_SECRET")
 
 	if clientID == "" {
 		return nil, ErrGoogleClientIDMissing
 	}
 
 	return &oauth2.Config{
-		ClientID: clientID,
-		Endpoint: google.Endpoint,
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
+		Endpoint:     google.Endpoint,
 		Scopes: []string{
 			GoogleDriveReadOnlyScope,
 		},

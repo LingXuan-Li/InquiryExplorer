@@ -1,9 +1,11 @@
 package storage
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/google/uuid"
@@ -183,5 +185,104 @@ func TestLegacyTokenMigration(t *testing.T) {
 	if len(migratedData) < len(tokenMagic) ||
 		string(migratedData[:len(tokenMagic)]) != string(tokenMagic) {
 		t.Fatal("legacy token was not migrated to encrypted format")
+	}
+}
+
+func TestSaveLoadToken(t *testing.T) {
+	id := uuid.New()
+
+	token := &oauth2.Token{
+		AccessToken:  "test-access-token",
+		RefreshToken: "test-refresh-token",
+		TokenType:    "Bearer",
+	}
+
+	if err := SaveToken(id, token); err != nil {
+		t.Fatalf("SaveToken: %v", err)
+	}
+	defer DeleteToken(id)
+
+	loaded, err := LoadToken(id)
+	if err != nil {
+		t.Fatalf("LoadToken: %v", err)
+	}
+
+	if loaded.AccessToken != token.AccessToken {
+		t.Errorf("AccessToken = %q, want %q",
+			loaded.AccessToken, token.AccessToken)
+	}
+
+	if loaded.RefreshToken != token.RefreshToken {
+		t.Errorf("RefreshToken = %q, want %q",
+			loaded.RefreshToken, token.RefreshToken)
+	}
+}
+
+func TestTokenFileEncrypted(t *testing.T) {
+	if runtime.GOOS != "windows" {
+		t.Skip("DPAPI encryption test requires Windows")
+	}
+
+	id := uuid.New()
+
+	token := &oauth2.Token{
+		AccessToken:  "plain-access-token",
+		RefreshToken: "plain-refresh-token",
+		TokenType:    "Bearer",
+	}
+
+	if err := SaveToken(id, token); err != nil {
+		t.Fatal(err)
+	}
+	defer DeleteToken(id)
+
+	path, err := tokenPath(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if bytes.Contains(data, []byte(token.AccessToken)) {
+		t.Error("access token is stored in plaintext")
+	}
+
+	if bytes.Contains(data, []byte(token.RefreshToken)) {
+		t.Error("refresh token is stored in plaintext")
+	}
+
+	if len(data) == 0 {
+		t.Fatal("encrypted token file is empty")
+	}
+}
+
+func TestLoadTokenMissing(t *testing.T) {
+	_, err := LoadToken(uuid.New())
+
+	if err == nil {
+		t.Fatal("expected error for missing token")
+	}
+}
+
+func TestDeleteToken(t *testing.T) {
+	id := uuid.New()
+
+	token := &oauth2.Token{
+		AccessToken: "test-access-token",
+	}
+
+	if err := SaveToken(id, token); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := DeleteToken(id); err != nil {
+		t.Fatalf("DeleteToken: %v", err)
+	}
+
+	if _, err := LoadToken(id); !os.IsNotExist(err) {
+		t.Errorf("expected os.ErrNotExist, got %v", err)
 	}
 }

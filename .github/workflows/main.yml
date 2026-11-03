@@ -226,6 +226,7 @@ jobs:
           # stdout: JSON events (parsed by the script)
           # stderr: download / toolchain messages (kept separately)
           set +e
+          go clean -cache
           go test -json -count=1 ./... \
             > "$RUNNER_TEMP/test-results.json" \
             2> "$RUNNER_TEMP/test-stderr.txt"
