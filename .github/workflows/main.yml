@@ -67,10 +67,29 @@ jobs:
 
       # Versions are the first thing to check when a failure only
       # happens in CI.
+      # Show Environment
       - name: Show Environment
         run: |
+          echo "Runner OS: $RUNNER_OS"
+          echo "Runner Architecture: $RUNNER_ARCH"
+
+          echo ""
+          echo "System:"
+          uname -a
+
+          echo ""
+          echo "Go:"
           go version
+          go env GOOS
+          go env GOARCH
+          go env GOHOSTOS
+          go env GOHOSTARCH
+
+          echo ""
+          echo "Python:"
           python --version
+
+          echo ""
           echo "Commit: $(git rev-parse HEAD)"
 
       # Dependency Tidying
