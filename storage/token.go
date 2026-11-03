@@ -16,7 +16,22 @@ import (
 
 var tokenMagic = []byte("INQUIRYEXPLORER-DPAPI-V1\n")
 
+// tokenPath returns the encrypted token file path.
 func tokenPath(accountID uuid.UUID) (string, error) {
+	if accountID == uuid.Nil {
+		return "", errors.New("invalid account ID")
+	}
+
+	dir, err := file.OAuthFolderPath()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(dir, accountID.String()+".token"), nil
+}
+
+// legacyTokenPath returns the legacy JSON token file path.
+func legacyTokenPath(accountID uuid.UUID) (string, error) {
 	if accountID == uuid.Nil {
 		return "", errors.New("invalid account ID")
 	}
@@ -80,7 +95,43 @@ func LoadToken(accountID uuid.UUID) (*oauth2.Token, error) {
 		return nil, err
 	}
 
+	// Check the new .token file first.
 	data, err := os.ReadFile(path)
+
+	if errors.Is(err, os.ErrNotExist) {
+		// Fall back to the legacy .json file.
+		legacyPath, pathErr := legacyTokenPath(accountID)
+		if pathErr != nil {
+			return nil, pathErr
+		}
+
+		data, err = os.ReadFile(legacyPath)
+		if err != nil {
+			return nil, err
+		}
+
+		var token oauth2.Token
+
+		if err := json.Unmarshal(data, &token); err != nil {
+			return nil, fmt.Errorf(
+				"failed to deserialize legacy token: %w", err)
+		}
+
+		// Migrate the legacy token to encrypted .token storage.
+		if err := SaveToken(accountID, &token); err != nil {
+			return nil, fmt.Errorf(
+				"failed to migrate legacy token: %w", err)
+		}
+
+		// Delete the legacy file only after successful migration.
+		if err := os.Remove(legacyPath); err != nil {
+			return nil, fmt.Errorf(
+				"token migrated but failed to remove legacy file: %w", err)
+		}
+
+		return &token, nil
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -96,8 +147,7 @@ func LoadToken(accountID uuid.UUID) (*oauth2.Token, error) {
 			return nil, fmt.Errorf("failed to decrypt token: %w", err)
 		}
 	} else {
-		// Legacy plaintext JSON.
-		// This allows existing installations to migrate automatically.
+		// Legacy plaintext JSON stored in .token.
 		tokenData = data
 	}
 
@@ -107,10 +157,11 @@ func LoadToken(accountID uuid.UUID) (*oauth2.Token, error) {
 		return nil, fmt.Errorf("failed to deserialize token: %w", err)
 	}
 
-	// Migrate legacy plaintext tokens to encrypted storage.
+	// Migrate plaintext tokens to encrypted storage.
 	if !bytes.HasPrefix(data, tokenMagic) {
 		if err := SaveToken(accountID, &token); err != nil {
-			return nil, fmt.Errorf("failed to migrate token to encrypted storage: %w", err)
+			return nil, fmt.Errorf(
+				"failed to migrate token to encrypted storage: %w", err)
 		}
 	}
 

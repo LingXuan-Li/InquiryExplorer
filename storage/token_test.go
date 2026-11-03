@@ -3,6 +3,7 @@ package storage
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -21,12 +22,11 @@ func TestSaveAndLoadToken(t *testing.T) {
 		RefreshToken: "test-refresh-token",
 	}
 
-	// 保存
 	if err := SaveToken(accountID, token); err != nil {
 		t.Fatalf("SaveToken() error = %v", err)
 	}
+	defer DeleteToken(accountID)
 
-	// 読み込み
 	loaded, err := LoadToken(accountID)
 	if err != nil {
 		t.Fatalf("LoadToken() error = %v", err)
@@ -47,23 +47,18 @@ func TestSaveAndLoadToken(t *testing.T) {
 			loaded.TokenType, token.TokenType)
 	}
 
-	// ファイルが存在することを確認
 	path, err := tokenPath(accountID)
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	if filepath.Ext(path) != ".token" {
+		t.Errorf("file extension = %q, want .token",
+			filepath.Ext(path))
+	}
+
 	if _, err := os.Stat(path); err != nil {
 		t.Fatalf("token file does not exist: %v", err)
-	}
-
-	// 削除
-	if err := DeleteToken(accountID); err != nil {
-		t.Fatalf("DeleteToken() error = %v", err)
-	}
-
-	if _, err := os.Stat(path); !os.IsNotExist(err) {
-		t.Errorf("token file still exists after deletion")
 	}
 }
 
@@ -71,7 +66,7 @@ func TestLoadTokenNotFound(t *testing.T) {
 	_, err := LoadToken(uuid.New())
 
 	if err == nil {
-		t.Fatal("LoadToken() expected an error for missing token")
+		t.Fatal("expected error for missing token")
 	}
 }
 
@@ -79,7 +74,7 @@ func TestDeleteTokenNotFound(t *testing.T) {
 	err := DeleteToken(uuid.New())
 
 	if err != nil {
-		t.Errorf("DeleteToken() should ignore missing files, got %v", err)
+		t.Errorf("DeleteToken() should ignore missing files: %v", err)
 	}
 }
 
@@ -115,29 +110,100 @@ func TestTokenEncryption(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// 暗号化済みデータであることを確認
-	if len(data) <= len(tokenMagic) {
-		t.Fatal("encrypted token data is too short")
-	}
-
-	if string(data[:len(tokenMagic)]) != string(tokenMagic) {
+	if !bytes.HasPrefix(data, tokenMagic) {
 		t.Fatal("token encryption magic header not found")
 	}
 
-	// 平文のトークン情報が含まれていないことを確認
-	if string(data) == "" {
-		t.Fatal("token file is empty")
+	if bytes.Contains(data, []byte(token.AccessToken)) {
+		t.Error("access token is stored in plaintext")
 	}
 
-	if contains := func() bool {
-		return len(data) >= len(token.RefreshToken) &&
-			string(data) != token.RefreshToken
-	}(); !contains {
-		t.Fatal("token data appears to be unencrypted")
+	if bytes.Contains(data, []byte(token.RefreshToken)) {
+		t.Error("refresh token is stored in plaintext")
 	}
 }
 
-func TestLegacyTokenMigration(t *testing.T) {
+// TestLegacyJSONMigration verifies migration from old .json files.
+func TestLegacyJSONMigration(t *testing.T) {
+	accountID := uuid.New()
+
+	token, err := tokenPath(accountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	legacy, err := legacyTokenPath(accountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := os.MkdirAll(filepath.Dir(legacy), 0700); err != nil {
+		t.Fatal(err)
+	}
+
+	legacyToken := &oauth2.Token{
+		AccessToken:  "legacy-access-token",
+		RefreshToken: "legacy-refresh-token",
+		TokenType:    "Bearer",
+	}
+
+	legacyData, err := json.Marshal(legacyToken)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := os.WriteFile(legacy, legacyData, 0600); err != nil {
+		t.Fatal(err)
+	}
+
+	// LoadToken should migrate .json to encrypted .token.
+	loaded, err := LoadToken(accountID)
+	if err != nil {
+		t.Fatalf("LoadToken() migration error = %v", err)
+	}
+
+	if loaded.AccessToken != legacyToken.AccessToken {
+		t.Errorf("AccessToken = %q, want %q",
+			loaded.AccessToken, legacyToken.AccessToken)
+	}
+
+	if loaded.RefreshToken != legacyToken.RefreshToken {
+		t.Errorf("RefreshToken = %q, want %q",
+			loaded.RefreshToken, legacyToken.RefreshToken)
+	}
+
+	// Verify new .token file exists.
+	migratedData, err := os.ReadFile(token)
+	if err != nil {
+		t.Fatalf("migrated .token file does not exist: %v", err)
+	}
+
+	if !bytes.HasPrefix(migratedData, tokenMagic) {
+		t.Fatal("migrated token is not encrypted")
+	}
+
+	// Verify old .json file was removed.
+	if _, err := os.Stat(legacy); !errors.Is(err, os.ErrNotExist) {
+		t.Errorf("legacy .json file still exists")
+	}
+
+	// Verify the migrated token can be loaded again.
+	reloaded, err := LoadToken(accountID)
+	if err != nil {
+		t.Fatalf("LoadToken() after migration error = %v", err)
+	}
+
+	if reloaded.RefreshToken != legacyToken.RefreshToken {
+		t.Errorf("reloaded RefreshToken = %q, want %q",
+			reloaded.RefreshToken, legacyToken.RefreshToken)
+	}
+
+	defer DeleteToken(accountID)
+}
+
+// TestLegacyPlaintextMigration verifies migration of plaintext JSON
+// stored in the new .token path.
+func TestLegacyPlaintextMigration(t *testing.T) {
 	accountID := uuid.New()
 	defer DeleteToken(accountID)
 
@@ -150,31 +216,29 @@ func TestLegacyTokenMigration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	legacyToken := &oauth2.Token{
-		AccessToken:  "legacy-access-token",
-		RefreshToken: "legacy-refresh-token",
+	token := &oauth2.Token{
+		AccessToken:  "plaintext-access-token",
+		RefreshToken: "plaintext-refresh-token",
 		TokenType:    "Bearer",
 	}
 
-	// 旧形式の平文JSONを作成
-	legacyData, err := json.Marshal(legacyToken)
+	data, err := json.Marshal(token)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if err := os.WriteFile(path, legacyData, 0600); err != nil {
+	if err := os.WriteFile(path, data, 0600); err != nil {
 		t.Fatal(err)
 	}
 
-	// 読み込み時に新形式へ移行されることを確認
 	loaded, err := LoadToken(accountID)
 	if err != nil {
 		t.Fatalf("LoadToken() error = %v", err)
 	}
 
-	if loaded.RefreshToken != legacyToken.RefreshToken {
+	if loaded.RefreshToken != token.RefreshToken {
 		t.Errorf("RefreshToken = %q, want %q",
-			loaded.RefreshToken, legacyToken.RefreshToken)
+			loaded.RefreshToken, token.RefreshToken)
 	}
 
 	migratedData, err := os.ReadFile(path)
@@ -182,39 +246,33 @@ func TestLegacyTokenMigration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if len(migratedData) < len(tokenMagic) ||
-		string(migratedData[:len(tokenMagic)]) != string(tokenMagic) {
-		t.Fatal("legacy token was not migrated to encrypted format")
+	if !bytes.HasPrefix(migratedData, tokenMagic) {
+		t.Fatal("plaintext token was not migrated to encrypted format")
 	}
 }
 
-func TestSaveLoadToken(t *testing.T) {
-	id := uuid.New()
+func TestDeleteToken(t *testing.T) {
+	accountID := uuid.New()
 
 	token := &oauth2.Token{
-		AccessToken:  "test-access-token",
-		RefreshToken: "test-refresh-token",
-		TokenType:    "Bearer",
+		AccessToken: "test-access-token",
 	}
 
-	if err := SaveToken(id, token); err != nil {
-		t.Fatalf("SaveToken: %v", err)
+	if err := SaveToken(accountID, token); err != nil {
+		t.Fatal(err)
 	}
-	defer DeleteToken(id)
 
-	loaded, err := LoadToken(id)
+	path, err := tokenPath(accountID)
 	if err != nil {
-		t.Fatalf("LoadToken: %v", err)
+		t.Fatal(err)
 	}
 
-	if loaded.AccessToken != token.AccessToken {
-		t.Errorf("AccessToken = %q, want %q",
-			loaded.AccessToken, token.AccessToken)
+	if err := DeleteToken(accountID); err != nil {
+		t.Fatalf("DeleteToken() error = %v", err)
 	}
 
-	if loaded.RefreshToken != token.RefreshToken {
-		t.Errorf("RefreshToken = %q, want %q",
-			loaded.RefreshToken, token.RefreshToken)
+	if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
+		t.Error("token file still exists after deletion")
 	}
 }
 
@@ -223,7 +281,7 @@ func TestTokenFileEncrypted(t *testing.T) {
 		t.Skip("DPAPI encryption test requires Windows")
 	}
 
-	id := uuid.New()
+	accountID := uuid.New()
 
 	token := &oauth2.Token{
 		AccessToken:  "plain-access-token",
@@ -231,12 +289,12 @@ func TestTokenFileEncrypted(t *testing.T) {
 		TokenType:    "Bearer",
 	}
 
-	if err := SaveToken(id, token); err != nil {
+	if err := SaveToken(accountID, token); err != nil {
 		t.Fatal(err)
 	}
-	defer DeleteToken(id)
+	defer DeleteToken(accountID)
 
-	path, err := tokenPath(id)
+	path, err := tokenPath(accountID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -254,35 +312,7 @@ func TestTokenFileEncrypted(t *testing.T) {
 		t.Error("refresh token is stored in plaintext")
 	}
 
-	if len(data) == 0 {
-		t.Fatal("encrypted token file is empty")
-	}
-}
-
-func TestLoadTokenMissing(t *testing.T) {
-	_, err := LoadToken(uuid.New())
-
-	if err == nil {
-		t.Fatal("expected error for missing token")
-	}
-}
-
-func TestDeleteToken(t *testing.T) {
-	id := uuid.New()
-
-	token := &oauth2.Token{
-		AccessToken: "test-access-token",
-	}
-
-	if err := SaveToken(id, token); err != nil {
-		t.Fatal(err)
-	}
-
-	if err := DeleteToken(id); err != nil {
-		t.Fatalf("DeleteToken: %v", err)
-	}
-
-	if _, err := LoadToken(id); !os.IsNotExist(err) {
-		t.Errorf("expected os.ErrNotExist, got %v", err)
+	if !bytes.HasPrefix(data, tokenMagic) {
+		t.Error("encryption header not found")
 	}
 }
