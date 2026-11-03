@@ -1,0 +1,39 @@
+{
+  "timestamp": "20261103T124127Z",
+  "type": "formatting",
+  "status": "success",
+  "exit_code": 0,
+  "commit": {
+    "sha": "39a67fc375196deb4ef8ff462fe6cbba9f41a8ce",
+    "url": "https://github.com/LingXuan-Li/InquiryExplorer/commit/39a67fc375196deb4ef8ff462fe6cbba9f41a8ce"
+  },
+  "github": {
+    "repository": "LingXuan-Li/InquiryExplorer",
+    "run_id": "41637692487",
+    "run_attempt": "1",
+    "run_url": "https://github.com/LingXuan-Li/InquiryExplorer/actions/runs/41637692487/attempts/1"
+  },
+  "summary": {
+    "tools": [
+      {
+        "tool": "prettier",
+        "exit_code": 0,
+        "status": "success",
+        "reported_files": [],
+        "errors": [],
+        "output": ""
+      },
+      {
+        "tool": "go fmt",
+        "exit_code": 0,
+        "status": "success",
+        "reported_files": [],
+        "errors": [],
+        "output": ""
+      }
+    ],
+    "reformatted_files": [],
+    "files_source": "git diff"
+  },
+  "details": "### BEGIN prettier\n\u001b[90mREADME.md\u001b[39m 37ms (unchanged)\n\u001b[90msetup/config/env.json\u001b[39m 16ms (unchanged)\n\u001b[90msetup/templates/index.html\u001b[39m 72ms (unchanged)\n\u001b[90msetup/templates/pages/cloud-signup.html\u001b[39m 20ms (unchanged)\n\u001b[90msetup/templates/pages/home.html\u001b[39m 30ms (unchanged)\n\n### END prettier exit=0\n### BEGIN go fmt\n\n### END go fmt exit=0\n### BEGIN changes\n\n### END changes exit=0\n"
+}
