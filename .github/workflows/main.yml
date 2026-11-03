@@ -21,6 +21,7 @@ defaults:
 jobs:
   build:
     name: Format and Test
+    # Windows is required by the DPAPI based storage package.
     runs-on: windows-latest
     timeout-minutes: 15
 
@@ -34,6 +35,12 @@ jobs:
       LOG_SCRIPT: .github/scripts/manage_test_logs.py
 
     steps:
+      # Git for Windows converts line endings to CRLF on checkout by default.
+      # Formatters then rewrite every file back to LF, which is reported as
+      # "everything was reformatted". This must run before Checkout.
+      - name: Disable Line Ending Conversion
+        run: git config --global core.autocrlf false
+
       # Checkout
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,22 +59,14 @@ jobs:
         with:
           python-version: "3.x"
 
-      # Setup PHP (EditorConfig CLI)
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      # Setup Node.js (npx prettier)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          php-version: "8.5"
-          extensions: iconv
-          tools: composer:v2
-
-      # Install EditorConfig CLI
-      - name: Install EditorConfig CLI
-        run: |
-          composer global require armin/editorconfig-cli:2.2.1 --no-interaction
+          node-version: "lts/*"
 
       # Versions are the first thing to check when a failure only
       # happens in CI.
-      # Show Environment
       - name: Show Environment
         run: |
           echo "Runner OS: $RUNNER_OS"
@@ -80,16 +79,22 @@ jobs:
           echo ""
           echo "Go:"
           go version
-          go env GOOS
-          go env GOARCH
-          go env GOHOSTOS
-          go env GOHOSTARCH
 
           echo ""
           echo "Python:"
           python --version
 
           echo ""
+          echo "Node.js:"
+          node --version
+          npm --version
+
+          echo ""
+          echo "Prettier:"
+          npx --yes prettier --version
+
+          echo ""
+          echo "Git autocrlf: $(git config --get core.autocrlf)"
           echo "Commit: $(git rev-parse HEAD)"
 
       # Dependency Tidying
@@ -126,47 +131,64 @@ jobs:
           fi
 
       # Formatting
+      #
+      # The result file has one section per tool, so the log script can tell
+      # which tool failed:
+      #   ### BEGIN <tool>
+      #   ...output...
+      #   ### END <tool> exit=<code>
       - name: Formatting
         id: formatting
         run: |
           mkdir -p "$RUNNER_TEMP"
 
-          set +e
+          RESULT_FILE="$RUNNER_TEMP/format-results.txt"
+          : > "$RESULT_FILE"
 
-          {
-            echo "EditorConfig Formatting"
+          LAST_STATUS=0
 
-            composer global exec ec -- --git-only --fix --no-interaction
-            EDITORCONFIG_STATUS=$?
+          # run_tool <name> <command...>
+          # Runs a command, appends its output to the result file and
+          # stores its exit code in LAST_STATUS (without stopping the step).
+          run_tool() {
+            local name="$1"
+            shift
 
-            echo ""
-            echo "EditorConfig exit code: $EDITORCONFIG_STATUS"
-            echo ""
+            echo "### BEGIN $name" >> "$RESULT_FILE"
 
-            echo "Golang Formatting"
+            set +e
+            "$@" >> "$RESULT_FILE" 2>&1
+            LAST_STATUS=$?
+            set -e
 
-            go fmt ./...
-            GOFMT_STATUS=$?
+            printf '\n### END %s exit=%s\n' "$name" "$LAST_STATUS" >> "$RESULT_FILE"
+          }
 
-            echo ""
-            echo "Go fmt exit code: $GOFMT_STATUS"
+          run_tool "prettier" npx --yes prettier --write .
+          PRETTIER_STATUS=$LAST_STATUS
 
-          } > "$RUNNER_TEMP/format-results.txt" 2>&1
+          run_tool "go fmt" go fmt ./...
+          GOFMT_STATUS=$LAST_STATUS
 
-          set -e
+          # Files that really changed (tools may report files they only
+          # rewrote without a real change).
+          run_tool "changes" git -c core.quotepath=false diff --name-only
 
-          if [ "$EDITORCONFIG_STATUS" -ne 0 ]; then
-            FORMAT_STATUS=$EDITORCONFIG_STATUS
-          elif [ "$GOFMT_STATUS" -ne 0 ]; then
-            FORMAT_STATUS=$GOFMT_STATUS
-          else
-            FORMAT_STATUS=0
-          fi
+          # The first failing tool decides the exit code.
+          FORMAT_STATUS=0
+          for status in "$PRETTIER_STATUS" "$GOFMT_STATUS"; do
+            if [ "$status" -ne 0 ]; then
+              FORMAT_STATUS=$status
+              break
+            fi
+          done
 
-          cat "$RUNNER_TEMP/format-results.txt"
+          echo "::group::Formatting output"
+          cat "$RESULT_FILE"
+          echo "::endgroup::"
 
           python "$LOG_SCRIPT" \
-            --source "$RUNNER_TEMP/format-results.txt" \
+            --source "$RESULT_FILE" \
             --kind formatting \
             --exit-code "$FORMAT_STATUS" \
             --run-id "$RUN_ID" \
