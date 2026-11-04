@@ -75,4 +75,20 @@ go build -o inquiry-explorer.exe .
 - **GitHub**: [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LingXuan-Li)
 - **Twitter/X**: [![Twitter/X](https://img.shields.io/badge/Twitter/X-1DA1F2?style=flat-square&logo=x&logoColor=white)](https://x.com/RaccoonDog_329)
 
-Please submit bug reports via [GitHub Issues](https://github.com/LingXuan-Li/InquiryExplorer/issues) and feel free to reach out with any questions on [Twitter/X](https://x.com/RaccoonDog_329).
+## Bug Reports and Security Vulnerabilities
+
+[![Bug report](https://img.shields.io/badge/GitHub-Bug%20report-7057ff?style=flat-square&logo=github)](https://github.com/LingXuan-Li/InquiryExplorer/issues/new?template=bug_report.yml) [![Feature request](https://img.shields.io/badge/GitHub-Feature%20request-2da44e?style=flat-square&logo=github)](https://github.com/LingXuan-Li/InquiryExplorer/issues/new?template=feature_request.yml) [![Private vulnerability report](https://img.shields.io/badge/Security-Private%20report-critical?style=flat-square&logo=github)](https://github.com/LingXuan-Li/InquiryExplorer/security/advisories/new)
+
+The bug report form lets you select a severity level based on the impact:
+
+| Severity | Guidance |
+| --- | --- |
+| `notice` | Minor visual or documentation issue |
+| `caution` | Limited impact with a workaround |
+| `warning` | A major feature is affected |
+| `danger` | Broad outage or possible data corruption |
+| `critical` | Service outage or serious data loss requiring urgent response |
+
+Do not include vulnerability details or reproduction steps in a public issue. Use the [private GitHub Security Advisory reporting link](https://github.com/LingXuan-Li/InquiryExplorer/security/advisories/new). A repository administrator must enable **Private vulnerability reporting** under **Settings → Advanced Security** for this link to work.
+
+For other questions, feel free to reach out on [Twitter/X](https://x.com/RaccoonDog_329).
