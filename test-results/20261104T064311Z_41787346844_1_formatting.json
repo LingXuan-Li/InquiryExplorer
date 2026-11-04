@@ -1,0 +1,43 @@
+{
+  "timestamp": "20261104T064311Z",
+  "type": "formatting",
+  "status": "success",
+  "exit_code": 0,
+  "commit": {
+    "sha": "e8fcb064d9e9371b77eef4f630392b732b0308b1",
+    "url": "https://github.com/LingXuan-Li/InquiryExplorer/commit/e8fcb064d9e9371b77eef4f630392b732b0308b1"
+  },
+  "github": {
+    "repository": "LingXuan-Li/InquiryExplorer",
+    "run_id": "41787346844",
+    "run_attempt": "1",
+    "run_url": "https://github.com/LingXuan-Li/InquiryExplorer/actions/runs/41787346844/attempts/1"
+  },
+  "summary": {
+    "tools": [
+      {
+        "tool": "prettier",
+        "exit_code": 0,
+        "status": "success",
+        "reported_files": [
+          "README.md"
+        ],
+        "errors": [],
+        "output": ""
+      },
+      {
+        "tool": "go fmt",
+        "exit_code": 0,
+        "status": "success",
+        "reported_files": [],
+        "errors": [],
+        "output": ""
+      }
+    ],
+    "reformatted_files": [
+      "README.md"
+    ],
+    "files_source": "git diff"
+  },
+  "details": "### BEGIN prettier\n\u001b[90m.github/ISSUE_TEMPLATE/bug_report.yml\u001b[39m 24ms (unchanged)\n\u001b[90m.github/ISSUE_TEMPLATE/config.yml\u001b[39m 2ms (unchanged)\n\u001b[90m.github/ISSUE_TEMPLATE/feature_request.yml\u001b[39m 3ms (unchanged)\nREADME.md 57ms\n\u001b[90msetup/config/env.json\u001b[39m 19ms (unchanged)\n\u001b[90msetup/templates/index.html\u001b[39m 112ms (unchanged)\n\u001b[90msetup/templates/pages/cloud-signup.html\u001b[39m 38ms (unchanged)\n\u001b[90msetup/templates/pages/home.html\u001b[39m 45ms (unchanged)\n\n### END prettier exit=0\n### BEGIN go fmt\n\n### END go fmt exit=0\n### BEGIN changes\nREADME.md\n\n### END changes exit=0\n"
+}

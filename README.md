@@ -81,12 +81,12 @@ go build -o inquiry-explorer.exe .
 
 The bug report form lets you select a severity level based on the impact:
 
-| Severity | Guidance |
-| --- | --- |
-| `notice` | Minor visual or documentation issue |
-| `caution` | Limited impact with a workaround |
-| `warning` | A major feature is affected |
-| `danger` | Broad outage or possible data corruption |
+| Severity   | Guidance                                                      |
+| ---------- | ------------------------------------------------------------- |
+| `notice`   | Minor visual or documentation issue                           |
+| `caution`  | Limited impact with a workaround                              |
+| `warning`  | A major feature is affected                                   |
+| `danger`   | Broad outage or possible data corruption                      |
 | `critical` | Service outage or serious data loss requiring urgent response |
 
 Do not include vulnerability details or reproduction steps in a public issue. Use the [private GitHub Security Advisory reporting link](https://github.com/LingXuan-Li/InquiryExplorer/security/advisories/new). A repository administrator must enable **Private vulnerability reporting** under **Settings → Advanced Security** for this link to work.
