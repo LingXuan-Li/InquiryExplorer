@@ -3,53 +3,27 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-		<title>Connect an Account | Inquiry Explorer</title>
+		<title>Connect an Account</title>
 
 		<style>
-			:root {
-				--background: #f5f6fa;
-				--surface: #ffffff;
-				--text: #25283a;
-				--secondary: #777b8c;
-				--border: #e3e5ec;
-				--primary: #6558d3;
-				--primary-hover: #5145b8;
-				--success: #269b69;
-			}
-
-			* {
-				box-sizing: border-box;
-			}
-
-			body {
-				margin: 0;
-				padding: 32px 20px;
-				min-height: 100vh;
-				background: var(--background);
-				color: var(--text);
-				font-family: "Noto Sans JP", "Segoe UI", sans-serif;
-			}
-
 			.container {
-				width: 100%;
-				max-width: 560px;
+				max-width: 640px;
 				margin: 0 auto;
 			}
 
 			.header {
-				margin-bottom: 32px;
-				text-align: center;
+				margin-bottom: 24px;
 			}
 
 			.header h1 {
-				margin: 0 0 10px;
-				font-size: 26px;
+				margin-bottom: 4px;
+				font-size: 24px;
+				font-weight: 700;
+				line-height: 1.3;
 			}
 
 			.header p {
-				margin: 0;
-				color: var(--secondary);
+				color: var(--muted);
 				font-size: 14px;
 			}
 
@@ -57,7 +31,7 @@
 				padding: 24px;
 				background: var(--surface);
 				border: 1px solid var(--border);
-				border-radius: 14px;
+				border-radius: var(--radius);
 			}
 
 			.provider {
@@ -68,61 +42,82 @@
 
 			.provider-icon {
 				display: grid;
-				width: 48px;
-				height: 48px;
+				width: 44px;
+				height: 44px;
+				flex: none;
 				place-items: center;
-				background: #f1f3f4;
-				border-radius: 12px;
-				font-size: 24px;
+				background: var(--hover);
+				border-radius: 10px;
+				color: var(--primary-dark);
+				font-size: 20px;
+				font-weight: 700;
 			}
 
 			.provider-info {
 				flex: 1;
+				min-width: 0;
 			}
 
 			.provider-info h2 {
-				margin: 0 0 5px;
-				font-size: 17px;
+				margin: 0;
+				font-size: 16px;
+				font-weight: 650;
 			}
 
 			.provider-info p {
-				margin: 0;
-				color: var(--secondary);
-				font-size: 12px;
+				color: var(--muted);
+				font-size: 13px;
 			}
 
 			.status {
-				color: var(--success);
-				font-size: 12px;
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+				color: var(--ok);
+				font-size: 13px;
 				font-weight: 600;
 			}
 
+			.status::before {
+				content: "";
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: currentColor;
+			}
+
 			.description {
-				margin: 22px 0;
-				color: var(--secondary);
-				font-size: 13px;
+				max-width: 60ch;
+				margin: 20px 0;
+				color: var(--muted);
+				font-size: 14px;
 				line-height: 1.8;
 			}
 
 			.register-button {
 				display: flex;
 				width: 100%;
-				min-height: 48px;
+				min-height: 44px;
 				align-items: center;
 				justify-content: center;
-				gap: 10px;
 				border: none;
-				border-radius: 8px;
-				background: var(--primary);
-				color: #ffffff;
+				border-radius: var(--radius-sm);
+				background: var(--primary-dark);
+				color: #fff;
+				font: inherit;
 				font-size: 14px;
 				font-weight: 600;
 				cursor: pointer;
-				transition: background 0.2s;
+				transition: background 0.15s;
 			}
 
 			.register-button:hover {
-				background: var(--primary-hover);
+				background: #115577;
+			}
+
+			.register-button:focus-visible {
+				outline: 3px solid var(--primary);
+				outline-offset: 2px;
 			}
 
 			.register-button:disabled {
@@ -132,11 +127,12 @@
 
 			.message {
 				display: none;
-				margin-top: 16px;
-				padding: 12px;
-				border-radius: 8px;
+				margin-top: 14px;
+				padding: 12px 14px;
+				border-radius: var(--radius-sm);
 				font-size: 13px;
 				line-height: 1.6;
+				overflow-wrap: anywhere;
 			}
 
 			.message.visible {
@@ -144,13 +140,13 @@
 			}
 
 			.message.error {
-				background: #fff0f0;
-				color: #c03939;
+				background: var(--danger-bg);
+				color: #a52a2a;
 			}
 
 			.message.success {
-				background: #edfaf3;
-				color: #218653;
+				background: #e8f6ee;
+				color: #17704a;
 			}
 
 			.permissions {
@@ -160,16 +156,32 @@
 			}
 
 			.permissions h3 {
-				margin: 0 0 10px;
+				margin-bottom: 8px;
 				font-size: 13px;
+				font-weight: 650;
 			}
 
 			.permissions ul {
-				margin: 0;
-				padding-left: 20px;
-				color: var(--secondary);
-				font-size: 12px;
-				line-height: 2;
+				list-style: none;
+				color: var(--muted);
+				font-size: 13px;
+			}
+
+			.permissions li {
+				position: relative;
+				padding: 3px 0 3px 22px;
+			}
+
+			.permissions li::before {
+				content: "";
+				position: absolute;
+				left: 4px;
+				top: 0.6em;
+				width: 5px;
+				height: 9px;
+				border: solid var(--ok);
+				border-width: 0 2px 2px 0;
+				transform: rotate(45deg);
 			}
 
 			.account-section {
@@ -177,41 +189,48 @@
 			}
 
 			.account-section h2 {
-				margin: 0 0 14px;
-				font-size: 17px;
+				margin: 0 0 12px;
+				font-size: 16px;
+				font-weight: 650;
 			}
 
 			.account-list {
 				display: flex;
 				flex-direction: column;
-				gap: 10px;
+				gap: 8px;
 			}
 
 			.account-item {
-				padding: 18px 20px;
+				padding: 14px 18px;
 				background: var(--surface);
 				border: 1px solid var(--border);
-				border-radius: 10px;
+				border-radius: var(--radius-sm);
 			}
 
 			.account-item strong {
 				display: block;
 				font-size: 14px;
+				font-weight: 600;
 			}
 
 			.account-item p {
-				margin: 6px 0 0;
-				color: var(--secondary);
-				font-size: 12px;
+				color: var(--muted);
+				font-size: 13px;
 			}
 
 			.empty {
 				padding: 24px;
 				border: 1px dashed var(--border);
-				border-radius: 10px;
-				color: var(--secondary);
+				border-radius: var(--radius-sm);
+				color: var(--muted);
 				font-size: 13px;
 				text-align: center;
+			}
+
+			@media (max-width: 700px) {
+				.card {
+					padding: 20px;
+				}
 			}
 		</style>
 	</head>
@@ -219,13 +238,13 @@
 	<body>
 		<main class="container">
 			<header class="header">
-				<h1>Connect an Account</h1>
+				<h1>Connect an account</h1>
 				<p>Connect cloud storage to Inquiry Explorer.</p>
 			</header>
 
 			<section class="card">
 				<div class="provider">
-					<div class="provider-icon">G</div>
+					<div class="provider-icon" aria-hidden="true">G</div>
 
 					<div class="provider-info">
 						<h2>Google Drive</h2>
@@ -246,8 +265,7 @@
 					id="google-register"
 					onclick="registerGoogle()"
 				>
-					<span>＋</span>
-					Add Google Account
+					Add Google account
 				</button>
 
 				<div
@@ -263,13 +281,13 @@
 					<ul>
 						<li>Read file information from Google Drive</li>
 						<li>View storage usage</li>
-						<li>Files will not be modified or deleted</li>
+						<li>Files are never modified or deleted</li>
 					</ul>
 				</div>
 			</section>
 
 			<section class="account-section">
-				<h2>Connected Accounts</h2>
+				<h2>Connected accounts</h2>
 
 				<div id="account-list" class="account-list">
 					<div class="empty">Loading account information...</div>
@@ -288,24 +306,24 @@
 
 			async function registerGoogle() {
 				button.disabled = true;
-				button.textContent = "Starting authorization...";
+				button.textContent = "Waiting for authorization...";
 
 				message.className = "message";
 
 				try {
 					await window.app_register_google_account();
 
-					showMessage(
-						"Google account connected successfully.",
-						"success",
-					);
+					showMessage("Google account connected.", "success");
 
 					await loadAccounts();
 				} catch (error) {
-					showMessage("Authorization failed: " + error, "error");
+					showMessage(
+						"Could not connect the account. " + error,
+						"error",
+					);
 				} finally {
 					button.disabled = false;
-					button.innerHTML = "<span>＋</span> Add Google Account";
+					button.textContent = "Add Google account";
 				}
 			}
 
@@ -320,7 +338,8 @@
 					if (!accounts || accounts.length === 0) {
 						const empty = document.createElement("div");
 						empty.className = "empty";
-						empty.textContent = "No connected accounts.";
+						empty.textContent =
+							"No accounts connected yet. Add a Google account above to get started.";
 						list.appendChild(empty);
 						return;
 					}

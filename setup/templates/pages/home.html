@@ -6,92 +6,99 @@
 		<title>Dashboard</title>
 
 		<style>
-			:root {
-				--primary: #1c85ba;
-				--primary-dark: #176d99;
-				--bg: #f5f7fa;
-				--text: #1c1c1c;
-				--muted: #64748b;
-				--white: #ffffff;
-				--border: #e2e8f0;
-			}
-
-			* {
-				margin: 0;
-				padding: 0;
-				box-sizing: border-box;
-			}
-
-			body {
-				font-family:
-					-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-				background: var(--bg);
-				color: var(--text);
-				padding: 28px 35px;
-			}
-
 			.container {
-				max-width: 1100px;
+				max-width: 1080px;
 				margin: 0 auto;
 			}
 
 			h1 {
-				font-size: 23px;
+				font-size: 24px;
 				font-weight: 700;
-				margin-bottom: 6px;
+				line-height: 1.3;
+				margin-bottom: 4px;
 			}
 
 			.subtitle {
+				max-width: 64ch;
 				color: var(--muted);
 				font-size: 14px;
 				margin-bottom: 24px;
 			}
 
+			.card {
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: var(--radius);
+				padding: 24px;
+				margin-bottom: 16px;
+			}
+
+			h2 {
+				font-size: 16px;
+				font-weight: 650;
+				margin-bottom: 18px;
+			}
+
+			.error {
+				display: none;
+				margin-bottom: 16px;
+				padding: 12px 14px;
+				border: 1px solid #f3b9b9;
+				border-radius: var(--radius-sm);
+				background: var(--danger-bg);
+				color: #a52a2a;
+				font-size: 14px;
+				overflow-wrap: anywhere;
+			}
+
+			.empty {
+				padding: 28px;
+				color: var(--muted);
+				text-align: center;
+			}
+
+			.refresh-info {
+				margin-top: 14px;
+				color: var(--muted);
+				font-size: 12px;
+				text-align: right;
+			}
+
+			/* ===== Summary ===== */
 			.summary {
 				display: grid;
 				grid-template-columns: repeat(3, 1fr);
-				gap: 18px;
-				margin-bottom: 20px;
+				padding: 20px 0;
 			}
 
-			.card {
-				background: var(--white);
-				border: 1px solid var(--border);
-				border-radius: 12px;
-				padding: 24px;
-				margin-bottom: 20px;
-				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+			.stat {
+				padding: 4px 28px;
+				border-left: 1px solid var(--border);
 			}
 
-			.summary .card {
-				margin-bottom: 0;
+			.stat:first-child {
+				border-left: none;
 			}
 
 			.card-title {
 				color: var(--muted);
 				font-size: 13px;
-				font-weight: 600;
-				text-transform: uppercase;
-				letter-spacing: 0.5px;
+				font-weight: 500;
 			}
 
 			.value {
-				font-size: 28px;
+				margin-top: 4px;
+				font-size: 26px;
 				font-weight: 700;
-				margin-top: 8px;
+				font-variant-numeric: tabular-nums;
+				line-height: 1.3;
 			}
 
-			h2 {
-				font-size: 17px;
-				font-weight: 700;
-				margin-bottom: 20px;
-			}
-
-			/* ===== Usage bars (DOM + CSS, no canvas) ===== */
+			/* ===== Usage bars ===== */
 			.usage-list {
 				display: flex;
 				flex-direction: column;
-				gap: 16px;
+				gap: 14px;
 			}
 
 			.usage-row {
@@ -103,8 +110,7 @@
 
 			.usage-label {
 				color: var(--muted);
-				font-size: 12px;
-				font-weight: 500;
+				font-size: 13px;
 				text-align: right;
 				white-space: nowrap;
 				overflow: hidden;
@@ -112,9 +118,9 @@
 			}
 
 			.usage-track {
-				height: 18px;
+				height: 12px;
 				background: var(--border);
-				border-radius: 9px;
+				border-radius: 6px;
 				overflow: hidden;
 			}
 
@@ -122,65 +128,78 @@
 				width: 0%;
 				height: 100%;
 				background-color: var(--primary);
-				border-radius: 9px;
+				border-radius: 6px;
 				transition:
 					width 1s ease-in-out,
 					background-color 0.5s ease;
 			}
 
 			.usage-fill.warn {
-				background-color: #f59e0b;
+				background-color: var(--warn);
 			}
 
 			.usage-fill.danger {
-				background-color: #ef4444;
+				background-color: var(--danger);
 			}
 
 			.usage-percent {
-				font-size: 12px;
+				font-size: 13px;
 				font-weight: 600;
 				font-variant-numeric: tabular-nums;
+				text-align: right;
 			}
 
-			/* ===== Mount point list ===== */
+			/* ===== Mount points ===== */
 			.storage-item {
 				padding: 16px 0;
 				border-bottom: 1px solid var(--border);
 			}
 
+			.storage-item:first-child {
+				padding-top: 0;
+			}
+
 			.storage-item:last-child {
+				padding-bottom: 0;
 				border-bottom: none;
 			}
 
 			.storage-header {
 				display: flex;
 				justify-content: space-between;
-				align-items: center;
+				align-items: baseline;
 				gap: 10px;
 			}
 
 			.device {
-				font-weight: 600;
 				font-size: 15px;
+				font-weight: 600;
 				word-break: break-all;
 			}
 
 			.percentage {
+				font-size: 15px;
 				font-weight: 700;
-				font-size: 16px;
+				font-variant-numeric: tabular-nums;
+			}
+
+			.filesystem {
+				margin-top: 2px;
+				color: var(--subtle);
+				font-size: 12px;
 			}
 
 			.progress {
-				height: 10px;
-				background: #e2e8f0;
-				border-radius: 20px;
-				overflow: hidden;
+				height: 8px;
 				margin: 10px 0;
+				background: var(--border);
+				border-radius: 4px;
+				overflow: hidden;
 			}
 
 			.bar {
 				height: 100%;
-				border-radius: 20px;
+				border-radius: 4px;
 				transition: width 0.4s ease;
 			}
 
@@ -191,46 +210,27 @@
 				gap: 8px;
 				color: var(--muted);
 				font-size: 12px;
-			}
-
-			.filesystem {
-				color: #94a3b8;
-				font-size: 12px;
-				margin-top: 4px;
-			}
-
-			.refresh-info {
-				text-align: right;
-				color: var(--muted);
-				font-size: 12px;
-				margin-top: 15px;
-			}
-
-			.error {
-				color: #ef4444;
-				background: #fee2e2;
-				padding: 14px;
-				border: 1px solid #fca5a5;
-				border-radius: 8px;
-				display: none;
-				margin-bottom: 20px;
-				font-size: 14px;
-				overflow-wrap: anywhere;
-			}
-
-			.empty {
-				color: var(--muted);
-				text-align: center;
-				padding: 30px;
+				font-variant-numeric: tabular-nums;
 			}
 
 			@media (max-width: 700px) {
-				body {
-					padding: 15px;
-				}
-
 				.summary {
 					grid-template-columns: 1fr;
+					padding: 8px 0;
+				}
+
+				.stat {
+					padding: 12px 20px;
+					border-left: none;
+					border-top: 1px solid var(--border);
+				}
+
+				.stat:first-child {
+					border-top: none;
+				}
+
+				.card {
+					padding: 20px;
 				}
 
 				.usage-row {
@@ -252,39 +252,38 @@
 		<div class="container">
 			<h1>Storage Monitor</h1>
 			<p class="subtitle">
-				Your storage information will be displayed here.
+				Total, used, and free space across your drives.
 			</p>
 
-			<div id="error" class="error"></div>
+			<div id="error" class="error" role="alert"></div>
 
-			<div class="summary">
-				<div class="card">
-					<div class="card-title">Total Storage</div>
+			<div class="card summary">
+				<div class="stat">
+					<div class="card-title">Total storage</div>
 					<div class="value" id="total">--</div>
 				</div>
-				<div class="card">
-					<div class="card-title">Used Storage</div>
+				<div class="stat">
+					<div class="card-title">Used</div>
 					<div class="value" id="used">--</div>
 				</div>
-				<div class="card">
-					<div class="card-title">Free Storage</div>
+				<div class="stat">
+					<div class="card-title">Free</div>
 					<div class="value" id="free">--</div>
 				</div>
 			</div>
 
-			<!-- Usage bars -->
 			<div class="card">
-				<h2>Storage Usage (%)</h2>
+				<h2>Usage by drive</h2>
 				<div id="usageList" class="usage-list"></div>
 			</div>
 
 			<div class="card">
-				<h2>Mount Points</h2>
+				<h2>Mount points</h2>
 				<div id="storageList">
 					<div class="empty">Loading storage information...</div>
 				</div>
 				<div class="refresh-info">
-					Last Update:
+					Last updated:
 					<span id="lastUpdate">--</span>
 				</div>
 			</div>
@@ -319,8 +318,8 @@
 				}
 
 				function getColor(percent) {
-					if (percent >= 90) return "#ef4444";
-					if (percent >= 75) return "#f59e0b";
+					if (percent >= 90) return "#d64545";
+					if (percent >= 75) return "#d98a0b";
 					return "#1c85ba";
 				}
 
