@@ -67,7 +67,7 @@ func New(onClose ...func()) (*Splash, error) {
 	}
 
 	w.SetTitle("Inquiry Explorer - Starting")
-	w.SetSize(480, 320, glaze.HintFixed)
+	w.SetSize(500, 300, glaze.HintFixed)
 	w.SetHtml(splashHTML)
 
 	go s.pump()

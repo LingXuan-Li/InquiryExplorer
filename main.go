@@ -24,11 +24,11 @@ import (
 )
 
 func init() {
-	// GUI はメインスレッド固定が必須(特に macOS)
+	// The GUI must stay on the main thread, especially on macOS.
 	runtime.LockOSThread()
 }
 
-// appResources は初期化処理で用意し、本体ウィンドウで使うもの。
+// appResources holds values prepared during initialization for the main window.
 type appResources struct {
 	root           string
 	indexHTML      []byte
@@ -40,12 +40,12 @@ func main() {
 }
 
 func run() int {
-	// ===== 起動部分 =====
+	// ===== Startup =====
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// ×ボタンで閉じられたら ctx をキャンセルして初期化を中断する。
+	// Cancel initialization if the window is closed with the close button.
 	s, err := splash.New(cancel)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "splash:", err)
@@ -53,7 +53,7 @@ func run() int {
 	}
 
 	if err := s.StartLogging(); err != nil {
-		// ログ連携に失敗してもスプラッシュ自体は続行できる
+		// The splash screen can continue even if log integration fails.
 		fmt.Fprintln(os.Stderr, "start logging:", err)
 	}
 
@@ -63,28 +63,28 @@ func run() int {
 	}
 	resultCh := make(chan initResult, 1)
 
-	// 初期化は別 goroutine。メインスレッドはスプラッシュ表示に専念する。
+	// Initialize in a separate goroutine so the main thread can display the splash screen.
 	go func() {
 		res, err := initialize(ctx)
 
 		if err != nil {
-			log.Printf("初期化に失敗しました: %v", err)
-			time.Sleep(2 * time.Second) // エラーを読めるように残す
+			log.Printf("Initialization failed: %v", err)
+			time.Sleep(2 * time.Second) // Keep the error visible long enough to read.
 		} else {
-			log.Println("起動完了")
-			time.Sleep(300 * time.Millisecond) // 最終ログの反映待ち
+			log.Println("Startup complete")
+			time.Sleep(300 * time.Millisecond) // Allow the final log message to appear.
 		}
 
 		resultCh <- initResult{res: res, err: err}
-		s.Close() // メインスレッドの s.Run() を戻す
+		s.Close() // Unblock s.Run() on the main thread.
 	}()
 
-	// メインスレッドをブロックしてスプラッシュを表示
+	// Block the main thread while displaying the splash screen.
 	s.Run()
 
-	// ===== 終了部分 =====
+	// ===== Shutdown =====
 
-	// ×ボタンで閉じられた場合はアプリごと終了
+	// Exit the application if the window was closed with the close button.
 	if ctx.Err() != nil {
 		return 0
 	}
@@ -95,7 +95,7 @@ func run() int {
 		return 1
 	}
 
-	// 初期化成功: 本体ウィンドウを起動(メインスレッド)
+	// Initialization succeeded; start the main window on the main thread.
 	if err := runMainWindow(r.res); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return 1
@@ -104,8 +104,8 @@ func run() int {
 	return 0
 }
 
-// initialize はバックグラウンドで行う初期化処理。
-// log.Fatal は使わず、エラーを返してスプラッシュ側で表示する。
+// initialize performs setup in the background.
+// It returns errors instead of calling log.Fatal so the splash screen can display them.
 func initialize(ctx context.Context) (*appResources, error) {
 	res := &appResources{}
 
@@ -113,22 +113,22 @@ func initialize(ctx context.Context) (*appResources, error) {
 		name string
 		fn   func() error
 	}{
-		{"環境設定(.env)を読み込み中", func() error {
+		{"Loading environment settings (.env)", func() error {
 			if err := godotenv.Load(); err != nil {
 				return fmt.Errorf("load .env: %w", err)
 			}
 			return nil
 		}},
-		{"設定フォルダを作成中", file.MakeConfigFolder},
-		{"テンプレートをダウンロード中", file.DownloadSetupFolder},
-		{"OAuth フォルダを作成中", file.MakeOAuthFolder},
-		{"テンプレートを準備中", func() error {
+		{"Creating configuration directory", file.MakeConfigFolder},
+		{"Downloading templates", file.DownloadSetupFolder},
+		{"Creating OAuth directory", file.MakeOAuthFolder},
+		{"Preparing templates", func() error {
 			templ, err := file.TemplateFolderPath()
 			if err != nil {
 				return err
 			}
 
-			// テンプレートディレクトリを絶対パスに解決
+			// Resolve the template directory to an absolute path.
 			root, err := filepath.Abs(templ)
 			if err != nil {
 				return err
@@ -136,13 +136,13 @@ func initialize(ctx context.Context) (*appResources, error) {
 			res.root = root
 			log.Println("Template root:", root)
 
-			// index.html を Go テンプレートとして解析
+			// Parse index.html as a Go template.
 			tmpl, err := template.ParseFiles(filepath.Join(root, "index.html"))
 			if err != nil {
 				return err
 			}
 
-			// HTML テンプレートを描画
+			// Render the HTML template.
 			var buf bytes.Buffer
 			if err := tmpl.Execute(&buf, nil); err != nil {
 				return err
@@ -151,7 +151,7 @@ func initialize(ctx context.Context) (*appResources, error) {
 
 			return nil
 		}},
-		{"アカウント情報を読み込み中", func() error {
+		{"Loading account information", func() error {
 			m, err := account.NewManager()
 			if err != nil {
 				return err
@@ -176,7 +176,7 @@ func initialize(ctx context.Context) (*appResources, error) {
 	return res, nil
 }
 
-// runMainWindow は本体ウィンドウを作成して実行する(メインスレッド専用)。
+// runMainWindow creates and runs the main window. It must be called on the main thread.
 func runMainWindow(res *appResources) error {
 	w, err := glaze.NewWithOptions(glaze.Options{
 		Debug: true,
@@ -193,7 +193,7 @@ func runMainWindow(res *appResources) error {
 	w.SetTitle("Inquiry Explorer")
 	w.SetSize(900, 650, glaze.HintNone)
 
-	// Go のメソッドを JavaScript にバインド
+	// Bind Go methods to JavaScript.
 	app := &function.App{
 		AccountManager: res.accountManager,
 	}
@@ -206,7 +206,7 @@ func runMainWindow(res *appResources) error {
 	log.Printf("Registered methods: %#v", bound)
 	log.Println("Glaze BindMethods completed")
 
-	// index.html を開く
+	// Open index.html.
 	w.Navigate("inquiry://templates/index.html")
 
 	w.Run()
@@ -214,23 +214,23 @@ func runMainWindow(res *appResources) error {
 	return nil
 }
 
-// newSchemeHandler はカスタムスキームのリクエストを処理するハンドラを返す。
+// newSchemeHandler returns a handler for requests made through the custom URL scheme.
 func newSchemeHandler(root string, indexHTML []byte) glaze.SchemeHandler {
 	return func(req *glaze.SchemeRequest) *glaze.SchemeResponse {
-		// URL を解析
+		// Parse the URL.
 		parsedURL, err := url.Parse(req.URL)
 		if err != nil {
 			log.Println("URL parse error:", err)
 			return nil
 		}
 
-		// スキームとホストを検証
+		// Validate the scheme and host.
 		if (parsedURL.Scheme != "inquiry" && parsedURL.Scheme != "app") ||
 			parsedURL.Host != "templates" {
 			return nil
 		}
 
-		// URL からファイルパスを取得
+		// Get the file path from the URL.
 		relativePath := filepath.Clean(
 			filepath.FromSlash(
 				strings.TrimPrefix(parsedURL.Path, "/"),
@@ -240,14 +240,14 @@ func newSchemeHandler(root string, indexHTML []byte) glaze.SchemeHandler {
 		log.Println("Requested URL:", req.URL)
 		log.Println("Relative path:", relativePath)
 
-		// パストラバーサル対策
+		// Prevent path traversal.
 		if filepath.IsAbs(relativePath) ||
 			relativePath == ".." ||
 			strings.HasPrefix(relativePath, ".."+string(os.PathSeparator)) {
 			return nil
 		}
 
-		// index.html(描画済みのものを返す)
+		// Return the rendered index.html.
 		if relativePath == "index.html" {
 			return &glaze.SchemeResponse{
 				Body:     indexHTML,
@@ -255,10 +255,10 @@ func newSchemeHandler(root string, indexHTML []byte) glaze.SchemeHandler {
 			}
 		}
 
-		// フルパスを解決
+		// Resolve the full path.
 		fullPath := filepath.Join(root, relativePath)
 
-		// root の外へのアクセスを防止
+		// Prevent access outside the root directory.
 		rel, err := filepath.Rel(root, fullPath)
 		if err != nil ||
 			rel == ".." ||
@@ -268,14 +268,14 @@ func newSchemeHandler(root string, indexHTML []byte) glaze.SchemeHandler {
 
 		log.Println("Full path:", fullPath)
 
-		// ファイルを読み込み
+		// Read the file.
 		data, err := os.ReadFile(fullPath)
 		if err != nil {
 			log.Printf("File not found: %s", fullPath)
 			return nil
 		}
 
-		// MIME タイプを決定
+		// Determine the MIME type.
 		ext := filepath.Ext(fullPath)
 
 		contentType := mime.TypeByExtension(ext)
