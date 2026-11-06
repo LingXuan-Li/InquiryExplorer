@@ -6,6 +6,7 @@ import (
 
 	"InquiryExplorer/account"
 	"InquiryExplorer/auth"
+	"InquiryExplorer/file"
 	"InquiryExplorer/scan"
 )
 
@@ -22,6 +23,15 @@ func (a *App) GetStorageInfo() ([]scan.StorageInfo, error) {
 	}
 
 	return storage, nil
+}
+
+func (a *App) GetDesktopInfo() ([]file.FolderInfo, error) {
+	folders, err := file.GetDesktopInfo()
+	if err != nil {
+		return nil, err
+	}
+
+	return folders, nil
 }
 
 // RegisterGoogleAccount starts Google OAuth authentication.
