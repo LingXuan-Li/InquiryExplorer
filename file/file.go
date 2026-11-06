@@ -55,6 +55,26 @@ func MakeDataFolder() error {
 	return os.MkdirAll(dataDir, 0755)
 }
 
+func MakeDesktopFolder() error {
+	appDir, err := ConfigFolderPath()
+	if err != nil {
+		return err
+	}
+
+	dataDir := filepath.Join(appDir, "desktop")
+
+	return os.MkdirAll(dataDir, 0755)
+}
+
+func DesktopFolderPath() (string, error) {
+	appDir, err := ConfigFolderPath()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(appDir, "desktop"), nil
+}
+
 func OAuthFolderPath() (string, error) {
 	appDir, err := ConfigFolderPath()
 	if err != nil {

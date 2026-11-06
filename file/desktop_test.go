@@ -251,7 +251,7 @@ func TestFormatSize(t *testing.T) {
 }
 
 func TestGetDesktopInfo(t *testing.T) {
-	// このテストは実際のユーザーのDesktopフォルダを参照する
+	// 実際のユーザーのDesktopフォルダを参照する
 	home, err := os.UserHomeDir()
 	if err != nil {
 		t.Skipf("Cannot get user home directory: %v", err)
@@ -263,22 +263,33 @@ func TestGetDesktopInfo(t *testing.T) {
 	if os.IsNotExist(err) {
 		t.Skip("Desktop directory does not exist")
 	}
+	if err != nil {
+		t.Fatalf("Cannot access Desktop directory: %v", err)
+	}
 
 	result, err := GetDesktopInfo()
 	if err != nil {
 		t.Fatalf("GetDesktopInfo() error = %v", err)
 	}
 
-	if len(result) != 1 {
-		t.Fatalf("GetDesktopInfo() returned %d folders, want 1", len(result))
+	if result == nil {
+		t.Fatal("GetDesktopInfo() returned nil, want FolderInfo")
 	}
 
-	if result[0].Name != filepath.Base(desktop) {
+	if result.Name != filepath.Base(desktop) {
 		t.Errorf("Name = %q, want %q",
-			result[0].Name, filepath.Base(desktop))
+			result.Name, filepath.Base(desktop))
 	}
 
-	if !result[0].IsDir {
+	if !result.IsDir {
 		t.Error("Desktop IsDir = false, want true")
+	}
+
+	if result.Folders == nil {
+		t.Error("Folders is nil, want initialized slice")
+	}
+
+	if result.Files == nil {
+		t.Error("Files is nil, want initialized slice")
 	}
 }

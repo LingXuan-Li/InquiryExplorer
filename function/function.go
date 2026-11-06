@@ -2,7 +2,11 @@ package function
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"os"
+	"path/filepath"
 
 	"InquiryExplorer/account"
 	"InquiryExplorer/auth"
@@ -25,13 +29,35 @@ func (a *App) GetStorageInfo() ([]scan.StorageInfo, error) {
 	return storage, nil
 }
 
-func (a *App) GetDesktopInfo() ([]file.FolderInfo, error) {
-	folders, err := file.GetDesktopInfo()
+func (a *App) GetDesktopInfo() (*file.FolderInfo, error) {
+	folder, err := file.GetDesktopInfo()
 	if err != nil {
 		return nil, err
 	}
 
-	return folders, nil
+	if err := file.MakeDesktopFolder(); err != nil {
+		return nil, err
+	}
+
+	dataDir, err := file.DesktopFolderPath()
+	if err != nil {
+		return nil, err
+	}
+
+	jsonData, err := json.MarshalIndent(folder, "", "  ")
+	if err != nil {
+		return nil, err
+	}
+
+	jsonPath := filepath.Join(dataDir, "desktop_info.json")
+
+	if err := os.WriteFile(jsonPath, jsonData, 0644); err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("Desktop info saved: %s\n", jsonPath)
+
+	return folder, nil
 }
 
 // RegisterGoogleAccount starts Google OAuth authentication.

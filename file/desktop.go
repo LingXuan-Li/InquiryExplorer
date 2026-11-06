@@ -26,7 +26,7 @@ type FileInfo struct {
 	ModTime      string `json:"modTime"`
 }
 
-func GetDesktopInfo() ([]FolderInfo, error) {
+func GetDesktopInfo() (*FolderInfo, error) {
 	desktopPath, err := os.UserHomeDir()
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func GetDesktopInfo() ([]FolderInfo, error) {
 		return nil, err
 	}
 
-	return []FolderInfo{*folderInfo}, nil
+	return folderInfo, nil
 }
 
 func SearchFolder(path string) (*FolderInfo, error) {
