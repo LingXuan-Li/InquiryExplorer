@@ -1,0 +1,3639 @@
+{
+  "timestamp": "20261106T034802Z",
+  "type": "testing",
+  "status": "failure",
+  "exit_code": 1,
+  "commit": {
+    "sha": "0119a1a0a463026489d92d1cb1b9ad859fbb7e3b",
+    "url": "https://github.com/LingXuan-Li/InquiryExplorer/commit/0119a1a0a463026489d92d1cb1b9ad859fbb7e3b"
+  },
+  "github": {
+    "repository": "LingXuan-Li/InquiryExplorer",
+    "run_id": "42158492239",
+    "run_attempt": "1",
+    "run_url": "https://github.com/LingXuan-Li/InquiryExplorer/actions/runs/42158492239/attempts/1"
+  },
+  "summary": {
+    "packages": {
+      "total": 10,
+      "passed": 6,
+      "failed": 1,
+      "no_tests": 3
+    },
+    "tests": {
+      "total": 109,
+      "passed": 107,
+      "failed": 1,
+      "skipped": 1
+    },
+    "duration_sec": 1.839,
+    "package_results": [
+      {
+        "package": "InquiryExplorer",
+        "status": "skip",
+        "elapsed_sec": 0,
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "package": "InquiryExplorer/account",
+        "status": "pass",
+        "elapsed_sec": 1.204,
+        "tests": {
+          "passed": 26,
+          "failed": 0,
+          "skipped": 1
+        }
+      },
+      {
+        "package": "InquiryExplorer/auth",
+        "status": "pass",
+        "elapsed_sec": 0.142,
+        "tests": {
+          "passed": 7,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "package": "InquiryExplorer/cloud",
+        "status": "pass",
+        "elapsed_sec": 0.134,
+        "tests": {
+          "passed": 4,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "package": "InquiryExplorer/drive",
+        "status": "pass",
+        "elapsed_sec": 0.245,
+        "tests": {
+          "passed": 44,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "package": "InquiryExplorer/file",
+        "status": "fail",
+        "elapsed_sec": 0.065,
+        "tests": {
+          "passed": 14,
+          "failed": 1,
+          "skipped": 0
+        }
+      },
+      {
+        "package": "InquiryExplorer/function",
+        "status": "skip",
+        "elapsed_sec": 0,
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "package": "InquiryExplorer/scan",
+        "status": "pass",
+        "elapsed_sec": 0.017,
+        "tests": {
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "package": "InquiryExplorer/splash",
+        "status": "skip",
+        "elapsed_sec": 0,
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "package": "InquiryExplorer/storage",
+        "status": "pass",
+        "elapsed_sec": 0.032,
+        "tests": {
+          "passed": 11,
+          "failed": 0,
+          "skipped": 0
+        }
+      }
+    ],
+    "failed_tests": [
+      {
+        "package": "InquiryExplorer/file",
+        "test": "TestGetDesktopInfo",
+        "elapsed_sec": 0,
+        "output": "    desktop_test.go:289: Folders is nil, want initialized slice\n--- FAIL: TestGetDesktopInfo (0.00s)"
+      }
+    ],
+    "failed_packages": [],
+    "unparsed_output": ""
+  },
+  "details": [
+    {
+      "Time": "2026-11-06T03:47:57.7114552Z",
+      "Action": "start",
+      "Package": "InquiryExplorer"
+    },
+    {
+      "Time": "2026-11-06T03:47:57.7114552Z",
+      "Action": "output",
+      "Package": "InquiryExplorer",
+      "Output": "?   \tInquiryExplorer\t[no test files]\n"
+    },
+    {
+      "Time": "2026-11-06T03:47:57.7114552Z",
+      "Action": "skip",
+      "Package": "InquiryExplorer",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.4459148Z",
+      "Action": "start",
+      "Package": "InquiryExplorer/account"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5035367Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestNewManager_Empty"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5035367Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestNewManager_Empty",
+      "Output": "=== RUN   TestNewManager_Empty\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestNewManager_Empty",
+      "Output": "--- PASS: TestNewManager_Empty (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestNewManager_Empty",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation",
+      "Output": "=== RUN   TestManager_Add_Validation\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/nil_account_ID"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/nil_account_ID",
+      "Output": "=== RUN   TestManager_Add_Validation/nil_account_ID\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/nil_account_ID",
+      "Output": "--- PASS: TestManager_Add_Validation/nil_account_ID (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/nil_account_ID",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/nil_token"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/nil_token",
+      "Output": "=== RUN   TestManager_Add_Validation/nil_token\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/nil_token",
+      "Output": "--- PASS: TestManager_Add_Validation/nil_token (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/nil_token",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/empty_email"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/empty_email",
+      "Output": "=== RUN   TestManager_Add_Validation/empty_email\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/empty_email",
+      "Output": "--- PASS: TestManager_Add_Validation/empty_email (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/empty_email",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/empty_vendor"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/empty_vendor",
+      "Output": "=== RUN   TestManager_Add_Validation/empty_vendor\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/empty_vendor",
+      "Output": "--- PASS: TestManager_Add_Validation/empty_vendor (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation/empty_vendor",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation",
+      "Output": "--- PASS: TestManager_Add_Validation (0.01s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Validation",
+      "Elapsed": 0.01
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Success"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Success",
+      "Output": "=== RUN   TestManager_Add_Success\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Success",
+      "Output": "--- PASS: TestManager_Add_Success (0.01s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Success",
+      "Elapsed": 0.01
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_IndexFilePermission"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_IndexFilePermission",
+      "Output": "=== RUN   TestManager_Add_IndexFilePermission\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_IndexFilePermission",
+      "Output": "    manager_test.go:178: file permission bits are not meaningful on Windows\n"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_IndexFilePermission",
+      "Output": "--- SKIP: TestManager_Add_IndexFilePermission (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "skip",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_IndexFilePermission",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Duplicate"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5051131Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Duplicate",
+      "Output": "=== RUN   TestManager_Add_Duplicate\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5422142Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Duplicate",
+      "Output": "--- PASS: TestManager_Add_Duplicate (0.04s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5422142Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_Duplicate",
+      "Elapsed": 0.04
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5422142Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_RollsBackTokenWhenSaveFails"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5422142Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_RollsBackTokenWhenSaveFails",
+      "Output": "=== RUN   TestManager_Add_RollsBackTokenWhenSaveFails\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5662629Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_RollsBackTokenWhenSaveFails",
+      "Output": "--- PASS: TestManager_Add_RollsBackTokenWhenSaveFails (0.02s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5662629Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Add_RollsBackTokenWhenSaveFails",
+      "Elapsed": 0.02
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5662629Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5662629Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove",
+      "Output": "=== RUN   TestManager_Remove\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5978646Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove",
+      "Output": "--- PASS: TestManager_Remove (0.03s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5996126Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove",
+      "Elapsed": 0.03
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5996126Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove_Errors"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5996126Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove_Errors",
+      "Output": "=== RUN   TestManager_Remove_Errors\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5996126Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove_Errors",
+      "Output": "--- PASS: TestManager_Remove_Errors (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5996126Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove_Errors",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5996126Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove_OnlyAccount"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.5996126Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove_OnlyAccount",
+      "Output": "=== RUN   TestManager_Remove_OnlyAccount\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6171854Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove_OnlyAccount",
+      "Output": "--- PASS: TestManager_Remove_OnlyAccount (0.02s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6174917Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Remove_OnlyAccount",
+      "Elapsed": 0.02
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6174917Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_List_ReturnsCopy"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6174917Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_List_ReturnsCopy",
+      "Output": "=== RUN   TestManager_List_ReturnsCopy\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6258592Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_List_ReturnsCopy",
+      "Output": "--- PASS: TestManager_List_ReturnsCopy (0.01s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6258592Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_List_ReturnsCopy",
+      "Elapsed": 0.01
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6258592Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Get"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6258592Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Get",
+      "Output": "=== RUN   TestManager_Get\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6393727Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Get",
+      "Output": "--- PASS: TestManager_Get (0.01s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6393727Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Get",
+      "Elapsed": 0.01
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6393727Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6393727Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load",
+      "Output": "=== RUN   TestManager_Load\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6393727Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/missing_file_gives_empty_list"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6393727Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/missing_file_gives_empty_list",
+      "Output": "=== RUN   TestManager_Load/missing_file_gives_empty_list\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6403893Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/missing_file_gives_empty_list",
+      "Output": "--- PASS: TestManager_Load/missing_file_gives_empty_list (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6403893Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/missing_file_gives_empty_list",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6403893Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/null_accounts_gives_empty_non-nil_list"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6403893Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/null_accounts_gives_empty_non-nil_list",
+      "Output": "=== RUN   TestManager_Load/null_accounts_gives_empty_non-nil_list\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6423816Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/null_accounts_gives_empty_non-nil_list",
+      "Output": "--- PASS: TestManager_Load/null_accounts_gives_empty_non-nil_list (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6423816Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/null_accounts_gives_empty_non-nil_list",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6423816Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/invalid_JSON_returns_error"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6423816Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/invalid_JSON_returns_error",
+      "Output": "=== RUN   TestManager_Load/invalid_JSON_returns_error\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6489984Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/invalid_JSON_returns_error",
+      "Output": "--- PASS: TestManager_Load/invalid_JSON_returns_error (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6489984Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/invalid_JSON_returns_error",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6489984Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/picks_up_externally_written_data"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6489984Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/picks_up_externally_written_data",
+      "Output": "=== RUN   TestManager_Load/picks_up_externally_written_data\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6489984Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/picks_up_externally_written_data",
+      "Output": "--- PASS: TestManager_Load/picks_up_externally_written_data (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6489984Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/picks_up_externally_written_data",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6489984Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/NewManager_fails_on_corrupted_registry"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6489984Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/NewManager_fails_on_corrupted_registry",
+      "Output": "=== RUN   TestManager_Load/NewManager_fails_on_corrupted_registry\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6527454Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/NewManager_fails_on_corrupted_registry",
+      "Output": "--- PASS: TestManager_Load/NewManager_fails_on_corrupted_registry (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6527454Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load/NewManager_fails_on_corrupted_registry",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6527454Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load",
+      "Output": "--- PASS: TestManager_Load (0.01s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6527454Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Load",
+      "Elapsed": 0.01
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6527454Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Save"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6527454Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Save",
+      "Output": "=== RUN   TestManager_Save\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6731747Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Save",
+      "Output": "--- PASS: TestManager_Save (0.02s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6731747Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_Save",
+      "Elapsed": 0.02
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6731747Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_ConcurrentAccess"
+    },
+    {
+      "Time": "2026-11-06T03:47:59.6731747Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_ConcurrentAccess",
+      "Output": "=== RUN   TestManager_ConcurrentAccess\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.2615041Z",
+      "Action": "start",
+      "Package": "InquiryExplorer/auth"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.2647302Z",
+      "Action": "start",
+      "Package": "InquiryExplorer/cloud"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3834613Z",
+      "Action": "start",
+      "Package": "InquiryExplorer/drive"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3971687Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_MissingClientID"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_MissingClientID",
+      "Output": "=== RUN   TestGoogleConfig_MissingClientID\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_MissingClientID",
+      "Output": "--- PASS: TestGoogleConfig_MissingClientID (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_MissingClientID",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_Success"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_Success",
+      "Output": "=== RUN   TestGoogleConfig_Success\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_Success",
+      "Output": "--- PASS: TestGoogleConfig_Success (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_Success",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_ReturnsIndependentInstances"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_ReturnsIndependentInstances",
+      "Output": "=== RUN   TestGoogleConfig_ReturnsIndependentInstances\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_ReturnsIndependentInstances",
+      "Output": "--- PASS: TestGoogleConfig_ReturnsIndependentInstances (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3975416Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestGoogleConfig_ReturnsIndependentInstances",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3979578Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestConstants"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3979578Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestConstants",
+      "Output": "=== RUN   TestConstants\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3979578Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestConstants",
+      "Output": "--- PASS: TestConstants (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3979578Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/cloud",
+      "Test": "TestConstants",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3979578Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Output": "PASS\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3991013Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/cloud",
+      "Output": "ok  \tInquiryExplorer/cloud\t0.134s\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.3991013Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/cloud",
+      "Elapsed": 0.134
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4007942Z",
+      "Action": "start",
+      "Package": "InquiryExplorer/file"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateState"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateState",
+      "Output": "=== RUN   TestGenerateState\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateState",
+      "Output": "--- PASS: TestGenerateState (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateState",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateStateUniqueness"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateStateUniqueness",
+      "Output": "=== RUN   TestGenerateStateUniqueness\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateStateUniqueness",
+      "Output": "--- PASS: TestGenerateStateUniqueness (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateStateUniqueness",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManager"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManager",
+      "Output": "=== RUN   TestGoogleAuthNilManager\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManager",
+      "Output": "--- PASS: TestGoogleAuthNilManager (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManager",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateStateFormat"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateStateFormat",
+      "Output": "=== RUN   TestGenerateStateFormat\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateStateFormat",
+      "Output": "--- PASS: TestGenerateStateFormat (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGenerateStateFormat",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts",
+      "Output": "=== RUN   TestGoogleAuthNilManagerWithDifferentContexts\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts/background_context"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts/background_context",
+      "Output": "=== RUN   TestGoogleAuthNilManagerWithDifferentContexts/background_context\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts/background_context",
+      "Output": "--- PASS: TestGoogleAuthNilManagerWithDifferentContexts/background_context (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts/background_context",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts/cancelled_context"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts/cancelled_context",
+      "Output": "=== RUN   TestGoogleAuthNilManagerWithDifferentContexts/cancelled_context\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts/cancelled_context",
+      "Output": "--- PASS: TestGoogleAuthNilManagerWithDifferentContexts/cancelled_context (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts/cancelled_context",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts",
+      "Output": "--- PASS: TestGoogleAuthNilManagerWithDifferentContexts (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/auth",
+      "Test": "TestGoogleAuthNilManagerWithDifferentContexts",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.401353Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Output": "PASS\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4032806Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/auth",
+      "Output": "ok  \tInquiryExplorer/auth\t0.142s\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4032806Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/auth",
+      "Elapsed": 0.142
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4060543Z",
+      "Action": "start",
+      "Package": "InquiryExplorer/function"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4060543Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/function",
+      "Output": "?   \tInquiryExplorer/function\t[no test files]\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4060543Z",
+      "Action": "skip",
+      "Package": "InquiryExplorer/function",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.416322Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolder"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.416322Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolder",
+      "Output": "=== RUN   TestSearchFolder\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4176294Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_NilManager"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4176294Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_NilManager",
+      "Output": "=== RUN   TestGetAllAccountsOverview_NilManager\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4176294Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_NilManager",
+      "Output": "--- PASS: TestGetAllAccountsOverview_NilManager (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4176294Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_NilManager",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4176294Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_NoAccounts"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4176294Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_NoAccounts",
+      "Output": "=== RUN   TestGetAllAccountsOverview_NoAccounts\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4198184Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_NoAccounts",
+      "Output": "--- PASS: TestGetAllAccountsOverview_NoAccounts (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4202072Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_NoAccounts",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4202072Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_ErrorsAreReportedPerAccount"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4202072Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_ErrorsAreReportedPerAccount",
+      "Output": "=== RUN   TestGetAllAccountsOverview_ErrorsAreReportedPerAccount\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4552832Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolder",
+      "Output": "--- PASS: TestSearchFolder (0.04s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4558402Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolder",
+      "Elapsed": 0.04
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4558402Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderFileInfo"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4558402Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderFileInfo",
+      "Output": "=== RUN   TestSearchFolderFileInfo\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4589707Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderFileInfo",
+      "Output": "--- PASS: TestSearchFolderFileInfo (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4589707Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderFileInfo",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4589707Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4589707Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath",
+      "Output": "=== RUN   TestSearchFolderInvalidPath\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4589707Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath/Nonexistent_path"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4589707Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath/Nonexistent_path",
+      "Output": "=== RUN   TestSearchFolderInvalidPath/Nonexistent_path\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4601796Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath/Nonexistent_path",
+      "Output": "--- PASS: TestSearchFolderInvalidPath/Nonexistent_path (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4601796Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath/Nonexistent_path",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4601796Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath/File_instead_of_directory"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4601796Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath/File_instead_of_directory",
+      "Output": "=== RUN   TestSearchFolderInvalidPath/File_instead_of_directory\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4636531Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath/File_instead_of_directory",
+      "Output": "--- PASS: TestSearchFolderInvalidPath/File_instead_of_directory (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4636531Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath/File_instead_of_directory",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4636531Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath",
+      "Output": "--- PASS: TestSearchFolderInvalidPath (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4636531Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestSearchFolderInvalidPath",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4636531Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4636531Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize",
+      "Output": "=== RUN   TestFormatSize\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4636531Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Zero_bytes"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Zero_bytes",
+      "Output": "=== RUN   TestFormatSize/Zero_bytes\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Zero_bytes",
+      "Output": "--- PASS: TestFormatSize/Zero_bytes (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Zero_bytes",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Bytes"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Bytes",
+      "Output": "=== RUN   TestFormatSize/Bytes\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Bytes",
+      "Output": "--- PASS: TestFormatSize/Bytes (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Bytes",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Less_than_KB"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Less_than_KB",
+      "Output": "=== RUN   TestFormatSize/Less_than_KB\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Less_than_KB",
+      "Output": "--- PASS: TestFormatSize/Less_than_KB (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Less_than_KB",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Kilobytes"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Kilobytes",
+      "Output": "=== RUN   TestFormatSize/Kilobytes\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Kilobytes",
+      "Output": "--- PASS: TestFormatSize/Kilobytes (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Kilobytes",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Megabytes"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Megabytes",
+      "Output": "=== RUN   TestFormatSize/Megabytes\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Megabytes",
+      "Output": "--- PASS: TestFormatSize/Megabytes (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Megabytes",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Gigabytes"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Gigabytes",
+      "Output": "=== RUN   TestFormatSize/Gigabytes\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Gigabytes",
+      "Output": "--- PASS: TestFormatSize/Gigabytes (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Gigabytes",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Terabytes"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Terabytes",
+      "Output": "=== RUN   TestFormatSize/Terabytes\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Terabytes",
+      "Output": "--- PASS: TestFormatSize/Terabytes (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Terabytes",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Fractional_size"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Fractional_size",
+      "Output": "=== RUN   TestFormatSize/Fractional_size\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Fractional_size",
+      "Output": "--- PASS: TestFormatSize/Fractional_size (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize/Fractional_size",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize",
+      "Output": "--- PASS: TestFormatSize (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestFormatSize",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestGetDesktopInfo"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestGetDesktopInfo",
+      "Output": "=== RUN   TestGetDesktopInfo\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestGetDesktopInfo",
+      "Output": "    desktop_test.go:289: Folders is nil, want initialized slice\n",
+      "OutputType": "error"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestGetDesktopInfo",
+      "Output": "--- FAIL: TestGetDesktopInfo (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "fail",
+      "Package": "InquiryExplorer/file",
+      "Test": "TestGetDesktopInfo",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4640085Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Output": "FAIL\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4658334Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/file",
+      "Output": "FAIL\tInquiryExplorer/file\t0.065s\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.4658334Z",
+      "Action": "fail",
+      "Package": "InquiryExplorer/file",
+      "Elapsed": 0.065
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5303168Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_ErrorsAreReportedPerAccount",
+      "Output": "--- PASS: TestGetAllAccountsOverview_ErrorsAreReportedPerAccount (0.11s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5308598Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_ErrorsAreReportedPerAccount",
+      "Elapsed": 0.11
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5308598Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_ClientIDMissing"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5308598Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_ClientIDMissing",
+      "Output": "=== RUN   TestGetAllAccountsOverview_ClientIDMissing\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_ClientIDMissing",
+      "Output": "--- PASS: TestGetAllAccountsOverview_ClientIDMissing (0.05s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetAllAccountsOverview_ClientIDMissing",
+      "Elapsed": 0.05
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken",
+      "Output": "=== RUN   TestSameToken\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/both_nil"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/both_nil",
+      "Output": "=== RUN   TestSameToken/both_nil\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/both_nil",
+      "Output": "--- PASS: TestSameToken/both_nil (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/both_nil",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/a_nil"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/a_nil",
+      "Output": "=== RUN   TestSameToken/a_nil\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/a_nil",
+      "Output": "--- PASS: TestSameToken/a_nil (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/a_nil",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/b_nil"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/b_nil",
+      "Output": "=== RUN   TestSameToken/b_nil\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/b_nil",
+      "Output": "--- PASS: TestSameToken/b_nil (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/b_nil",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/identical"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/identical",
+      "Output": "=== RUN   TestSameToken/identical\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/identical",
+      "Output": "--- PASS: TestSameToken/identical (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/identical",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_access_token"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_access_token",
+      "Output": "=== RUN   TestSameToken/different_access_token\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_access_token",
+      "Output": "--- PASS: TestSameToken/different_access_token (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_access_token",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_refresh_token"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_refresh_token",
+      "Output": "=== RUN   TestSameToken/different_refresh_token\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_refresh_token",
+      "Output": "--- PASS: TestSameToken/different_refresh_token (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_refresh_token",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_token_type"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_token_type",
+      "Output": "=== RUN   TestSameToken/different_token_type\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_token_type",
+      "Output": "--- PASS: TestSameToken/different_token_type (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_token_type",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_expiry"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_expiry",
+      "Output": "=== RUN   TestSameToken/different_expiry\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_expiry",
+      "Output": "--- PASS: TestSameToken/different_expiry (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/different_expiry",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/same_instant_in_a_different_location"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/same_instant_in_a_different_location",
+      "Output": "=== RUN   TestSameToken/same_instant_in_a_different_location\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/same_instant_in_a_different_location",
+      "Output": "--- PASS: TestSameToken/same_instant_in_a_different_location (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken/same_instant_in_a_different_location",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken",
+      "Output": "--- PASS: TestSameToken (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestSameToken",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_UnchangedTokenIsNotSaved"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_UnchangedTokenIsNotSaved",
+      "Output": "=== RUN   TestPersistentTokenSource_UnchangedTokenIsNotSaved\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_UnchangedTokenIsNotSaved",
+      "Output": "--- PASS: TestPersistentTokenSource_UnchangedTokenIsNotSaved (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_UnchangedTokenIsNotSaved",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_ChangedTokenIsSavedOnce"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_ChangedTokenIsSavedOnce",
+      "Output": "=== RUN   TestPersistentTokenSource_ChangedTokenIsSavedOnce\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_ChangedTokenIsSavedOnce",
+      "Output": "--- PASS: TestPersistentTokenSource_ChangedTokenIsSavedOnce (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_ChangedTokenIsSavedOnce",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_SourceError"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_SourceError",
+      "Output": "=== RUN   TestPersistentTokenSource_SourceError\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_SourceError",
+      "Output": "--- PASS: TestPersistentTokenSource_SourceError (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_SourceError",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_PersistsRefreshedToken"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.5899189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_PersistsRefreshedToken",
+      "Output": "=== RUN   TestPersistentTokenSource_PersistsRefreshedToken\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_PersistsRefreshedToken",
+      "Output": "--- PASS: TestPersistentTokenSource_PersistsRefreshedToken (0.01s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestPersistentTokenSource_PersistsRefreshedToken",
+      "Elapsed": 0.01
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount",
+      "Output": "=== RUN   TestNewClient_InvalidAccount\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/nil_ID"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/nil_ID",
+      "Output": "=== RUN   TestNewClient_InvalidAccount/nil_ID\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/nil_ID",
+      "Output": "--- PASS: TestNewClient_InvalidAccount/nil_ID (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/nil_ID",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/non-google_vendor"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/non-google_vendor",
+      "Output": "=== RUN   TestNewClient_InvalidAccount/non-google_vendor\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/non-google_vendor",
+      "Output": "--- PASS: TestNewClient_InvalidAccount/non-google_vendor (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/non-google_vendor",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/empty_vendor"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/empty_vendor",
+      "Output": "=== RUN   TestNewClient_InvalidAccount/empty_vendor\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/empty_vendor",
+      "Output": "--- PASS: TestNewClient_InvalidAccount/empty_vendor (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount/empty_vendor",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount",
+      "Output": "--- PASS: TestNewClient_InvalidAccount (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_InvalidAccount",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_TokenMissing"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6014058Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_TokenMissing",
+      "Output": "=== RUN   TestNewClient_TokenMissing\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6043565Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_TokenMissing",
+      "Output": "--- PASS: TestNewClient_TokenMissing (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6043565Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_TokenMissing",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6043565Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_ClientIDMissing"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6043565Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_ClientIDMissing",
+      "Output": "=== RUN   TestNewClient_ClientIDMissing\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.607524Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_ClientIDMissing",
+      "Output": "--- PASS: TestNewClient_ClientIDMissing (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.607524Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_ClientIDMissing",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.607524Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_Success"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.607524Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_Success",
+      "Output": "=== RUN   TestNewClient_Success\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6111607Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_ConcurrentAccess",
+      "Output": "--- PASS: TestManager_ConcurrentAccess (0.94s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6111607Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestManager_ConcurrentAccess",
+      "Elapsed": 0.94
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6111607Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_JSONRoundTrip"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6111607Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_JSONRoundTrip",
+      "Output": "=== RUN   TestAccount_JSONRoundTrip\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6111607Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_JSONRoundTrip",
+      "Output": "--- PASS: TestAccount_JSONRoundTrip (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.61156Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_JSONRoundTrip",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6119062Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_JSONFieldNames"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6119062Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_JSONFieldNames",
+      "Output": "=== RUN   TestAccount_JSONFieldNames\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6127769Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_Success",
+      "Output": "--- PASS: TestNewClient_Success (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6127769Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestNewClient_Success",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6127769Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_NilService"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6127769Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_NilService",
+      "Output": "=== RUN   TestListFiles_NilService\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6127769Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_NilService",
+      "Output": "--- PASS: TestListFiles_NilService (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6127769Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_NilService",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6127769Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_Pagination"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6127769Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_Pagination",
+      "Output": "=== RUN   TestListFiles_Pagination\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6146065Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_Pagination",
+      "Output": "--- PASS: TestListFiles_Pagination (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6146065Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_Pagination",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6146065Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_Empty"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6146065Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_Empty",
+      "Output": "=== RUN   TestListFiles_Empty\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6226841Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_Empty",
+      "Output": "--- PASS: TestListFiles_Empty (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_Empty",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_APIError"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_APIError",
+      "Output": "=== RUN   TestListFiles_APIError\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_APIError",
+      "Output": "--- PASS: TestListFiles_APIError (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_APIError",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_ErrorOnSecondPage"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_ErrorOnSecondPage",
+      "Output": "=== RUN   TestListFiles_ErrorOnSecondPage\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_ErrorOnSecondPage",
+      "Output": "--- PASS: TestListFiles_ErrorOnSecondPage (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_ErrorOnSecondPage",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_ContextCanceled"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_ContextCanceled",
+      "Output": "=== RUN   TestListFiles_ContextCanceled\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_ContextCanceled",
+      "Output": "--- PASS: TestListFiles_ContextCanceled (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestListFiles_ContextCanceled",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_NilService"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_NilService",
+      "Output": "=== RUN   TestGetStorageInfo_NilService\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_NilService",
+      "Output": "--- PASS: TestGetStorageInfo_NilService (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_NilService",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo",
+      "Output": "=== RUN   TestGetStorageInfo\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/finite_quota"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/finite_quota",
+      "Output": "=== RUN   TestGetStorageInfo/finite_quota\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/finite_quota",
+      "Output": "--- PASS: TestGetStorageInfo/finite_quota (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/finite_quota",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/unlimited_quota_without_limit"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/unlimited_quota_without_limit",
+      "Output": "=== RUN   TestGetStorageInfo/unlimited_quota_without_limit\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/unlimited_quota_without_limit",
+      "Output": "--- PASS: TestGetStorageInfo/unlimited_quota_without_limit (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/unlimited_quota_without_limit",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/unlimited_quota_with_zero_limit"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/unlimited_quota_with_zero_limit",
+      "Output": "=== RUN   TestGetStorageInfo/unlimited_quota_with_zero_limit\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/unlimited_quota_with_zero_limit",
+      "Output": "--- PASS: TestGetStorageInfo/unlimited_quota_with_zero_limit (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/unlimited_quota_with_zero_limit",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/usage_exceeds_limit"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/usage_exceeds_limit",
+      "Output": "=== RUN   TestGetStorageInfo/usage_exceeds_limit\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/usage_exceeds_limit",
+      "Output": "--- PASS: TestGetStorageInfo/usage_exceeds_limit (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo/usage_exceeds_limit",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo",
+      "Output": "--- PASS: TestGetStorageInfo (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_QuotaUnavailable"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_QuotaUnavailable",
+      "Output": "=== RUN   TestGetStorageInfo_QuotaUnavailable\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_QuotaUnavailable",
+      "Output": "--- PASS: TestGetStorageInfo_QuotaUnavailable (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_QuotaUnavailable",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_APIError"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_APIError",
+      "Output": "=== RUN   TestGetStorageInfo_APIError\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_APIError",
+      "Output": "--- PASS: TestGetStorageInfo_APIError (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetStorageInfo_APIError",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_Success"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_Success",
+      "Output": "=== RUN   TestGetDriveOverview_Success\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_Success",
+      "Output": "--- PASS: TestGetDriveOverview_Success (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_Success",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_NilService"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_NilService",
+      "Output": "=== RUN   TestGetDriveOverview_NilService\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_NilService",
+      "Output": "--- PASS: TestGetDriveOverview_NilService (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_NilService",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_ListFilesFails"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6230346Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_ListFilesFails",
+      "Output": "=== RUN   TestGetDriveOverview_ListFilesFails\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_ListFilesFails",
+      "Output": "--- PASS: TestGetDriveOverview_ListFilesFails (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_ListFilesFails",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_StorageInfoFails"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_StorageInfoFails",
+      "Output": "=== RUN   TestGetDriveOverview_StorageInfoFails\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_StorageInfoFails",
+      "Output": "--- PASS: TestGetDriveOverview_StorageInfoFails (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestGetDriveOverview_StorageInfoFails",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestInt64Pointer"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestInt64Pointer",
+      "Output": "=== RUN   TestInt64Pointer\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestInt64Pointer",
+      "Output": "--- PASS: TestInt64Pointer (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Test": "TestInt64Pointer",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6247026Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Output": "PASS\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6286599Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/drive",
+      "Output": "ok  \tInquiryExplorer/drive\t0.245s\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6286599Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/drive",
+      "Elapsed": 0.245
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454029Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_JSONFieldNames",
+      "Output": "--- PASS: TestAccount_JSONFieldNames (0.03s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_JSONFieldNames",
+      "Elapsed": 0.03
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_UnmarshalInvalidUUID"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_UnmarshalInvalidUUID",
+      "Output": "=== RUN   TestAccount_UnmarshalInvalidUUID\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_UnmarshalInvalidUUID",
+      "Output": "--- PASS: TestAccount_UnmarshalInvalidUUID (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_UnmarshalInvalidUUID",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_ZeroValue"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_ZeroValue",
+      "Output": "=== RUN   TestAccount_ZeroValue\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_ZeroValue",
+      "Output": "--- PASS: TestAccount_ZeroValue (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Test": "TestAccount_ZeroValue",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.6454797Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Output": "PASS\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.650197Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/account",
+      "Output": "ok  \tInquiryExplorer/account\t1.204s\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.650197Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/account",
+      "Elapsed": 1.204
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7090073Z",
+      "Action": "start",
+      "Package": "InquiryExplorer/scan"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7090073Z",
+      "Action": "start",
+      "Package": "InquiryExplorer/splash"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7090073Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/splash",
+      "Output": "?   \tInquiryExplorer/splash\t[no test files]\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7090073Z",
+      "Action": "skip",
+      "Package": "InquiryExplorer/splash",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7238189Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7238189Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "=== RUN   TestGetStorageInfo\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:19: Device: C:\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:20: Mountpoint: C:\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:21: Filesystem: NTFS\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:22: Total: 160939618304\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:23: Used: 132652834816\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:24: Free: 28286783488\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:25: UsedPercent: 82.42%\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:19: Device: D:\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:20: Mountpoint: D:\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:21: Filesystem: NTFS\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:22: Total: 236205371392\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:23: Used: 792838144\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:24: Free: 235412533248\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "    scan_test.go:25: UsedPercent: 0.34%\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Output": "--- PASS: TestGetStorageInfo (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/scan",
+      "Test": "TestGetStorageInfo",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7242196Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Output": "PASS\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7259435Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/scan",
+      "Output": "ok  \tInquiryExplorer/scan\t0.017s\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.7259435Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/scan",
+      "Elapsed": 0.017
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8033947Z",
+      "Action": "start",
+      "Package": "InquiryExplorer/storage"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8195095Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDPAPIProtectUnprotect"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8195095Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDPAPIProtectUnprotect",
+      "Output": "=== RUN   TestDPAPIProtectUnprotect\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8210932Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDPAPIProtectUnprotect",
+      "Output": "--- PASS: TestDPAPIProtectUnprotect (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8210932Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDPAPIProtectUnprotect",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8210932Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDPAPITamperedData"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8210932Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDPAPITamperedData",
+      "Output": "=== RUN   TestDPAPITamperedData\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8215864Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDPAPITamperedData",
+      "Output": "--- PASS: TestDPAPITamperedData (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8215864Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDPAPITamperedData",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8215864Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestSaveAndLoadToken"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8215864Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestSaveAndLoadToken",
+      "Output": "=== RUN   TestSaveAndLoadToken\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestSaveAndLoadToken",
+      "Output": "--- PASS: TestSaveAndLoadToken (0.01s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestSaveAndLoadToken",
+      "Elapsed": 0.01
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLoadTokenNotFound"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLoadTokenNotFound",
+      "Output": "=== RUN   TestLoadTokenNotFound\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLoadTokenNotFound",
+      "Output": "--- PASS: TestLoadTokenNotFound (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLoadTokenNotFound",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDeleteTokenNotFound"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDeleteTokenNotFound",
+      "Output": "=== RUN   TestDeleteTokenNotFound\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDeleteTokenNotFound",
+      "Output": "--- PASS: TestDeleteTokenNotFound (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDeleteTokenNotFound",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestInvalidAccountID"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestInvalidAccountID",
+      "Output": "=== RUN   TestInvalidAccountID\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestInvalidAccountID",
+      "Output": "--- PASS: TestInvalidAccountID (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestInvalidAccountID",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestTokenEncryption"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8296223Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestTokenEncryption",
+      "Output": "=== RUN   TestTokenEncryption\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8306807Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestTokenEncryption",
+      "Output": "--- PASS: TestTokenEncryption (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8306807Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestTokenEncryption",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8306807Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLegacyJSONMigration"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8306807Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLegacyJSONMigration",
+      "Output": "=== RUN   TestLegacyJSONMigration\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.831739Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLegacyJSONMigration",
+      "Output": "--- PASS: TestLegacyJSONMigration (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.831739Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLegacyJSONMigration",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.831739Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLegacyPlaintextMigration"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.831739Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLegacyPlaintextMigration",
+      "Output": "=== RUN   TestLegacyPlaintextMigration\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8327982Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLegacyPlaintextMigration",
+      "Output": "--- PASS: TestLegacyPlaintextMigration (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8327982Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestLegacyPlaintextMigration",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8327982Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDeleteToken"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8327982Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDeleteToken",
+      "Output": "=== RUN   TestDeleteToken\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8331359Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDeleteToken",
+      "Output": "--- PASS: TestDeleteToken (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8331359Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestDeleteToken",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8331359Z",
+      "Action": "run",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestTokenFileEncrypted"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8331359Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestTokenFileEncrypted",
+      "Output": "=== RUN   TestTokenFileEncrypted\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8338463Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestTokenFileEncrypted",
+      "Output": "--- PASS: TestTokenFileEncrypted (0.00s)\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8338463Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Test": "TestTokenFileEncrypted",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8338463Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Output": "PASS\n",
+      "OutputType": "frame"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8357936Z",
+      "Action": "output",
+      "Package": "InquiryExplorer/storage",
+      "Output": "ok  \tInquiryExplorer/storage\t0.032s\n"
+    },
+    {
+      "Time": "2026-11-06T03:48:00.8357936Z",
+      "Action": "pass",
+      "Package": "InquiryExplorer/storage",
+      "Elapsed": 0.032
+    }
+  ]
+}
