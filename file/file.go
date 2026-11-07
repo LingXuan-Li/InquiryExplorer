@@ -75,6 +75,26 @@ func DesktopFolderPath() (string, error) {
 	return filepath.Join(appDir, "desktop"), nil
 }
 
+func MakeDatabaseFolder() error {
+	appDir, err := ConfigFolderPath()
+	if err != nil {
+		return err
+	}
+
+	dataDir := filepath.Join(appDir, "database")
+
+	return os.MkdirAll(dataDir, 0755)
+}
+
+func DatabaseFolderPath() (string, error) {
+	appDir, err := ConfigFolderPath()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(appDir, "database"), nil
+}
+
 func OAuthFolderPath() (string, error) {
 	appDir, err := ConfigFolderPath()
 	if err != nil {
