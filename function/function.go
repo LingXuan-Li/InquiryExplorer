@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -55,7 +54,7 @@ func (a *App) GetDesktopInfo() (*file.FolderInfo, error) {
 		return nil, err
 	}
 
-	fmt.Printf("Desktop info saved: %s\n", jsonPath)
+	// fmt.Printf("Desktop info saved: %s\n", jsonPath)
 
 	return folder, nil
 }

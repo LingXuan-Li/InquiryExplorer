@@ -58,9 +58,11 @@ func SearchFolder(path string) (*FolderInfo, error) {
 	}
 
 	folder := &FolderInfo{
-		Name:  info.Name(),
-		Path:  absPath,
-		IsDir: true,
+		Name:    info.Name(),
+		Path:    absPath,
+		IsDir:   true,
+		Folders: make([]FolderInfo, 0),
+		Files:   make([]FileInfo, 0),
 	}
 
 	entries, err := os.ReadDir(absPath)
