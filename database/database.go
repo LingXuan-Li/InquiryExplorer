@@ -7,8 +7,8 @@ import (
 
 	"InquiryExplorer/file"
 
+	"github.com/glebarez/sqlite"
 	"github.com/oklog/ulid/v2"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -27,7 +27,7 @@ func databasePath(name string) (string, error) {
 	return filepath.Join(dir, name), nil
 }
 
-// OpenSQLite opens a SQLite database using GORM.
+// OpenSQLite opens a SQLite database using Pure Go SQLite.
 func OpenSQLite(name string) (*gorm.DB, error) {
 	path, err := databasePath(name)
 	if err != nil {
@@ -39,7 +39,6 @@ func OpenSQLite(name string) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to open sqlite: %w", err)
 	}
 
-	// Configure SQLite connections.
 	sqlDB, err := db.DB()
 	if err != nil {
 		return nil, err
@@ -53,10 +52,9 @@ func OpenSQLite(name string) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to ping sqlite: %w", err)
 	}
 
-	// Enable foreign keys.
 	if err := db.Exec("PRAGMA foreign_keys = ON").Error; err != nil {
 		sqlDB.Close()
-		return nil, err
+		return nil, fmt.Errorf("failed to enable foreign keys: %w", err)
 	}
 
 	return db, nil
