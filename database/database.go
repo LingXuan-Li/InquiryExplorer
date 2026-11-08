@@ -1,14 +1,19 @@
 package database
 
 import (
-	"database/sql"
+	"fmt"
 	"path/filepath"
-
-	_ "modernc.org/sqlite"
+	"time"
 
 	"InquiryExplorer/file"
+
+	"github.com/oklog/ulid/v2"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
+// GetDatabasePath returns the SQLite database path.
 func databasePath(name string) (string, error) {
 	dir, err := file.DatabaseFolderPath()
 	if err != nil {
@@ -22,19 +27,160 @@ func databasePath(name string) (string, error) {
 	return filepath.Join(dir, name), nil
 }
 
-func openDB(driver, dsn string, maxConns int) (*sql.DB, error) {
-	db, err := sql.Open(driver, dsn)
+// OpenSQLite opens a SQLite database using GORM.
+func OpenSQLite(name string) (*gorm.DB, error) {
+	path, err := databasePath(name)
 	if err != nil {
 		return nil, err
 	}
 
-	db.SetMaxOpenConns(maxConns)
-	db.SetMaxIdleConns(maxConns)
+	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to open sqlite: %w", err)
+	}
 
-	if err := db.Ping(); err != nil {
-		db.Close()
+	// Configure SQLite connections.
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+
+	sqlDB.SetMaxOpenConns(1)
+	sqlDB.SetMaxIdleConns(1)
+
+	if err := sqlDB.Ping(); err != nil {
+		sqlDB.Close()
+		return nil, fmt.Errorf("failed to ping sqlite: %w", err)
+	}
+
+	// Enable foreign keys.
+	if err := db.Exec("PRAGMA foreign_keys = ON").Error; err != nil {
+		sqlDB.Close()
 		return nil, err
 	}
 
 	return db, nil
+}
+
+// AutoMigrate creates or updates database tables.
+func AutoMigrate(db *gorm.DB) error {
+	if db == nil {
+		return fmt.Errorf("database is nil")
+	}
+
+	return db.AutoMigrate(
+		&DBFile{},
+		&DBFileHistory{},
+		&DBHistory{},
+		&DBFileTag{},
+		&DBTag{},
+	)
+}
+
+// InitDB initializes SQLite and migrates tables.
+func InitDB(name string) (*gorm.DB, error) {
+	db, err := OpenSQLite(name)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := AutoMigrate(db); err != nil {
+		sqlDB, _ := db.DB()
+		if sqlDB != nil {
+			sqlDB.Close()
+		}
+		return nil, fmt.Errorf("failed to migrate database: %w", err)
+	}
+
+	return db, nil
+}
+
+// SaveDesktopFiles saves desktop file metadata recursively.
+func SaveDesktopFiles(db *gorm.DB, folder *file.FolderInfo) error {
+	if db == nil {
+		return fmt.Errorf("database is nil")
+	}
+
+	if folder == nil {
+		return fmt.Errorf("folder is nil")
+	}
+
+	return db.Transaction(func(tx *gorm.DB) error {
+		return saveFolderFiles(tx, folder)
+	})
+}
+
+func saveFolderFiles(tx *gorm.DB, folder *file.FolderInfo) error {
+	for _, f := range folder.Files {
+		modTime, err := time.ParseInLocation(
+			"2006-01-02 15:04:05",
+			f.ModTime,
+			time.Local,
+		)
+		if err != nil {
+			return fmt.Errorf("invalid mod time for %s: %w", f.Path, err)
+		}
+
+		dbFile := DBFile{
+			Path:      f.Path,
+			FileName:  f.Name,
+			Size:      f.Size,
+			BaseName:  f.BaseName,
+			Extension: f.Extension,
+			ModTime:   modTime,
+			FileULID:  ulid.Make().String(),
+		}
+
+		err = tx.Clauses(clause.OnConflict{
+			Columns: []clause.Column{
+				{Name: "path"},
+			},
+			DoUpdates: clause.AssignmentColumns([]string{
+				"file_name",
+				"size",
+				"base_name",
+				"extension",
+				"mod_time",
+				"updated_at",
+			}),
+		}).Create(&dbFile).Error
+
+		if err != nil {
+			return fmt.Errorf("failed to save file %s: %w", f.Path, err)
+		}
+	}
+
+	for i := range folder.Folders {
+		if err := saveFolderFiles(tx, &folder.Folders[i]); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// GetAllFiles retrieves all files.
+func GetAllFiles(db *gorm.DB) ([]DBFile, error) {
+	var files []DBFile
+
+	err := db.Order("path ASC").Find(&files).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return files, nil
+}
+
+// CloseDB closes the underlying SQLite connection.
+func CloseDB(db *gorm.DB) error {
+	if db == nil {
+		return nil
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+
+	return sqlDB.Close()
 }

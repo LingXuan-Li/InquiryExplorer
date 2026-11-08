@@ -14,7 +14,7 @@ type DBFile struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
 
 	// File metadata
-	Path      string    `gorm:"type:text;not null;index" json:"path"`
+	Path      string    `gorm:"type:text;not null;uniqueIndex" json:"path"`
 	FileName  string    `gorm:"type:text;not null" json:"file_name"`
 	Size      int64     `gorm:"not null;default:0" json:"size"`
 	BaseName  string    `gorm:"type:text;not null" json:"base_name"`

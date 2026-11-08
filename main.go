@@ -15,12 +15,14 @@ import (
 	"time"
 
 	"InquiryExplorer/account"
+	"InquiryExplorer/database"
 	"InquiryExplorer/file"
 	"InquiryExplorer/function"
 	"InquiryExplorer/splash"
 
 	"github.com/crgimenes/glaze"
 	"github.com/joho/godotenv"
+	"gorm.io/gorm"
 )
 
 func init() {
@@ -33,6 +35,7 @@ type appResources struct {
 	root           string
 	indexHTML      []byte
 	accountManager *account.Manager
+	db             *gorm.DB
 }
 
 func main() {
@@ -159,6 +162,24 @@ func initialize(ctx context.Context) (*appResources, error) {
 			res.accountManager = m
 			return nil
 		}},
+		{"Loading account information", func() error {
+			m, err := account.NewManager()
+			if err != nil {
+				return err
+			}
+			res.accountManager = m
+			return nil
+		}},
+
+		{"Initializing SQLite database", func() error {
+			db, err := database.InitDB("inquiry_explorer.db")
+			if err != nil {
+				return err
+			}
+
+			res.db = db
+			return nil
+		}},
 	}
 
 	for _, step := range steps {
@@ -178,6 +199,11 @@ func initialize(ctx context.Context) (*appResources, error) {
 
 // runMainWindow creates and runs the main window. It must be called on the main thread.
 func runMainWindow(res *appResources) error {
+	defer func() {
+		if err := database.CloseDB(res.db); err != nil {
+			log.Println("Database close error:", err)
+		}
+	}()
 	w, err := glaze.NewWithOptions(glaze.Options{
 		Debug: true,
 
@@ -196,6 +222,7 @@ func runMainWindow(res *appResources) error {
 	// Bind Go methods to JavaScript.
 	app := &function.App{
 		AccountManager: res.accountManager,
+		DB:             res.db,
 	}
 
 	bound, err := glaze.BindMethods(w, "app", app)

@@ -2,19 +2,20 @@ package function
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"os"
-	"path/filepath"
 
 	"InquiryExplorer/account"
 	"InquiryExplorer/auth"
+	"InquiryExplorer/database"
 	"InquiryExplorer/file"
 	"InquiryExplorer/scan"
+
+	"gorm.io/gorm"
 )
 
 type App struct {
 	AccountManager *account.Manager
+	DB             *gorm.DB
 }
 
 // Functions exposed to JavaScript.
@@ -34,27 +35,9 @@ func (a *App) GetDesktopInfo() (*file.FolderInfo, error) {
 		return nil, err
 	}
 
-	if err := file.MakeDesktopFolder(); err != nil {
+	if err := database.SaveDesktopFiles(a.DB, folder); err != nil {
 		return nil, err
 	}
-
-	dataDir, err := file.DesktopFolderPath()
-	if err != nil {
-		return nil, err
-	}
-
-	jsonData, err := json.MarshalIndent(folder, "", "  ")
-	if err != nil {
-		return nil, err
-	}
-
-	jsonPath := filepath.Join(dataDir, "desktop_info.json")
-
-	if err := os.WriteFile(jsonPath, jsonData, 0644); err != nil {
-		return nil, err
-	}
-
-	// fmt.Printf("Desktop info saved: %s\n", jsonPath)
 
 	return folder, nil
 }
