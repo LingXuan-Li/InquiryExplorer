@@ -9,6 +9,7 @@ require (
 	github.com/shirou/gopsutil/v4 v4.26.10
 	golang.org/x/oauth2 v0.37.0
 	google.golang.org/api v0.310.0
+	gorm.io/gorm v1.31.2
 	modernc.org/sqlite v1.61.1
 )
 
@@ -26,6 +27,8 @@ require (
 	github.com/google/s2a-go v0.1.11 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.24 // indirect
 	github.com/googleapis/gax-go/v2 v2.27.0 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/ncruces/go-strftime v1.1.0 // indirect
 	github.com/power-devops/perfstat v0.0.0-20260805114148-88456608a4f6 // indirect
