@@ -222,10 +222,16 @@ func DownloadSetupFolder() error {
 		return err
 	}
 
-	// Get the latest commit SHA.
-	latestHash, err := LatestCommitHash()
-	if err != nil {
-		return err
+	// GITHUBDOWNLOAD=1 downloads setup from the repository's setup/ folder
+	// without first querying the commits API. The default (0) preserves the
+	// existing commit-aware update behavior.
+	githubDownload := strings.TrimSpace(os.Getenv("GITHUBDOWNLOAD")) == "1"
+	latestHash := ""
+	if !githubDownload {
+		latestHash, err = LatestCommitHash()
+		if err != nil {
+			return err
+		}
 	}
 
 	// Get the locally saved commit SHA.
@@ -235,14 +241,18 @@ func DownloadSetupFolder() error {
 	}
 
 	// Skip the download if the local setup is already up to date.
-	if latestHash == localHash {
+	if !githubDownload && latestHash == localHash {
 		fmt.Println("Setup is already up to date:", latestHash)
 		return nil
 	}
 
 	fmt.Println("Updating setup:")
 	fmt.Println("Local :", localHash)
-	fmt.Println("Remote:", latestHash)
+	if githubDownload {
+		fmt.Println("Source: setup/ folder (GITHUBDOWNLOAD=1)")
+	} else {
+		fmt.Println("Remote:", latestHash)
+	}
 
 	// Download the directory recursively.
 	download := func(src, dst string) error {
@@ -253,10 +263,12 @@ func DownloadSetupFolder() error {
 
 	recursiveDownload = func(src, dst string) error {
 		apiURL := fmt.Sprintf(
-			"https://api.github.com/repos/LingXuan-Li/InquiryExplorer/contents/%s?ref=%s",
+			"https://api.github.com/repos/LingXuan-Li/InquiryExplorer/contents/%s",
 			src,
-			latestHash,
 		)
+		if !githubDownload {
+			apiURL += "?ref=" + latestHash
+		}
 
 		client := &http.Client{
 			Timeout: 60 * time.Second,
@@ -307,7 +319,11 @@ func DownloadSetupFolder() error {
 				}
 
 			case "file":
-				r, err := client.Get(f.DownloadURL)
+				downloadURL := f.DownloadURL
+				if githubDownload {
+					downloadURL = fmt.Sprintf("https://raw.githubusercontent.com/LingXuan-Li/InquiryExplorer/main/%s", f.Path)
+				}
+				r, err := client.Get(downloadURL)
 				if err != nil {
 					return err
 				}
@@ -388,8 +404,10 @@ func DownloadSetupFolder() error {
 	}
 
 	// Save the new commit SHA.
-	if err := SaveCommitHash(latestHash); err != nil {
-		return fmt.Errorf("setup installed but version save failed: %w", err)
+	if !githubDownload {
+		if err := SaveCommitHash(latestHash); err != nil {
+			return fmt.Errorf("setup installed but version save failed: %w", err)
+		}
 	}
 
 	// Remove the backup.
