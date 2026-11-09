@@ -71,7 +71,7 @@ func LoadBinary(db *gorm.DB, historyULID string) ([]byte, error) {
 		return nil, fmt.Errorf("database is nil")
 	}
 	var history DBHistory
-	if err := db.Where("history_ulid = ?", historyULID).First(&history).Error; err != nil {
+	if err := db.Where(&DBHistory{HistoryULID: historyULID}).First(&history).Error; err != nil {
 		return nil, err
 	}
 	data, err := DecompressBinary(history.Content)
