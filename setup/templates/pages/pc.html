@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -151,6 +151,64 @@
 					display: none;
 				}
 			}
+
+			/* ===== Tab View ===== */
+			.tabview-navset {
+				margin: 1em 0;
+				font-size: 90%;
+			}
+
+			.tabview-nav {
+				display: flex;
+				flex-wrap: wrap;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				border-bottom: 5px solid var(--third-color);
+				font-size: inherit;
+				max-width: none;
+			}
+
+			.tabview-nav li {
+				margin: 0 0.3em 0 0;
+			}
+
+			.tabview-nav a {
+				display: block;
+				padding: 0.4em 0.9em;
+				cursor: pointer;
+				background: var(--blockquote-code-color);
+				color: var(--text-color);
+				text-decoration: none;
+				border: 1px solid var(--blockquote-code-border-color);
+				border-bottom: 0;
+				border-radius: 4px 4px 0 0;
+			}
+
+			.tabview-nav a:hover {
+				background: var(--blockquote-code-border-color);
+			}
+
+			.tabview-nav li.selected a {
+				background: var(--third-color);
+				color: var(--background-color);
+				font-weight: bold;
+			}
+
+			.tabview-content {
+				padding: 1em;
+				border: 1px solid var(--blockquote-code-border-color);
+				border-top: 0;
+				background: var(--background-color);
+			}
+
+			.tabview-content > div {
+				display: none;
+			}
+
+			.tabview-content > div.active {
+				display: block;
+			}
 		</style>
 	</head>
 
@@ -163,14 +221,74 @@
 			</p>
 
 			<div id="error" class="error" role="alert"></div>
+			<div class="tabview-navset">
+				<ul class="tabview-nav" role="tablist">
+					<li class="selected">
+						<a href="#minimization">Minimization</a>
+					</li>
+					<li>
+						<a href="#desktop">Desktop</a>
+					</li>
+					<li>
+						<a href="#documents">Documents</a>
+					</li>
+					<li>
+						<a href="#downloads">Downloads</a>
+					</li>
+				</ul>
 
-			<div class="card">
-				<div id="file-tree"></div>
-				<div id="lastUpdate" class="refresh-info"></div>
+				<div class="tabview-content">
+					<div id="minimization" class="active">
+						<h1>Minimization</h1>
+					</div>
+					<div id="desktop">
+						<div id="file-tree"></div>
+						<div id="lastUpdate" class="refresh-info"></div>
+					</div>
+
+					<div id="documents">Documents</div>
+
+					<div id="downloads">Downloads</div>
+				</div>
 			</div>
 		</div>
 
 		<script>
+			// ===== Tab switching =====
+			function initTabs() {
+				const tabs = document.querySelectorAll(".tabview-nav a");
+				const contents = document.querySelectorAll(
+					".tabview-content > div",
+				);
+
+				tabs.forEach((tab) => {
+					tab.addEventListener("click", (event) => {
+						event.preventDefault();
+
+						const targetId = tab.getAttribute("href").substring(1);
+						const target = document.getElementById(targetId);
+
+						if (!target) return;
+
+						// Deselect all tabs
+						document
+							.querySelectorAll(".tabview-nav li")
+							.forEach((li) => li.classList.remove("selected"));
+
+						// Hide all content
+						contents.forEach((content) => {
+							content.classList.remove("active");
+						});
+
+						// Display the selected tab and its content
+						tab.parentElement.classList.add("selected");
+						target.classList.add("active");
+					});
+				});
+			}
+
+			initTabs();
+
 			(() => {
 				"use strict";
 
@@ -208,7 +326,7 @@
 					element.textContent = "";
 				}
 
-				// ファイル表示
+				// Render a file
 				function renderFile(file) {
 					const item = document.createElement("div");
 					item.className = "file-item";
@@ -231,7 +349,7 @@
 					return item;
 				}
 
-				// フォルダ表示（再帰処理）
+				// Render a folder (recursive processing)
 				function renderFolder(folder) {
 					const container = document.createElement("div");
 					container.className = "folder";
@@ -241,7 +359,7 @@
 
 					const icon = document.createElement("span");
 					icon.className = "folder-icon";
-					icon.textContent = "📂";
+					icon.textContent = "📁";
 
 					const name = document.createElement("span");
 					name.textContent = folder.name || "";
@@ -250,23 +368,24 @@
 					title.append(icon, name);
 					title.tabIndex = 0;
 					title.setAttribute("role", "button");
-					title.setAttribute("aria-expanded", "true");
+					title.setAttribute("aria-expanded", "false");
 
 					const children = document.createElement("div");
 					children.className = "folder-children";
+					children.style.display = "none";
 
-					// 子フォルダ
+					// Child folders
 					(folder.folders || []).forEach((subFolder) => {
 						children.appendChild(renderFolder(subFolder));
 					});
 
-					// ファイル
+					// Files
 					(folder.files || []).forEach((file) => {
 						children.appendChild(renderFile(file));
 					});
 
-					// 開閉処理
-					let expanded = true;
+					// Expand/collapse handling
+					let expanded = false;
 
 					const toggle = () => {
 						expanded = !expanded;
@@ -288,7 +407,7 @@
 					return container;
 				}
 
-				// ファイルツリー全体を表示
+				// Display the entire folder tree
 				function updateFolderTree(data) {
 					const container = document.getElementById("file-tree");
 					if (!container) return;
@@ -314,7 +433,7 @@
 					container.appendChild(renderFolder(data));
 				}
 
-				// Go APIからフォルダ情報取得
+				// Retrieve folder information from the Go API
 				async function getFolderInfo() {
 					if (!isActive || isLoading) return;
 
@@ -348,7 +467,7 @@
 						if (lastUpdate) {
 							lastUpdate.textContent =
 								"Last updated: " +
-								new Date().toLocaleTimeString("ja-JP");
+								new Date().toLocaleTimeString("en-US");
 						}
 					} catch (error) {
 						console.error("Folder Error:", error);
