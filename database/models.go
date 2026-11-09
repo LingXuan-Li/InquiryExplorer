@@ -90,3 +90,35 @@ type DBTag struct {
 
 	Files []DBFileTag `gorm:"foreignKey:TagID;references:ID" json:"files,omitempty"`
 }
+
+type DBScanState struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+
+	RootPath      string    `gorm:"type:varchar(256);not null" json:"root_path"`
+	LastScannedAt time.Time `json:"last_scanned_at"`
+	IsScanning    bool      `json:"is_scanning"`
+}
+
+type DBFolder struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+
+	Path       string      `gorm:"type:text;not null;uniqueIndex" json:"path"`
+	Name       string      `gorm:"type:text;not null" json:"name"`
+	FolderULID string      `gorm:"type:char(26);uniqueIndex;not null" json:"folder_ulid"`
+	ParentPath string      `gorm:"type:text;not null" json:"parent_path"`
+	ModTime    time.Time   `gorm:"not null" json:"mod_time"`
+	Files      []FileGroup `gorm:"foreignKey:FolderULID;references:FolderULID" json:"files,omitempty"`
+}
+
+type FileGroup struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+
+	FolderULID string `gorm:"type:char(26);not null;index" json:"folder_ulid"`
+	FileULID   string `gorm:"type:char(26);not null;index" json:"file_ulid"`
+}

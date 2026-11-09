@@ -461,6 +461,22 @@
 
 						updateFolderTree(folder);
 
+						// If the response came from cache, refresh once and apply the
+						// latest scan directly to the active page.
+						if (!folder.refreshed) {
+							window.setTimeout(async () => {
+								if (!isActive) return;
+								try {
+									const latest = await window.app_get_desktop_info(true);
+									if (isActive && latest && typeof latest === "object") {
+										updateFolderTree(latest);
+									}
+								} catch (refreshError) {
+									console.error("Desktop refresh error:", refreshError);
+								}
+							}, 0);
+						}
+
 						const lastUpdate =
 							document.getElementById("lastUpdate");
 

@@ -29,7 +29,38 @@ func (a *App) GetStorageInfo() ([]scan.StorageInfo, error) {
 	return storage, nil
 }
 
-func (a *App) GetDesktopInfo() (*file.FolderInfo, error) {
+// StoreFileBinary reads a file and stores its DEFLATE-compressed contents in SQLite.
+func (a *App) StoreFileBinary(path string) (string, error) {
+	data, err := file.ReadBinary(path)
+	if err != nil {
+		return "", err
+	}
+	return database.SaveBinary(a.DB, data)
+}
+
+func (a *App) GetDesktopInfo(forceRefresh ...bool) (*file.FolderInfo, error) {
+	if len(forceRefresh) > 0 && forceRefresh[0] {
+		folder, err := file.GetDesktopInfo()
+		if err != nil {
+			return nil, err
+		}
+		if err := database.SaveDesktopFiles(a.DB, folder); err != nil {
+			return nil, err
+		}
+		return folder, nil
+	}
+	// DBからキャッシュを取得
+	cached, err := database.GetDesktopFiles(a.DB)
+	if err != nil {
+		return nil, err
+	}
+
+	// キャッシュが存在する場合
+	if cached != nil {
+		return cached, nil
+	}
+
+	// キャッシュがない場合は実際のファイル情報を取得
 	folder, err := file.GetDesktopInfo()
 	if err != nil {
 		return nil, err

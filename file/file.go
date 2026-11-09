@@ -25,6 +25,11 @@ func OSScan() string {
 	}
 }
 
+// ReadBinary reads and returns the complete contents of the file at path.
+func ReadBinary(path string) ([]byte, error) {
+	return os.ReadFile(path)
+}
+
 func ConfigFolderPath() (string, error) {
 	configDir, err := os.UserConfigDir()
 	if err != nil {
