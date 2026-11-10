@@ -145,6 +145,9 @@ func AutoMigrate(db *gorm.DB) error {
 		&DBHistory{},
 		&DBFileTag{},
 		&DBTag{},
+		&DBScanState{},
+		&DBFolder{},
+		&FileGroup{},
 	)
 }
 
