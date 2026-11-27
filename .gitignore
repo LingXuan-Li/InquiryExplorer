@@ -4,3 +4,5 @@
 !.env.example
 
 overlay.json
+
+node_modules/
