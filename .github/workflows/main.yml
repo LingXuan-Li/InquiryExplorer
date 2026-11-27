@@ -258,3 +258,100 @@ jobs:
             "") echo "::error::Testing did not complete."; exit 1 ;;
             *) echo "::error::Tests failed with exit code $TEST_STATUS."; exit 1 ;;
           esac
+
+  benchmark:
+    name: Benchmark (Ubuntu)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    env:
+      REF_NAME: ${{ github.ref_name }}
+      RUN_ID: ${{ github.run_id }}
+      RUN_ATTEMPT: ${{ github.run_attempt }}
+      MODULE_PATH: InquiryExplorer
+      BENCH_FILE: ${{ github.workspace }}/BENCHMARK.md
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Show Environment
+        run: |
+          echo "Runner OS: $RUNNER_OS"
+          echo "Runner Architecture: $RUNNER_ARCH"
+          echo "System:"
+          uname -a
+          echo "Go:"
+          go version
+          echo "Commit: $(git rev-parse HEAD)"
+
+      - name: Instrument
+        run: |
+          go run ./cmd/instrument "$MODULE_PATH" .
+          echo "Instrumented files: $(grep -o '"/' overlay.json | wc -l)"
+
+      - name: Benchmark
+        id: benchmark
+        run: |
+          mkdir -p "$RUNNER_TEMP"
+          RESULT_FILE="$RUNNER_TEMP/benchmark-results.txt"
+          set +e
+          go test -count=1 -v -overlay "$PWD/overlay.json" . 2>&1 | tee "$RESULT_FILE"
+          STATUS=${PIPESTATUS[0]}
+          set -e
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+
+      - name: Show Benchmark Result
+        if: always()
+        run: |
+          if [ -f BENCHMARK.md ]; then
+            cat BENCHMARK.md
+            cat BENCHMARK.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::BENCHMARK.md was not generated."
+          fi
+
+      - name: Commit Benchmark
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -f BENCHMARK.md ]; then
+            git add -- BENCHMARK.md
+          fi
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "docs[bot]: Update BENCHMARK.md"
+            git pull --rebase origin "$REF_NAME"
+            git push origin "HEAD:refs/heads/$REF_NAME"
+          fi
+
+      - name: Upload Benchmark Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-logs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            BENCHMARK.md
+            ${{ runner.temp }}/benchmark-results.txt
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Check Benchmark Status
+        if: always()
+        env:
+          BENCH_STATUS: ${{ steps.benchmark.outputs.status }}
+        run: |
+          case "$BENCH_STATUS" in
+            0) echo "✅ Benchmark passed" ;;
+            "") echo "::error::Benchmark did not complete."; exit 1 ;;
+            *) echo "::error::Benchmark failed with exit code $BENCH_STATUS."; exit 1 ;;
+          esac
