@@ -262,6 +262,7 @@ jobs:
   benchmark:
     name: Benchmark (Ubuntu)
     runs-on: ubuntu-latest
+    needs: testing
     timeout-minutes: 30
     permissions:
       contents: write
@@ -304,7 +305,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP"
           RESULT_FILE="$RUNNER_TEMP/benchmark-results.txt"
           set +e
-          go test -count=1 -v -overlay "$PWD/overlay.json" . 2>&1 | tee "$RESULT_FILE"
+          go run -overlay "$PWD/overlay.json" . 2>&1 | tee "$RESULT_FILE"
           STATUS=${PIPESTATUS[0]}
           set -e
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
@@ -323,6 +324,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "::group::git status"
+          git status --short
+          echo "::endgroup::"
           if [ -f BENCHMARK.md ]; then
             git add -- BENCHMARK.md
           fi
@@ -330,7 +334,7 @@ jobs:
             echo "Nothing to commit."
           else
             git commit -m "docs[bot]: Update BENCHMARK.md"
-            git pull --rebase origin "$REF_NAME"
+            git pull --rebase --autostash origin "$REF_NAME"
             git push origin "HEAD:refs/heads/$REF_NAME"
           fi
 
