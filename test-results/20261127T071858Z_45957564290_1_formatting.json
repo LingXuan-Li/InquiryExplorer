@@ -1,0 +1,63 @@
+{
+  "timestamp": "20261127T071858Z",
+  "type": "formatting",
+  "status": "success",
+  "exit_code": 0,
+  "commit": {
+    "sha": "c53898bffdf35f449d6f2470db4b59a3ba325dc9",
+    "url": "https://github.com/LingXuan-Li/InquiryExplorer/commit/c53898bffdf35f449d6f2470db4b59a3ba325dc9"
+  },
+  "github": {
+    "repository": "LingXuan-Li/InquiryExplorer",
+    "run_id": "45957564290",
+    "run_attempt": "1",
+    "run_url": "https://github.com/LingXuan-Li/InquiryExplorer/actions/runs/45957564290/attempts/1"
+  },
+  "summary": {
+    "tools": [
+      {
+        "tool": "prettier",
+        "exit_code": 0,
+        "status": "success",
+        "reported_files": [
+          "account/BENCHMARK.md",
+          "auth/BENCHMARK.md",
+          "BENCHMARK.md",
+          "cloud/BENCHMARK.md",
+          "database/BENCHMARK.md",
+          "drive/BENCHMARK.md",
+          "file/BENCHMARK.md",
+          "function/BENCHMARK.md",
+          "overlay.json",
+          "scan/BENCHMARK.md",
+          "storage/BENCHMARK.md"
+        ],
+        "errors": [],
+        "output": ""
+      },
+      {
+        "tool": "go fmt",
+        "exit_code": 0,
+        "status": "success",
+        "reported_files": [],
+        "errors": [],
+        "output": ""
+      }
+    ],
+    "reformatted_files": [
+      "BENCHMARK.md",
+      "account/BENCHMARK.md",
+      "auth/BENCHMARK.md",
+      "cloud/BENCHMARK.md",
+      "database/BENCHMARK.md",
+      "drive/BENCHMARK.md",
+      "file/BENCHMARK.md",
+      "function/BENCHMARK.md",
+      "overlay.json",
+      "scan/BENCHMARK.md",
+      "storage/BENCHMARK.md"
+    ],
+    "files_source": "git diff"
+  },
+  "details": "### BEGIN prettier\n\u001b[90m.github/ISSUE_TEMPLATE/bug_report.yml\u001b[39m 25ms (unchanged)\n\u001b[90m.github/ISSUE_TEMPLATE/config.yml\u001b[39m 2ms (unchanged)\n\u001b[90m.github/ISSUE_TEMPLATE/feature_request.yml\u001b[39m 3ms (unchanged)\naccount/BENCHMARK.md 42ms\nauth/BENCHMARK.md 3ms\nBENCHMARK.md 3ms\ncloud/BENCHMARK.md 2ms\ndatabase/BENCHMARK.md 2ms\ndrive/BENCHMARK.md 10ms\nfile/BENCHMARK.md 2ms\nfunction/BENCHMARK.md 2ms\noverlay.json 24ms\n\u001b[90mREADME.md\u001b[39m 29ms (unchanged)\nscan/BENCHMARK.md 2ms\n\u001b[90msetup/config/env.json\u001b[39m 1ms (unchanged)\n\u001b[90msetup/templates/index.html\u001b[39m 129ms (unchanged)\n\u001b[90msetup/templates/pages/cloud-signup.html\u001b[39m 30ms (unchanged)\n\u001b[90msetup/templates/pages/home.html\u001b[39m 38ms (unchanged)\n\u001b[90msetup/templates/pages/pc.html\u001b[39m 42ms (unchanged)\n\u001b[90msplash/assets.html\u001b[39m 12ms (unchanged)\nstorage/BENCHMARK.md 1ms\n\n### END prettier exit=0\n### BEGIN go fmt\n\n### END go fmt exit=0\n### BEGIN changes\nBENCHMARK.md\naccount/BENCHMARK.md\nauth/BENCHMARK.md\ncloud/BENCHMARK.md\ndatabase/BENCHMARK.md\ndrive/BENCHMARK.md\nfile/BENCHMARK.md\nfunction/BENCHMARK.md\noverlay.json\nscan/BENCHMARK.md\nstorage/BENCHMARK.md\n\n### END changes exit=0\n"
+}
