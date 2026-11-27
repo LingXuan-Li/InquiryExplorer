@@ -299,13 +299,22 @@ jobs:
           go run ./cmd/instrument "$MODULE_PATH" .
           echo "Instrumented files: $(grep -o '"/' overlay.json | wc -l)"
 
+      - name: Install GUI dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libwebkit2gtk-4.1-0
+
       - name: Benchmark
         id: benchmark
+        env:
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
         run: |
           mkdir -p "$RUNNER_TEMP"
           RESULT_FILE="$RUNNER_TEMP/benchmark-results.txt"
+          go build -overlay "$PWD/overlay.json" -o "$RUNNER_TEMP/app" .
           set +e
-          go run -overlay "$PWD/overlay.json" . 2>&1 | tee "$RESULT_FILE"
+          timeout 20m xvfb-run -a "$RUNNER_TEMP/app" 2>&1 | tee "$RESULT_FILE"
           STATUS=${PIPESTATUS[0]}
           set -e
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
@@ -321,6 +330,7 @@ jobs:
           fi
 
       - name: Commit Benchmark
+        if: steps.benchmark.outputs.status == '0'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
