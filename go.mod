@@ -10,6 +10,7 @@ require (
 	github.com/oklog/ulid/v2 v2.1.2
 	github.com/shirou/gopsutil/v4 v4.26.10
 	golang.org/x/oauth2 v0.37.0
+	golang.org/x/tools v0.51.0
 	google.golang.org/api v0.310.0
 	gorm.io/gorm v1.31.2
 )
