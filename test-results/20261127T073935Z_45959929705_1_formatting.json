@@ -1,0 +1,39 @@
+{
+  "timestamp": "20261127T073935Z",
+  "type": "formatting",
+  "status": "success",
+  "exit_code": 0,
+  "commit": {
+    "sha": "fcdb4b0f175565f1a6984b1110ca48298cb9e6d9",
+    "url": "https://github.com/LingXuan-Li/InquiryExplorer/commit/fcdb4b0f175565f1a6984b1110ca48298cb9e6d9"
+  },
+  "github": {
+    "repository": "LingXuan-Li/InquiryExplorer",
+    "run_id": "45959929705",
+    "run_attempt": "1",
+    "run_url": "https://github.com/LingXuan-Li/InquiryExplorer/actions/runs/45959929705/attempts/1"
+  },
+  "summary": {
+    "tools": [
+      {
+        "tool": "prettier",
+        "exit_code": 0,
+        "status": "success",
+        "reported_files": [],
+        "errors": [],
+        "output": ""
+      },
+      {
+        "tool": "go fmt",
+        "exit_code": 0,
+        "status": "success",
+        "reported_files": [],
+        "errors": [],
+        "output": ""
+      }
+    ],
+    "reformatted_files": [],
+    "files_source": "git diff"
+  },
+  "details": "### BEGIN prettier\n\u001b[90m.github/ISSUE_TEMPLATE/bug_report.yml\u001b[39m 25ms (unchanged)\n\u001b[90m.github/ISSUE_TEMPLATE/config.yml\u001b[39m 2ms (unchanged)\n\u001b[90m.github/ISSUE_TEMPLATE/feature_request.yml\u001b[39m 3ms (unchanged)\n\u001b[90maccount/BENCHMARK.md\u001b[39m 39ms (unchanged)\n\u001b[90mauth/BENCHMARK.md\u001b[39m 2ms (unchanged)\n\u001b[90mBENCHMARK.md\u001b[39m 2ms (unchanged)\n\u001b[90mcloud/BENCHMARK.md\u001b[39m 2ms (unchanged)\n\u001b[90mdatabase/BENCHMARK.md\u001b[39m 2ms (unchanged)\n\u001b[90mdrive/BENCHMARK.md\u001b[39m 12ms (unchanged)\n\u001b[90mfile/BENCHMARK.md\u001b[39m 2ms (unchanged)\n\u001b[90mfunction/BENCHMARK.md\u001b[39m 2ms (unchanged)\n\u001b[90moverlay.json\u001b[39m 24ms (unchanged)\n\u001b[90mREADME.md\u001b[39m 27ms (unchanged)\n\u001b[90mscan/BENCHMARK.md\u001b[39m 1ms (unchanged)\n\u001b[90msetup/config/env.json\u001b[39m 1ms (unchanged)\n\u001b[90msetup/templates/index.html\u001b[39m 127ms (unchanged)\n\u001b[90msetup/templates/pages/cloud-signup.html\u001b[39m 33ms (unchanged)\n\u001b[90msetup/templates/pages/home.html\u001b[39m 40ms (unchanged)\n\u001b[90msetup/templates/pages/pc.html\u001b[39m 40ms (unchanged)\n\u001b[90msplash/assets.html\u001b[39m 9ms (unchanged)\n\u001b[90mstorage/BENCHMARK.md\u001b[39m 2ms (unchanged)\n\n### END prettier exit=0\n### BEGIN go fmt\n\n### END go fmt exit=0\n### BEGIN changes\n\n### END changes exit=0\n"
+}
