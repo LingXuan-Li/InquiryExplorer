@@ -316,3 +316,25 @@ func TestTokenFileEncrypted(t *testing.T) {
 		t.Error("encryption header not found")
 	}
 }
+
+func TestDeleteTokenRemovesLegacyFile(t *testing.T) {
+	accountID := uuid.New()
+
+	legacy, err := legacyTokenPath(accountID)
+	if err != nil {
+		t.Fatalf("legacyTokenPath() error = %v", err)
+	}
+	if err := os.MkdirAll(filepath.Dir(legacy), 0700); err != nil {
+		t.Fatalf("create dir: %v", err)
+	}
+	if err := os.WriteFile(legacy, []byte(`{"access_token":"x"}`), 0600); err != nil {
+		t.Fatalf("write legacy token: %v", err)
+	}
+
+	if err := DeleteToken(accountID); err != nil {
+		t.Fatalf("DeleteToken() error = %v", err)
+	}
+	if _, err := os.Stat(legacy); !errors.Is(err, os.ErrNotExist) {
+		t.Errorf("legacy token file still exists")
+	}
+}

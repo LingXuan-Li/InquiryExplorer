@@ -176,9 +176,21 @@ func DeleteToken(accountID uuid.UUID) error {
 	}
 
 	err = os.Remove(path)
-	if errors.Is(err, os.ErrNotExist) {
-		return nil
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return err
 	}
 
-	return err
+	// Also remove a legacy plaintext token so that no credential is left
+	// behind after the account is deleted.
+	legacyPath, err := legacyTokenPath(accountID)
+	if err != nil {
+		return err
+	}
+
+	err = os.Remove(legacyPath)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return err
+	}
+
+	return nil
 }

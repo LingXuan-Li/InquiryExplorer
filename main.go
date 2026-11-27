@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"html/template"
+	"io/fs"
 	"log"
 	"mime"
 	"net/url"
@@ -117,7 +119,8 @@ func initialize(ctx context.Context) (*appResources, error) {
 		fn   func() error
 	}{
 		{"Loading environment settings (.env)", func() error {
-			if err := godotenv.Load(); err != nil {
+			// .env is optional: variables may come from the real environment.
+			if err := godotenv.Load(); err != nil && !errors.Is(err, fs.ErrNotExist) {
 				return fmt.Errorf("load .env: %w", err)
 			}
 			return nil
@@ -152,14 +155,6 @@ func initialize(ctx context.Context) (*appResources, error) {
 			}
 			res.indexHTML = append([]byte(nil), buf.Bytes()...)
 
-			return nil
-		}},
-		{"Loading account information", func() error {
-			m, err := account.NewManager()
-			if err != nil {
-				return err
-			}
-			res.accountManager = m
 			return nil
 		}},
 		{"Loading account information", func() error {

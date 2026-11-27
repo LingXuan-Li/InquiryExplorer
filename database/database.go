@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"InquiryExplorer/file"
@@ -69,6 +70,11 @@ func SaveBinary(db *gorm.DB, data []byte) (string, error) {
 func LoadBinary(db *gorm.DB, historyULID string) ([]byte, error) {
 	if db == nil {
 		return nil, fmt.Errorf("database is nil")
+	}
+	// A struct condition ignores zero values, so an empty ID would silently
+	// match (and return) an arbitrary row.
+	if historyULID == "" {
+		return nil, fmt.Errorf("history ULID is empty")
 	}
 	var history DBHistory
 	if err := db.Where(&DBHistory{HistoryULID: historyULID}).First(&history).Error; err != nil {
@@ -146,8 +152,6 @@ func AutoMigrate(db *gorm.DB) error {
 		&DBFileTag{},
 		&DBTag{},
 		&DBScanState{},
-		&DBFolder{},
-		&FileGroup{},
 	)
 }
 
@@ -169,7 +173,14 @@ func InitDB(name string) (*gorm.DB, error) {
 	return db, nil
 }
 
-// SaveDesktopFiles saves desktop file metadata recursively.
+// SaveDesktopFiles synchronizes the cached desktop tree with a fresh scan.
+//
+// The cache is updated in place instead of being cleared and rebuilt:
+//   - rows that still exist keep their ULIDs, so tags and history attached to
+//     them survive a refresh;
+//   - files that disappeared are soft-deleted (and restored if they come back);
+//   - folders that disappeared are removed together with their links;
+//   - only rows located below the scanned root are ever touched.
 func SaveDesktopFiles(db *gorm.DB, folder *file.FolderInfo) error {
 	if db == nil {
 		return fmt.Errorf("database is nil")
@@ -180,77 +191,216 @@ func SaveDesktopFiles(db *gorm.DB, folder *file.FolderInfo) error {
 	}
 
 	return db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&DBFile{}).Error; err != nil {
-			return fmt.Errorf("failed to clear cached files: %w", err)
-		}
-		if err := tx.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&DBFolder{}).Error; err != nil {
-			return fmt.Errorf("failed to clear cached folders: %w", err)
-		}
-		return saveFolderFiles(tx, folder)
+		return syncDesktopTree(tx, folder)
 	})
 }
 
-func saveFolderFiles(tx *gorm.DB, folder *file.FolderInfo) error {
-	modTime := time.Now()
-	if folderInfo, err := os.Stat(folder.Path); err == nil {
-		modTime = folderInfo.ModTime()
+type folderFileLink struct {
+	folderULID string
+	fileULID   string
+}
+
+func syncDesktopTree(tx *gorm.DB, root *file.FolderInfo) error {
+	rootPath := filepath.Clean(root.Path)
+	rootPrefix := rootPath
+	if !strings.HasSuffix(rootPrefix, string(filepath.Separator)) {
+		rootPrefix += string(filepath.Separator)
 	}
-	dbFolder := DBFolder{Path: folder.Path, Name: folder.Name, FolderULID: ulid.Make().String(), ParentPath: filepath.Dir(folder.Path), ModTime: modTime}
-	if err := tx.Create(&dbFolder).Error; err != nil {
-		return fmt.Errorf("failed to save folder %s: %w", folder.Path, err)
-	}
-	for _, f := range folder.Files {
-		modTime, err := time.ParseInLocation(
-			"2006-01-02 15:04:05",
-			f.ModTime,
-			time.Local,
-		)
-		if err != nil {
-			return fmt.Errorf("invalid mod time for %s: %w", f.Path, err)
-		}
-
-		dbFile := DBFile{
-			Path:      f.Path,
-			FileName:  f.Name,
-			Size:      f.Size,
-			BaseName:  f.BaseName,
-			Extension: f.Extension,
-			ModTime:   modTime,
-			FileULID:  ulid.Make().String(),
-		}
-
-		err = tx.Clauses(clause.OnConflict{
-			Columns: []clause.Column{
-				{Name: "path"},
-			},
-			DoUpdates: clause.AssignmentColumns([]string{
-				"file_name",
-				"size",
-				"base_name",
-				"extension",
-				"mod_time",
-				"updated_at",
-			}),
-		}).Create(&dbFile).Error
-
-		if err != nil {
-			return fmt.Errorf("failed to save file %s: %w", f.Path, err)
-		}
-		var savedFile DBFile
-		if err := tx.Where("path = ?", f.Path).First(&savedFile).Error; err != nil {
-			return fmt.Errorf("failed to load saved file %s: %w", f.Path, err)
-		}
-		if err := tx.Create(&FileGroup{FolderULID: dbFolder.FolderULID, FileULID: savedFile.FileULID}).Error; err != nil {
-			return fmt.Errorf("failed to link file %s to folder: %w", f.Path, err)
-		}
+	inScope := func(p string) bool {
+		p = filepath.Clean(p)
+		return p == rootPath || strings.HasPrefix(p, rootPrefix)
 	}
 
-	for i := range folder.Folders {
-		if err := saveFolderFiles(tx, &folder.Folders[i]); err != nil {
+	var existingFolders []DBFolder
+	if err := tx.Find(&existingFolders).Error; err != nil {
+		return fmt.Errorf("failed to load cached folders: %w", err)
+	}
+	foldersByPath := make(map[string]*DBFolder, len(existingFolders))
+	for i := range existingFolders {
+		foldersByPath[existingFolders[i].Path] = &existingFolders[i]
+	}
+
+	// Unscoped: soft-deleted files still occupy their unique path.
+	var existingFiles []DBFile
+	if err := tx.Unscoped().Find(&existingFiles).Error; err != nil {
+		return fmt.Errorf("failed to load cached files: %w", err)
+	}
+	filesByPath := make(map[string]*DBFile, len(existingFiles))
+	for i := range existingFiles {
+		filesByPath[existingFiles[i].Path] = &existingFiles[i]
+	}
+
+	var existingLinks []FileGroup
+	if err := tx.Find(&existingLinks).Error; err != nil {
+		return fmt.Errorf("failed to load cached folder links: %w", err)
+	}
+
+	seenFolders := make(map[string]bool)
+	seenFiles := make(map[string]bool)
+	wanted := make(map[folderFileLink]bool)
+
+	var walk func(f *file.FolderInfo) error
+	walk = func(f *file.FolderInfo) error {
+		modTime := time.Now()
+		if folderInfo, err := os.Stat(f.Path); err == nil {
+			modTime = folderInfo.ModTime()
+		}
+
+		dbFolder, ok := foldersByPath[f.Path]
+		if ok {
+			dbFolder.Name = f.Name
+			dbFolder.ParentPath = filepath.Dir(f.Path)
+			dbFolder.ModTime = modTime
+			if err := tx.Omit(clause.Associations).Save(dbFolder).Error; err != nil {
+				return fmt.Errorf("failed to update folder %s: %w", f.Path, err)
+			}
+		} else {
+			dbFolder = &DBFolder{
+				Path:       f.Path,
+				Name:       f.Name,
+				FolderULID: ulid.Make().String(),
+				ParentPath: filepath.Dir(f.Path),
+				ModTime:    modTime,
+			}
+			if err := tx.Omit(clause.Associations).Create(dbFolder).Error; err != nil {
+				return fmt.Errorf("failed to save folder %s: %w", f.Path, err)
+			}
+			foldersByPath[f.Path] = dbFolder
+		}
+		seenFolders[f.Path] = true
+
+		for _, fi := range f.Files {
+			fileModTime, err := time.ParseInLocation(
+				"2006-01-02 15:04:05",
+				fi.ModTime,
+				time.Local,
+			)
+			if err != nil {
+				return fmt.Errorf("invalid mod time for %s: %w", fi.Path, err)
+			}
+
+			dbFile, ok := filesByPath[fi.Path]
+			if ok {
+				dbFile.FileName = fi.Name
+				dbFile.Size = fi.Size
+				dbFile.BaseName = fi.BaseName
+				dbFile.Extension = fi.Extension
+				dbFile.ModTime = fileModTime
+				// Restore the file if it had been soft-deleted earlier.
+				dbFile.DeletedAt = gorm.DeletedAt{}
+				if err := tx.Unscoped().Omit(clause.Associations).Save(dbFile).Error; err != nil {
+					return fmt.Errorf("failed to update file %s: %w", fi.Path, err)
+				}
+			} else {
+				dbFile = &DBFile{
+					Path:      fi.Path,
+					FileName:  fi.Name,
+					Size:      fi.Size,
+					BaseName:  fi.BaseName,
+					Extension: fi.Extension,
+					ModTime:   fileModTime,
+					FileULID:  ulid.Make().String(),
+				}
+				if err := tx.Omit(clause.Associations).Create(dbFile).Error; err != nil {
+					return fmt.Errorf("failed to save file %s: %w", fi.Path, err)
+				}
+				filesByPath[fi.Path] = dbFile
+			}
+			seenFiles[fi.Path] = true
+			wanted[folderFileLink{dbFolder.FolderULID, dbFile.FileULID}] = true
+		}
+
+		for i := range f.Folders {
+			if err := walk(&f.Folders[i]); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}
+
+	if err := walk(root); err != nil {
+		return err
+	}
+
+	// Folder <-> file links: keep wanted ones, drop stale and duplicate links
+	// below the scanned root (and links to folders that no longer exist).
+	knownFolderULIDs := make(map[string]bool, len(foldersByPath))
+	scopedFolderULIDs := make(map[string]bool)
+	for p, f := range foldersByPath {
+		knownFolderULIDs[f.FolderULID] = true
+		if inScope(p) {
+			scopedFolderULIDs[f.FolderULID] = true
+		}
+	}
+
+	kept := make(map[folderFileLink]bool)
+	var staleLinkIDs []uint
+	for _, l := range existingLinks {
+		key := folderFileLink{l.FolderULID, l.FileULID}
+		if wanted[key] && !kept[key] {
+			kept[key] = true
+			continue
+		}
+		if scopedFolderULIDs[l.FolderULID] || !knownFolderULIDs[l.FolderULID] {
+			staleLinkIDs = append(staleLinkIDs, l.ID)
+		}
+	}
+	if err := deleteByIDs(tx, &FileGroup{}, staleLinkIDs); err != nil {
+		return fmt.Errorf("failed to remove stale folder links: %w", err)
+	}
+
+	// Folders that no longer exist (their links are already gone).
+	var staleFolderIDs []uint
+	for p, f := range foldersByPath {
+		if inScope(p) && !seenFolders[p] {
+			staleFolderIDs = append(staleFolderIDs, f.ID)
+		}
+	}
+	if err := deleteByIDs(tx, &DBFolder{}, staleFolderIDs); err != nil {
+		return fmt.Errorf("failed to remove stale folders: %w", err)
+	}
+
+	// Files that no longer exist are soft-deleted so that their tags and
+	// history are kept in case the file comes back.
+	var staleFileIDs []uint
+	for p, f := range filesByPath {
+		if inScope(p) && !seenFiles[p] && !f.DeletedAt.Valid {
+			staleFileIDs = append(staleFileIDs, f.ID)
+		}
+	}
+	if err := deleteByIDs(tx, &DBFile{}, staleFileIDs); err != nil {
+		return fmt.Errorf("failed to remove stale files: %w", err)
+	}
+
+	var newLinks []FileGroup
+	for key := range wanted {
+		if !kept[key] {
+			newLinks = append(newLinks, FileGroup{FolderULID: key.folderULID, FileULID: key.fileULID})
+		}
+	}
+	if len(newLinks) > 0 {
+		if err := tx.CreateInBatches(&newLinks, 200).Error; err != nil {
+			return fmt.Errorf("failed to link files to folders: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// deleteByIDs deletes rows by primary key in chunks, staying below SQLite's
+// bound-variable limit.
+func deleteByIDs(tx *gorm.DB, model interface{}, ids []uint) error {
+	const chunk = 500
+	for start := 0; start < len(ids); start += chunk {
+		end := start + chunk
+		if end > len(ids) {
+			end = len(ids)
+		}
+		if err := tx.Delete(model, ids[start:end]).Error; err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -272,12 +422,6 @@ func GetDesktopFiles(db *gorm.DB) (*file.FolderInfo, error) {
 		return nil, fmt.Errorf("database is nil")
 	}
 
-	var files []DBFile
-
-	if err := db.Order("path ASC").Find(&files).Error; err != nil {
-		return nil, err
-	}
-
 	var folders []DBFolder
 	if err := db.Order("path ASC").Find(&folders).Error; err != nil {
 		return nil, err
@@ -285,25 +429,79 @@ func GetDesktopFiles(db *gorm.DB) (*file.FolderInfo, error) {
 	if len(folders) == 0 {
 		return nil, nil
 	}
-	folderMap := make(map[string]*file.FolderInfo, len(folders))
-	for _, f := range folders {
-		folderMap[filepath.Clean(f.Path)] = &file.FolderInfo{Name: f.Name, Path: f.Path, IsDir: true, Folders: make([]file.FolderInfo, 0), Files: make([]file.FileInfo, 0)}
+
+	var files []DBFile
+	if err := db.Order("path ASC").Find(&files).Error; err != nil {
+		return nil, err
 	}
-	var root *file.FolderInfo
-	for _, f := range folders {
-		current := folderMap[filepath.Clean(f.Path)]
-		if parent := folderMap[filepath.Clean(f.ParentPath)]; parent != nil {
-			parent.Folders = append(parent.Folders, *current)
+
+	byPath := make(map[string]*DBFolder, len(folders))
+	for i := range folders {
+		byPath[filepath.Clean(folders[i].Path)] = &folders[i]
+	}
+
+	children := make(map[string][]string)
+	var roots []string
+	for i := range folders {
+		key := filepath.Clean(folders[i].Path)
+		parent := filepath.Clean(folders[i].ParentPath)
+		if _, ok := byPath[parent]; ok && parent != key {
+			children[parent] = append(children[parent], key)
 		} else {
-			root = current
+			roots = append(roots, key)
 		}
 	}
+	if len(roots) == 0 {
+		return nil, nil
+	}
+
+	filesByFolder := make(map[string][]file.FileInfo)
 	for _, f := range files {
-		if parent := folderMap[filepath.Clean(filepath.Dir(f.Path))]; parent != nil {
-			parent.Files = append(parent.Files, file.FileInfo{Path: f.Path, Name: f.FileName, Size: f.Size, BaseName: f.BaseName, Extension: f.Extension, ReadableSize: formatSize(f.Size), ModTime: f.ModTime.Format("2006-01-02 15:04:05")})
+		dir := filepath.Clean(filepath.Dir(f.Path))
+		if _, ok := byPath[dir]; !ok {
+			continue
+		}
+		filesByFolder[dir] = append(filesByFolder[dir], file.FileInfo{
+			Path:         f.Path,
+			Name:         f.FileName,
+			Size:         f.Size,
+			BaseName:     f.BaseName,
+			Extension:    f.Extension,
+			ReadableSize: formatSize(f.Size),
+			ModTime:      f.ModTime.Format("2006-01-02 15:04:05"),
+		})
+	}
+
+	// Build bottom-up. Children must be complete before they are copied into
+	// their parent, otherwise nested folders and their files get lost.
+	var build func(key string) file.FolderInfo
+	build = func(key string) file.FolderInfo {
+		f := byPath[key]
+		info := file.FolderInfo{
+			Name:    f.Name,
+			Path:    f.Path,
+			IsDir:   true,
+			Folders: make([]file.FolderInfo, 0, len(children[key])),
+			Files:   make([]file.FileInfo, 0, len(filesByFolder[key])),
+		}
+		for _, child := range children[key] {
+			info.Folders = append(info.Folders, build(child))
+		}
+		info.Files = append(info.Files, filesByFolder[key]...)
+		return info
+	}
+
+	// If several roots are cached (e.g. the root path changed), use the one
+	// that was refreshed most recently.
+	rootKey := roots[0]
+	for _, key := range roots[1:] {
+		if byPath[key].UpdatedAt.After(byPath[rootKey].UpdatedAt) {
+			rootKey = key
 		}
 	}
-	return root, nil
+
+	root := build(rootKey)
+	return &root, nil
 }
 
 func formatSize(size int64) string {

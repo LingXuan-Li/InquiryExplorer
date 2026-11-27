@@ -75,6 +75,14 @@ func GoogleAuth(
 
 	resultCh := make(chan authResult, 1)
 
+	// Only the first callback matters; later ones must never block.
+	sendResult := func(r authResult) {
+		select {
+		case resultCh <- r:
+		default:
+		}
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
@@ -94,9 +102,9 @@ func GoogleAuth(
 		}
 
 		if oauthError := r.URL.Query().Get("error"); oauthError != "" {
-			resultCh <- authResult{
+			sendResult(authResult{
 				Error: fmt.Errorf("Google OAuth error: %s", oauthError),
-			}
+			})
 
 			fmt.Fprintln(w, "Authentication failed. You can close this window.")
 			return
@@ -104,17 +112,17 @@ func GoogleAuth(
 
 		code := r.URL.Query().Get("code")
 		if code == "" {
-			resultCh <- authResult{
+			sendResult(authResult{
 				Error: errors.New("authorization code is missing"),
-			}
+			})
 
 			http.Error(w, "Authorization code is missing", http.StatusBadRequest)
 			return
 		}
 
-		resultCh <- authResult{
+		sendResult(authResult{
 			Code: code,
-		}
+		})
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		fmt.Fprintln(w, `

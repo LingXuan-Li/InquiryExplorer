@@ -204,17 +204,18 @@ func DownloadSetupFolder() error {
 	tempDir := filepath.Join(appDir, "data_temp")
 	backupDir := filepath.Join(appDir, "data_backup")
 
-	if err := os.MkdirAll(dataDir, 0755); err != nil {
-		return err
-	}
-
-	// Recover if the previous directory swap was interrupted.
+	// Recover if the previous directory swap was interrupted. This must run
+	// before dataDir is (re)created, otherwise it can never trigger.
 	if _, err := os.Stat(dataDir); os.IsNotExist(err) {
 		if _, backupErr := os.Stat(backupDir); backupErr == nil {
 			if err := os.Rename(backupDir, dataDir); err != nil {
 				return err
 			}
 		}
+	}
+
+	if err := os.MkdirAll(dataDir, 0755); err != nil {
+		return err
 	}
 
 	// Remove any leftover temporary directory.
@@ -241,7 +242,9 @@ func DownloadSetupFolder() error {
 	}
 
 	// Skip the download if the local setup is already up to date.
-	if !githubDownload && latestHash == localHash {
+	// Only trust the saved version if the templates are really installed.
+	_, indexErr := os.Stat(filepath.Join(dataDir, "templates", "index.html"))
+	if !githubDownload && latestHash == localHash && indexErr == nil {
 		fmt.Println("Setup is already up to date:", latestHash)
 		return nil
 	}
